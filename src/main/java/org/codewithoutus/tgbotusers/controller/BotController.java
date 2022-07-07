@@ -25,9 +25,9 @@ public class BotController {
         return botService.stop();
     }
     
-    @GetMapping("/sendMessage")
-    private BackendResponse sendMessage(@RequestParam String message) {
-        return botService.sendMessage(message);
-    }
+//    @GetMapping("/sendMessage")
+//    private BackendResponse sendMessage(@RequestParam String message) {
+//        return botService.sendMessage(message);
+//    }
     
 }

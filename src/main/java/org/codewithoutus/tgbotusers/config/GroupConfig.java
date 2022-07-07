@@ -1,25 +1,32 @@
 package org.codewithoutus.tgbotusers.config;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
-@Component
 @Configuration
 @ConfigurationProperties(prefix = "telegram.groups")
-public class GroupConfig {
+public class  GroupConfig {
     private List<ModeratorGroup> groups;
     
     
-    public record ModeratorGroup(int id, List<UserGroup> userGroups) {
+    @Getter
+    @Setter
+    public class ModeratorGroup {
+        private int id;
+        private List<UserGroup> userGroups;
     }
     
-    public record UserGroup(int id) {
+    @Getter
+    @Setter
+    public class UserGroup {
+        private int id;
     }
 }

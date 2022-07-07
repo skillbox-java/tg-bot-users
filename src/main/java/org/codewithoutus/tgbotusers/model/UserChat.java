@@ -5,15 +5,14 @@ import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "user_groups")
 @Getter
 @Setter
-public class UserGroup extends Group {
+public class UserChat extends Chat {
     
     @ManyToMany(mappedBy = "userGroups")
-    private Set<ModeratorGroup> moderatorsGroups;
+    private List<ModeratorChat> moderatorChats;
 }

@@ -12,13 +12,13 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 @Getter
 @Setter
-public class Group {
+public class Chat {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Integer id;
     
-    @Column(name = "group_id", columnDefinition = "INT NOT NULL")
-    private Integer groupId;
+    @Column(nullable = false, unique = true)
+    private Long groupId;
+    
 }

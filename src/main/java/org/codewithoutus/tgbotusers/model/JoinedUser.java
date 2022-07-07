@@ -6,16 +6,19 @@ import lombok.Setter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "joined_users")
 @Getter
 @Setter
 public class JoinedUser extends User {
     
-    @Column(name = "chat_id", columnDefinition = "INT NOT NULL")
-    private Integer chatId;
+    @Column(nullable = false)
+    private Long chatId;
     
-    @Column(name = "number", columnDefinition = "INT NOT NULL")
+    @Column(nullable = false)
     private Integer number;
+    
+    @Column(nullable = false)
+    private LocalDateTime joinTime;
 }
