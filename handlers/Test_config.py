@@ -1,8 +1,5 @@
-import sqlite3
-
 from loader import bot
 from database.commands import insert_lite
-from database.commands import select
 
 
 @bot.message_handler(content_types=['new_chat_members'])
@@ -18,7 +15,8 @@ def handler_new_member(message):
     if not message.from_user.is_bot: # тут будут еще проверки count % 500 == 0 и проверка есть ли id нового
                                     #пользователя в списке. Нужно создать функцию проверки в базе.
                                     # Если она вернет None, тогда проверка пройдена
-        bot.send_message(message.chat.id, 'Тестируем {0} {1} {2} {3} {4} {5} '.
+
+        bot.send_message(message.chat.id, 'Тестируем {0} {1} {2} {3} {4} {5} '. #это для проверки реакции бота на добавление
                          format(nickname, user_name, chat_id, count, userId, chat_name))
         insert_lite(nickname, user_name, chat_name)
 
@@ -32,7 +30,10 @@ def handler_new_member(message):
 
 
 
-    # Дальше идет кусок кода кода я сам пытался создать базу, когда Колина не работала
+    # Дальше идет кусок кода когда я сам пытался создать базу,
+    # когда Колина не работала я его пока оставлю, он мне помогает думать о том как работает база
+
+
     # insert_lite(nickname=message.from_user.username, user_name=message.from_user.first_name, chat_name=message.chat.title)
     # result = select()
     # print(result)
