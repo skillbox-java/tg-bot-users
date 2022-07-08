@@ -8,7 +8,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -19,5 +18,5 @@ public class ModeratorChat extends Chat {
     @JoinTable(name = "moderators2users",
             joinColumns = @JoinColumn(name = "moderator_chat_id"),
             inverseJoinColumns = @JoinColumn(name = "user_chat_id"))
-    private List<UserChat> userGroups;
+    private List<UserChat> userChats;
 }

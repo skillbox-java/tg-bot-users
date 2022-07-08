@@ -6,13 +6,12 @@ import lombok.Setter;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
 @Setter
 public class UserChat extends Chat {
     
-    @ManyToMany(mappedBy = "userGroups")
+    @ManyToMany(mappedBy = "userChats")
     private List<ModeratorChat> moderatorChats;
 }

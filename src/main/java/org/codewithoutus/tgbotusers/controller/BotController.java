@@ -2,10 +2,9 @@ package org.codewithoutus.tgbotusers.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.codewithoutus.tgbotusers.dto.BackendResponse;
-import org.codewithoutus.tgbotusers.services.BotService;
+import org.codewithoutus.tgbotusers.service.BotService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -24,10 +23,5 @@ public class BotController {
     private BackendResponse stopBotBackend() {
         return botService.stop();
     }
-    
-//    @GetMapping("/sendMessage")
-//    private BackendResponse sendMessage(@RequestParam String message) {
-//        return botService.sendMessage(message);
-//    }
     
 }

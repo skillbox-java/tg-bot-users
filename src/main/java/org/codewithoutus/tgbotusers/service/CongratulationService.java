@@ -1,4 +1,4 @@
-package org.codewithoutus.tgbotusers.services;
+package org.codewithoutus.tgbotusers.service;
 
 import org.springframework.stereotype.Service;
 

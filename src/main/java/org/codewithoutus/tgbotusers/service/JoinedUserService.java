@@ -1,4 +1,4 @@
-package org.codewithoutus.tgbotusers.services;
+package org.codewithoutus.tgbotusers.service;
 
 import lombok.RequiredArgsConstructor;
 import org.codewithoutus.tgbotusers.model.JoinedUser;

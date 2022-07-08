@@ -18,10 +18,6 @@ public class AppConfig {
     private int incrementalSaves;
     private String botUserName;
     private String botToken;
-    
-    @Bean
-    public TelegramBot telegramBot() {
-        return new TelegramBot(botToken);
-    }
+
     
 }

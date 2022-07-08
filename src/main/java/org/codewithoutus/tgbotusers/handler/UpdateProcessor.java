@@ -8,12 +8,12 @@ import com.pengrad.telegrambot.model.Update;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-@Component
+@Deprecated
 @RequiredArgsConstructor
 public class UpdateProcessor {
     
     private final ChatJoinRequestHandler chatJoinRequestHandler;
-    private final CallbackHandler callbackHandler;
+    private final CallbackQueryHandler callbackQueryHandler;
     private final MessageHandler messageHandler;
     
     private Update currentUpdate;

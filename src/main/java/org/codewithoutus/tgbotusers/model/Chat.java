@@ -19,6 +19,6 @@ public class Chat {
     private Integer id;
     
     @Column(nullable = false, unique = true)
-    private Long groupId;
+    private Long chatId;
     
 }
