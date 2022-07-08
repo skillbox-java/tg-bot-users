@@ -2,6 +2,7 @@ package org.codewithoutus.tgbotusers.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -18,6 +19,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     
+    @NaturalId
     @Column(nullable = false, unique = true)
     Long userId;
     

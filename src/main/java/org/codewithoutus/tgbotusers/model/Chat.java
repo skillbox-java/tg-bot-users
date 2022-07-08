@@ -1,7 +1,9 @@
 package org.codewithoutus.tgbotusers.model;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -18,6 +20,7 @@ public class Chat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     
+    @NaturalId
     @Column(nullable = false, unique = true)
     private Long chatId;
     
