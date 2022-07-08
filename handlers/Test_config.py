@@ -19,12 +19,32 @@ def get_text_messages(message):
 
 @bot.message_handler(content_types=['new_chat_members'])
 def handler_new_member(message):
+    nickname = message.from_user.username
     user_name = message.from_user.first_name
-    # user_id = message.chat.id я забыл зачем это было нужно
+    chat_id = message.chat.id
     count = bot.get_chat_members_count(message.chat.id)
-    if count == 6:
-        bot.send_message(message.chat.id, 'Нас включая бота, {0}'.format(count))
-    #
+    userId = message.from_user.id
+    chat_name = message.chat.title
+
+
+    if not message.from_user.is_bot: # тут будут еще проверки count % 500 == 0 и проверка есть ли id нового
+                                    #пользователя в списке. Нужно создать функцию проверки в базе.
+                                    # Если она вернет None, тогда проверка пройдена
+        bot.send_message(message.chat.id, 'Тестируем {0} {1} {2} {3} {4} {5} '.
+                         format(nickname, user_name, chat_id, count, userId, chat_name))
+        insert_lite(nickname, user_name, chat_name)
+
+
+
+
+
+
+
+
+
+
+
+    # Дальше идет кусок кода кода я сам пытался создать базу, когда Колина не работала
     # insert_lite(nickname=message.from_user.username, user_name=message.from_user.first_name, chat_name=message.chat.title)
     # result = select()
     # print(result)
