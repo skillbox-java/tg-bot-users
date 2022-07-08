@@ -1,5 +1,5 @@
 from loader import bot
-from database.commands import insert_lite
+from database.commands import insert
 
 
 @bot.message_handler(content_types=['new_chat_members'])
@@ -8,8 +8,10 @@ def handler_new_member(message):
     user_name = message.from_user.first_name
     chat_id = message.chat.id
     count = bot.get_chat_members_count(message.chat.id)
-    userId = message.from_user.id
+    user_number = message.from_user.id
     chat_name = message.chat.title
+    dtime_connetion = message.date
+
 
 
     if not message.from_user.is_bot: # тут будут еще проверки count % 500 == 0 и проверка есть ли id нового
@@ -17,8 +19,8 @@ def handler_new_member(message):
                                     # Если она вернет None, тогда проверка пройдена
 
         bot.send_message(message.chat.id, 'Тестируем {0} {1} {2} {3} {4} {5} '. #это для проверки реакции бота на добавление
-                         format(nickname, user_name, chat_id, count, userId, chat_name))
-        insert_lite(nickname, user_name, chat_name)
+                         format(nickname, user_name, chat_id, count, user_number, chat_name))
+        insert(nickname, user_name, chat_name, user_number, dtime_connetion)
 
 
 
