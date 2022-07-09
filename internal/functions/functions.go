@@ -253,7 +253,7 @@ func GetJubileeUsers() (jubUsers []data.JubileeUser, err error) {
 	}
 
 	for _, v := range users {
-		if v.Serial%500 == 0 || v.Serial%500 == 1 || v.Serial%500 == 2 || v.Serial%4 == 0 {
+		if v.Serial%500 == 0 || v.Serial%500 == 1 || v.Serial%500 == 2 {
 			jubUsers = append(jubUsers, v)
 		}
 	}

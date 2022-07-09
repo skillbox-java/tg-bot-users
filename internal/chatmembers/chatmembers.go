@@ -23,7 +23,7 @@ func WithChatMembersDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *log
 			},
 		})
 
-		if count%500 == 0 || count%500 == 1 || count%500 == 2 || count == 4 {
+		if count%500 == 0 || count%500 == 1 || count%500 == 2 {
 
 			err = functions.AddNewJubileeUser(&newUser, count, groupName)
 			if err != nil {
@@ -55,7 +55,7 @@ func WithChatMembersDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *log
 
 		go func() {
 
-			time.Sleep(20 * time.Second)
+			time.Sleep(60 * time.Second)
 			_, _ = bot.Send(tgbotapi.NewDeleteMessage(chatId, ans.MessageID))
 		}()
 	}

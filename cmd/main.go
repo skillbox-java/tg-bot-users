@@ -49,12 +49,6 @@ func main() {
 
 		update := <-updChan
 
-		// make slice from text message
-		//if update.Message != nil {
-		//	command := strings.Split(update.Message.Text, " ")
-		//} else {
-		//	continue
-		//}
 		if update.Message != nil {
 
 			// text messages operations

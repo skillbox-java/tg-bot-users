@@ -13,6 +13,8 @@ import (
 	"time"
 )
 
+var MesInfo tgbotapi.Update
+
 func WithTextQueryDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *logging.Logger, modGroupId int64) {
 
 	// trim symbols
@@ -49,35 +51,35 @@ func WithTextQueryDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *loggi
 		//}
 
 		// check jubilee users !
-		if strings.Contains(strings.ToLower(command[0]), "списокюбилейный") {
-
-			users, err := functions.GetJubileeUsers()
-			chatId := update.Message.Chat.ID
-			if err != nil {
-				logger.Info(err)
-			}
-
-			moderGroupList, err := functions.GetModeratorsGroup()
-			if err != nil {
-				logger.Error(err)
-			}
-
-			for _, group := range moderGroupList {
-
-				if group.GroupID == chatId {
-
-					for _, user := range users {
-
-						text := fmt.Sprintf("Группа: %s\nИмя: %s\nНик: @%s\nНомер вступления: %d\n"+
-							"Время вступления: %s ", user.GroupName, user.UserName, user.UserNick,
-							user.Serial, user.Time.Format(config.StructDateTimeFormat))
-
-						_, _ = bot.Send(tgbotapi.NewMessage(chatId, text))
-
-					}
-				}
-			}
-		}
+		//if strings.Contains(strings.ToLower(command[0]), "списокюбилейный") {
+		//
+		//	users, err := functions.GetJubileeUsers()
+		//	chatId := update.Message.Chat.ID
+		//	if err != nil {
+		//		logger.Info(err)
+		//	}
+		//
+		//	moderGroupList, err := functions.GetModeratorsGroup()
+		//	if err != nil {
+		//		logger.Error(err)
+		//	}
+		//
+		//	for _, group := range moderGroupList {
+		//
+		//		if group.GroupID == chatId {
+		//
+		//			for _, user := range users {
+		//
+		//				text := fmt.Sprintf("Группа: %s\nИмя: %s\nНик: @%s\nНомер вступления: %d\n"+
+		//					"Время вступления: %s ", user.GroupName, user.UserName, user.UserNick,
+		//					user.Serial, user.Time.Format(config.StructDateTimeFormat))
+		//
+		//				_, _ = bot.Send(tgbotapi.NewMessage(chatId, text))
+		//
+		//			}
+		//		}
+		//	}
+		//}
 
 		// add moderator group
 		if strings.Contains(strings.ToLower(command[0]), "addmoderatorgroup") {
@@ -107,7 +109,7 @@ func WithTextQueryDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *loggi
 			}
 		}
 
-		//  new users count
+		//  new users count +
 		if strings.Contains(strings.ToLower(command[0]), "chatinfo") {
 			delMes := update.Message.MessageID
 			chatId := update.Message.Chat.ID
@@ -117,14 +119,16 @@ func WithTextQueryDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *loggi
 				_, _ = bot.Send(tgbotapi.NewDeleteMessage(chatId, delMes))
 			}()
 
-			_, err = bot.Send(tgbotapi.NewMessage(modGroupId, fmt.Sprintf(
-				"ID группы: %d\nИмя группы: %s", chatId, groupName)))
+			msg := tgbotapi.NewMessage(modGroupId, fmt.Sprintf(
+				"ID группы: `%d`\nИмя группы: *%s*", chatId, groupName))
+			msg.ParseMode = "markdown"
+			_, err = bot.Send(msg)
 			if err != nil {
 				logger.Error(err)
 			}
 		}
 
-		// add bad words to the base
+		// add bad words to the base +
 		if strings.Contains(strings.ToLower(command[0]), "мат") {
 
 			if len(command) > 1 {
@@ -165,13 +169,13 @@ func WithTextQueryDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *loggi
 			}
 		}
 
-		// check bad words in chat messages
+		// check bad words in chat messages +
 		_, b, err := functions.CheckBadWords(command)
 		if err != nil {
 			logger.Error("bad words error", err)
 		}
 
-		// message to chat where found bad word, copy to moderator
+		// message to chat where found bad word, copy to moderators groups +
 		if b && strings.ToLower(command[0]) != "мат" {
 
 			msgID := update.Message.MessageID
@@ -186,11 +190,18 @@ func WithTextQueryDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *loggi
 			badGuyID := update.Message.From.ID
 			groupName := update.Message.Chat.Title
 
-			modMess := tgbotapi.NewMessage(modGroupId, fmt.Sprintf(
-				"Замечены нецензурные выражения:\nГруппа: %s\nИмя пользователя: %s\nНик пользователя: "+
-					"@%s\nID пользователя: %d\nТекст сообщения: %s\nОригинал сообщения удален из чата.",
-				groupName, badGuyName, badGuyNick, badGuyID, badText))
-			_, _ = bot.Send(modMess)
+			moderatorsGroups, err := functions.GetModeratorsGroup()
+			if err != nil {
+				logger.Error(err)
+			}
+			for _, v := range moderatorsGroups {
+				modMess := tgbotapi.NewMessage(v.GroupID, fmt.Sprintf(
+					"Замечены нецензурные выражения:\nГруппа: %s\nИмя пользователя: %s\nНик пользователя: "+
+						"@%s\nID пользователя: %d\nТекст сообщения: %s\nВремя: %s\nОригинал сообщения удален из чата.",
+					groupName, badGuyName, badGuyNick, badGuyID, badText, time.Now().Format(config.StructDateTimeFormat)))
+
+				_, _ = bot.Send(modMess)
+			}
 
 			cleanAnswer := tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf(
 				"Уважаемые коллеги, просим вас воздержаться от нецензурных выражений в %s. "+
@@ -203,23 +214,58 @@ func WithTextQueryDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *loggi
 			}()
 		}
 
+		// menu moderators groups +
 		if strings.Contains(strings.ToLower(command[0]), "меню") {
 
-			_, _ = bot.Send(tgbotapi.NewDeleteMessage(update.Message.Chat.ID, update.Message.MessageID))
+			chatId := update.Message.Chat.ID
+			moderatorGroups, err := functions.GetModeratorsGroup()
+			if err != nil {
+				return
+			}
+			for _, group := range moderatorGroups {
+				if group.GroupID == chatId {
 
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "30 seconds")
+					_, _ = bot.Send(tgbotapi.NewDeleteMessage(update.Message.Chat.ID, update.Message.MessageID))
 
-			msg.ReplyMarkup = menu.NumericKeyboard
+					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "30 seconds")
 
-			delMes, err := bot.Send(msg)
+					msg.ReplyMarkup = menu.NumericKeyboard
+
+					delMes, err := bot.Send(msg)
+					if err != nil {
+						logger.Error(err)
+					}
+
+					go func() {
+						time.Sleep(30 * time.Second)
+						_, _ = bot.Send(tgbotapi.NewDeleteMessage(update.Message.Chat.ID, delMes.MessageID))
+					}()
+				}
+
+			}
+
+		}
+
+		if strings.Contains(strings.ToLower(command[0]), "moder") {
+
+			MesInfo = update
+			chatId := update.Message.Chat.ID
+			chatName := update.Message.Chat.Title
+			userName := update.Message.From.FirstName
+			userNick := update.Message.From.UserName
+
+			logger.Info("mes from add moder ", modGroupId)
+
+			text := fmt.Sprintf("Новый запрос на добавление группы администраторов:\nНазвание группы: %s\n"+
+				"Уникальный номер группы: %d\nИмя пользователя: %s\nНик пользователя: @%s\nВремя запроса: %s",
+				chatName, chatId, userName, userNick, time.Now().Format(config.StructDateTimeFormat))
+			msg := tgbotapi.NewMessage(modGroupId, text)
+			msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(tgbotapi.NewInlineKeyboardRow(menu.Button4))
+			_, err = bot.Send(msg)
 			if err != nil {
 				logger.Error(err)
 			}
 
-			go func() {
-				time.Sleep(30 * time.Second)
-				_, _ = bot.Send(tgbotapi.NewDeleteMessage(update.Message.Chat.ID, delMes.MessageID))
-			}()
 		}
 
 	}

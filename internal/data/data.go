@@ -2,11 +2,11 @@ package data
 
 import "time"
 
-type User struct {
-	ID   int
-	Name string
-	Sex  string
-}
+//type User struct {
+//	ID   int
+//	Name string
+//	Sex  string
+//}
 
 type BadWords struct {
 	ID   int
