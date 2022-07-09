@@ -15,6 +15,13 @@ import (
 
 var MesInfo tgbotapi.Update
 
+//type Inst struct {
+//	logger *logging.Logger
+//	badWord *data.BadWord
+//	jubUser *data.JubUsers
+//	moderGroup *data.ModeratorsGroup
+//}
+
 func WithTextQueryDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *logging.Logger, modGroupId int64, cfg *config.Config) {
 
 	// trim symbols
@@ -89,9 +96,10 @@ func WithTextQueryDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *loggi
 				newModGroup, err := strconv.ParseInt(command[1], 10, 64)
 				if err != nil {
 					logger.Error(err)
+
 				}
 
-				b, _, err := functions.AddModeratorsGroup(newModGroup)
+				b, _, err := functions.AddModeratorsGroup(newModGroup, cfg)
 				if err != nil {
 					logger.Error(err)
 				}
@@ -249,22 +257,33 @@ func WithTextQueryDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *loggi
 		if strings.Contains(strings.ToLower(command[0]), "moder") {
 
 			MesInfo = update
+
+			go func() {
+				time.Sleep(60 * time.Second)
+				MesInfo.Message.Chat.ID = 0
+			}()
+
 			chatId := update.Message.Chat.ID
 			chatName := update.Message.Chat.Title
 			userName := update.Message.From.FirstName
 			userNick := update.Message.From.UserName
-
-			logger.Info("mes from add moder ", modGroupId)
+			_, _ = bot.Send(tgbotapi.NewDeleteMessage(update.Message.Chat.ID, update.Message.MessageID))
 
 			text := fmt.Sprintf("Новый запрос на добавление группы администраторов:\nНазвание группы: %s\n"+
-				"Уникальный номер группы: %d\nИмя пользователя: %s\nНик пользователя: @%s\nВремя запроса: %s",
+				"Уникальный номер группы: %d\nИмя пользователя: %s\nНик пользователя: @%s\nВремя запроса: %s\n"+
+				"Подтвердите в течении 60 секунд, или проигнорируйте сообщение.",
 				chatName, chatId, userName, userNick, time.Now().Format(config.StructDateTimeFormat))
 			msg := tgbotapi.NewMessage(modGroupId, text)
 			msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(tgbotapi.NewInlineKeyboardRow(menu.Button4))
-			_, err = bot.Send(msg)
+			msgDel, err := bot.Send(msg)
 			if err != nil {
 				logger.Error(err)
 			}
+
+			go func() {
+				time.Sleep(60 * time.Second)
+				_, _ = bot.Send(tgbotapi.NewDeleteMessage(msgDel.Chat.ID, msgDel.MessageID))
+			}()
 
 		}
 

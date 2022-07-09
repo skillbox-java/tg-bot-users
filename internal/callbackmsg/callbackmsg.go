@@ -78,24 +78,30 @@ func WithCallBackDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *loggin
 		// add new moderators group
 	case "add_new_mod":
 
-		if update.CallbackQuery.Message.Chat.ID == modGroupId {
+		newGroupName := textmsg.MesInfo.Message.Chat.Title
+		newGroupId := textmsg.MesInfo.Message.Chat.ID
 
-			newGroupName := textmsg.MesInfo.Message.Chat.Title
-			newGroupId := textmsg.MesInfo.Message.Chat.ID
-			logger.Info(newGroupName, newGroupId)
+		if newGroupId != 0 {
+			if update.CallbackQuery.Message.Chat.ID == modGroupId {
 
-			text := fmt.Sprintf("Внимание! Вы подтверждаетете добавление группы: \n  %s  \nв список администраторов.", newGroupName)
-			msg := tgbotapi.NewEditMessageText(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.MessageID, text)
-			msgConf := tgbotapi.NewEditMessageReplyMarkup(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.MessageID,
-				tgbotapi.NewInlineKeyboardMarkup(tgbotapi.NewInlineKeyboardRow(menu.Button5)))
+				logger.Info(newGroupName, newGroupId)
 
-			_, _ = bot.Send(msg)
-			_, _ = bot.Send(msgConf)
+				text := fmt.Sprintf("Внимание! Вы подтверждаетете добавление группы: \n  %s  \nв список администраторов.", newGroupName)
+				msg := tgbotapi.NewEditMessageText(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.MessageID, text)
+				msgConf := tgbotapi.NewEditMessageReplyMarkup(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.MessageID,
+					tgbotapi.NewInlineKeyboardMarkup(tgbotapi.NewInlineKeyboardRow(menu.Button5)))
 
-			callback := tgbotapi.NewCallback(update.CallbackQuery.ID, "✅")
-			if _, err := bot.Request(callback); err != nil {
-				logger.Error(err)
+				_, _ = bot.Send(msg)
+				_, _ = bot.Send(msgConf)
+
+				callback := tgbotapi.NewCallback(update.CallbackQuery.ID, "✅")
+				if _, err := bot.Request(callback); err != nil {
+					logger.Error(err)
+				}
 			}
+		} else {
+			_, _ = bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Время вышло, повторите запрос."))
+			_, _ = bot.Request(tgbotapi.NewCallback(update.CallbackQuery.ID, "✅"))
 		}
 
 	case "add_new_mod_true":
@@ -103,29 +109,38 @@ func WithCallBackDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *loggin
 		newGroupName := textmsg.MesInfo.Message.Chat.Title
 		newGroupId := textmsg.MesInfo.Message.Chat.ID
 
-		if update.CallbackQuery.Message.Chat.ID == modGroupId {
+		if newGroupId != 0 {
+			if update.CallbackQuery.Message.Chat.ID == modGroupId {
 
-			text := fmt.Sprintf("Внимание! Вы подтверждаетете добавление группы: \n  %s  \nв список администраторов.", newGroupName)
-			msg := tgbotapi.NewEditMessageText(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.MessageID, text)
-			msgConf := tgbotapi.NewEditMessageReplyMarkup(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.MessageID,
-				tgbotapi.NewInlineKeyboardMarkup(tgbotapi.NewInlineKeyboardRow(menu.Button6)))
-			_, _ = bot.Send(msg)
-			_, _ = bot.Send(msgConf)
+				text := fmt.Sprintf("Внимание! Вы подтверждаетете добавление группы: \n  %s  \nв список администраторов.", newGroupName)
+				msg := tgbotapi.NewEditMessageText(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.MessageID, text)
+				msgConf := tgbotapi.NewEditMessageReplyMarkup(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.MessageID,
+					tgbotapi.NewInlineKeyboardMarkup(tgbotapi.NewInlineKeyboardRow(menu.Button6)))
+				_, _ = bot.Send(msg)
+				_, _ = bot.Send(msgConf)
 
-			b, _, err := functions.AddModeratorsGroup(newGroupId)
-			if b && err != nil {
-				_, _ = bot.Send(tgbotapi.NewMessage(modGroupId, fmt.Sprintf("Группа %s уже есть.", newGroupName)))
-			} else if b && err == nil {
+				b, _, err := functions.AddModeratorsGroup(newGroupId, cfg)
+				if b && err != nil {
+					_, _ = bot.Send(tgbotapi.NewMessage(modGroupId, fmt.Sprintf("Группа %s уже есть.", newGroupName)))
+				} else if b && err == nil {
 
-				_, _ = bot.Send(tgbotapi.NewMessage(modGroupId, fmt.Sprintf("Группа %s успешно добавлена.", newGroupName)))
-			} else {
-				logger.Error(err)
+					_, _ = bot.Send(tgbotapi.NewMessage(modGroupId, fmt.Sprintf("Группа %s успешно добавлена.", newGroupName)))
+				} else {
+					logger.Error(err)
+				}
+				textmsg.MesInfo.Message.Chat.ID = 0
+
+				callback := tgbotapi.NewCallback(update.CallbackQuery.ID, "✅")
+				if _, err := bot.Request(callback); err != nil {
+					logger.Error(err)
+				}
+
+				textmsg.MesInfo.Message.Chat.ID = 0
 			}
-
-			callback := tgbotapi.NewCallback(update.CallbackQuery.ID, "✅")
-			if _, err := bot.Request(callback); err != nil {
-				logger.Error(err)
-			}
+		} else {
+			_, _ = bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Время вышло, повторите запрос."))
+			_, _ = bot.Request(tgbotapi.NewCallback(update.CallbackQuery.ID, "✅"))
 		}
+
 	}
 }

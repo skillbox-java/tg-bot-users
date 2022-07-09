@@ -130,12 +130,12 @@ func AddBadWord(word string, cfg *config.Config) (bool, error) {
 
 }
 
-func AddModeratorsGroup(group int64) (haveGroup bool, modGroups []data.ModeratorsGroup, err error) {
+func AddModeratorsGroup(group int64, cfg *config.Config) (haveGroup bool, modGroups []data.ModeratorsGroup, err error) {
 
 	var modGroup data.ModeratorsGroup
 	haveGroup = false
 
-	db, err := sql.Open("sqlite3", "./tg-bot-users/internal/sqlitedb/moderators.db")
+	db, err := sql.Open("sqlite3", filepath.Join(cfg.DBFilePath, "moderators.db"))
 	if err != nil {
 		return haveGroup, nil, err
 	}

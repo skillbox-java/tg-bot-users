@@ -20,6 +20,42 @@ func init() {
 	flag.StringVar(&cfgPath, "config", "tg-bot-users/conf.yml", "config file path")
 }
 
+//
+//type Inst struct {
+//	logger   *logging.Logger
+//	badword  *data.BadWord
+//	jubiuser *data.JubUsers
+//	moders   *data.ModerGroup
+//	update   *tgbotapi.Update
+//	bot      *tgbotapi.BotAPI
+//	cfg      config.Config
+//}
+//
+//func NewInst(cfg *config.Config, logger *logging.Logger, bot *tgbotapi.BotAPI) (*Inst, error) {
+//
+//	badWord, err := data.NewBadWordDB(cfg)
+//	if err != nil {
+//		logger.Fatalf("error connect bad word database: %v", err)
+//	}
+//	jubUser, err := data.NewJubUsersDB(cfg)
+//	if err != nil {
+//		logger.Fatalf("error connect jubilee user database: %v", err)
+//	}
+//	moders, err := data.NewModeratorsGroupDB(cfg)
+//	if err != nil {
+//		logger.Errorf("error connect moderators group database: %v", err)
+//	}
+//
+//	return &Inst{
+//		logger:   logger,
+//		badword:  badWord,
+//		jubiuser: jubUser,
+//		moders:   moders,
+//		bot:      bot,
+//		cfg:      config.Config{},
+//	}, nil
+//}
+
 func main() {
 
 	log.Print("config initializing")
@@ -28,13 +64,26 @@ func main() {
 	log.Print("logger initializing")
 	logger := logging.GetLogger(cfg.AppConfig.LogLevel)
 
+	//BadWord, err := data.NewBadWordDB(cfg, logger)
+	//if err != nil {
+	//	logger.Fatalf("error connect bad word database: %v", err)
+	//}
+	//JubUser, err := data.NewJubUsersDB(cfg, logger)
+	//if err != nil {
+	//	logger.Fatalf("error connect jubilee user database: %v", err)
+	//}
+	//Moders, err := data.NewModeratorsGroupDB(cfg, logger)
+	//if err != nil {
+	//	logger.Errorf("error connect moderators group database: %v", err)
+	//}
+
 	modGroupId := cfg.ModersGroupID.ModeratorsGroup
-	_, _, err := functions.AddModeratorsGroup(cfg.ModersGroupID.ModeratorsGroup)
-	_, _, err = functions.AddModeratorsGroup(cfg.ModersGroupID.ModeratorsGroupGolang)
-	_, _, err = functions.AddModeratorsGroup(cfg.ModersGroupID.ModeratorsGroupJava)
-	_, _, err = functions.AddModeratorsGroup(cfg.ModersGroupID.ModeratorsGroupPython)
-	_, _, err = functions.AddModeratorsGroup(cfg.ModersGroupID.ModeratorsGroup1S)
-	_, _, err = functions.AddModeratorsGroup(cfg.ModersGroupID.ModeratorsGroupCSharp)
+	_, _, err := functions.AddModeratorsGroup(cfg.ModersGroupID.ModeratorsGroup, cfg)
+	_, _, err = functions.AddModeratorsGroup(cfg.ModersGroupID.ModeratorsGroupGolang, cfg)
+	_, _, err = functions.AddModeratorsGroup(cfg.ModersGroupID.ModeratorsGroupJava, cfg)
+	_, _, err = functions.AddModeratorsGroup(cfg.ModersGroupID.ModeratorsGroupPython, cfg)
+	_, _, err = functions.AddModeratorsGroup(cfg.ModersGroupID.ModeratorsGroup1S, cfg)
+	_, _, err = functions.AddModeratorsGroup(cfg.ModersGroupID.ModeratorsGroupCSharp, cfg)
 	if err != nil {
 		logger.Info(err)
 	}
@@ -43,6 +92,9 @@ func main() {
 	if err != nil {
 		logger.Fatal(err)
 	}
+
+	//inst, err := data.NewInst(cfg, logger, bot)
+
 	defer bot.StopReceivingUpdates()
 
 	for {
@@ -77,7 +129,5 @@ func main() {
 			log.Println(query)
 
 		}
-
 	}
-
 }
