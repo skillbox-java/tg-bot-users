@@ -7,8 +7,11 @@ else:
     load_dotenv()
 
 BOT_TOKEN = os.getenv('BOT_TOKEN')
+
 DEFAULT_COMMANDS = (
     ('start', "Запустить бота"),
     ('help', "Вывести справку"),
-    ('luckylist', "Запросить юбилейный список")
+    ('luckylist', "Запросить юбилейный список"),
+    ('adminshow', "Вывести текущие настройки админки"),
+    ('adminsetup', "Установить настройки админки")
 )
