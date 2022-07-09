@@ -15,7 +15,7 @@ import (
 
 var MesInfo tgbotapi.Update
 
-func WithTextQueryDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *logging.Logger, modGroupId int64) {
+func WithTextQueryDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *logging.Logger, modGroupId int64, cfg *config.Config) {
 
 	// trim symbols
 	if len(update.Message.Text) > 0 {
@@ -139,7 +139,7 @@ func WithTextQueryDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *loggi
 
 				}()
 
-				b, err := functions.AddBadWord(command[1])
+				b, err := functions.AddBadWord(command[1], cfg)
 				if err != nil {
 					log.Println(err)
 				}
@@ -170,7 +170,7 @@ func WithTextQueryDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *loggi
 		}
 
 		// check bad words in chat messages +
-		_, b, err := functions.CheckBadWords(command)
+		_, b, err := functions.CheckBadWords(command, *cfg)
 		if err != nil {
 			logger.Error("bad words error", err)
 		}
@@ -190,7 +190,7 @@ func WithTextQueryDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *loggi
 			badGuyID := update.Message.From.ID
 			groupName := update.Message.Chat.Title
 
-			moderatorsGroups, err := functions.GetModeratorsGroup()
+			moderatorsGroups, err := functions.GetModeratorsGroup(cfg)
 			if err != nil {
 				logger.Error(err)
 			}
@@ -218,7 +218,7 @@ func WithTextQueryDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *loggi
 		if strings.Contains(strings.ToLower(command[0]), "меню") {
 
 			chatId := update.Message.Chat.ID
-			moderatorGroups, err := functions.GetModeratorsGroup()
+			moderatorGroups, err := functions.GetModeratorsGroup(cfg)
 			if err != nil {
 				return
 			}

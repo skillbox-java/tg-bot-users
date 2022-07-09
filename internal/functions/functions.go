@@ -7,6 +7,8 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
+	"path/filepath"
+	"skbot/internal/config"
 	"skbot/internal/data"
 	"strings"
 )
@@ -40,13 +42,13 @@ func TrimSymbolsFromSlice(s []string) (words []string, err error) {
 	return words, nil
 }
 
-func CheckBadWords(badList []string) (clearList []string, haveBadWords bool, err error) {
+func CheckBadWords(badList []string, cfg config.Config) (clearList []string, haveBadWords bool, err error) {
 
 	var badWords []data.BadWords
 	var badWord data.BadWords
 	haveBadWords = false
 
-	db, err := sql.Open("sqlite3", "./tg-bot-users/internal/sqlitedb/badwords.db")
+	db, err := sql.Open("sqlite3", filepath.Join(cfg.DBFilePath+"badwords.db"))
 	if err != nil {
 		return
 	}
@@ -81,12 +83,12 @@ func CheckBadWords(badList []string) (clearList []string, haveBadWords bool, err
 
 }
 
-func AddBadWord(word string) (bool, error) {
+func AddBadWord(word string, cfg *config.Config) (bool, error) {
 
 	var badWord data.BadWords
 	var haveWord = false
 
-	db, err := sql.Open("sqlite3", "./tg-bot-users/internal/sqlitedb/badwords.db")
+	db, err := sql.Open("sqlite3", filepath.Join(cfg.DBFilePath, "badwords.db"))
 	if err != nil {
 		return false, err
 	}
@@ -178,11 +180,11 @@ func AddModeratorsGroup(group int64) (haveGroup bool, modGroups []data.Moderator
 	return haveGroup, modGroups, nil
 }
 
-func GetModeratorsGroup() (groups []data.ModeratorsGroup, err error) {
+func GetModeratorsGroup(cfg *config.Config) (groups []data.ModeratorsGroup, err error) {
 
 	var group data.ModeratorsGroup
 
-	db, err := sql.Open("sqlite3", "./tg-bot-users/internal/sqlitedb/moderators.db")
+	db, err := sql.Open("sqlite3", filepath.Join(cfg.DBFilePath, "moderators.db"))
 	if err != nil {
 		return nil, err
 	}
@@ -203,9 +205,9 @@ func GetModeratorsGroup() (groups []data.ModeratorsGroup, err error) {
 
 }
 
-func AddNewJubileeUser(newUser *tgbotapi.User, serial int, groupName string) error {
+func AddNewJubileeUser(newUser *tgbotapi.User, serial int, groupName string, cfg *config.Config) error {
 
-	db, err := sql.Open("sqlite3", "./tg-bot-users/internal/sqlitedb/newJubileeUsers.db")
+	db, err := sql.Open("sqlite3", filepath.Join(cfg.DBFilePath, "newJubileeUsers.db"))
 	if err != nil {
 		return err
 	}

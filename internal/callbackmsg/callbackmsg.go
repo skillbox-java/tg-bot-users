@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func WithCallBackDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *logging.Logger, modGroupId int64) {
+func WithCallBackDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *logging.Logger, modGroupId int64, cfg *config.Config) {
 
 	data := update.CallbackQuery.Data
 
@@ -45,7 +45,7 @@ func WithCallBackDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *loggin
 			logger.Info(err)
 		}
 
-		moderGroupList, err := functions.GetModeratorsGroup()
+		moderGroupList, err := functions.GetModeratorsGroup(cfg)
 		if err != nil {
 			logger.Error(err)
 		}

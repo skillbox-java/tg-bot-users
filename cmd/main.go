@@ -52,13 +52,13 @@ func main() {
 		if update.Message != nil {
 
 			// text messages operations
-			textmsg.WithTextQueryDo(update, bot, logger, modGroupId)
+			textmsg.WithTextQueryDo(update, bot, logger, modGroupId, cfg)
 
 			// social messages from bot in chat
 			socialmsg.WithSocialTextQueryDo(update, bot, logger)
 		} else if update.CallbackQuery != nil {
 
-			callbackmsg.WithCallBackDo(update, bot, logger, modGroupId)
+			callbackmsg.WithCallBackDo(update, bot, logger, modGroupId, cfg)
 
 		} else if update.Message.Command() != "" {
 
@@ -66,7 +66,7 @@ func main() {
 			comandmsg.CommandQueryDo(update, bot, logger)
 		} else if update.Message.NewChatMembers != nil {
 
-			chatmembers.WithChatMembersDo(update, bot, logger)
+			chatmembers.WithChatMembersDo(update, bot, logger, cfg)
 		}
 
 		// TODO inline help

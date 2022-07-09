@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func WithChatMembersDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *logging.Logger) {
+func WithChatMembersDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *logging.Logger, cfg *config.Config) {
 
 	newUser := update.Message.NewChatMembers[0]
 	chatId := update.Message.Chat.ID
@@ -25,12 +25,12 @@ func WithChatMembersDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *log
 
 		if count%500 == 0 || count%500 == 1 || count%500 == 2 {
 
-			err = functions.AddNewJubileeUser(&newUser, count, groupName)
+			err = functions.AddNewJubileeUser(&newUser, count, groupName, cfg)
 			if err != nil {
 				logger.Error(err)
 			}
 
-			moderGroupList, err := functions.GetModeratorsGroup()
+			moderGroupList, err := functions.GetModeratorsGroup(cfg)
 			if err != nil {
 				logger.Error(err)
 			}

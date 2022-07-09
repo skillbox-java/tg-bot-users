@@ -18,6 +18,7 @@ type Config struct {
 	AppConfig       AppConfig       `yaml:"app"`
 	ChatCountConfig ChatCountConfig `yaml:"chat_count_config"`
 	ModersGroupID   ModersGroupID   `yaml:"moderators"`
+	DBFilePath      string          `yaml:"db_file_path" env:"DB-FILE-PATH" env-required:"true"`
 }
 
 type AppConfig struct {

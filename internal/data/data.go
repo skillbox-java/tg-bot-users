@@ -1,12 +1,8 @@
 package data
 
-import "time"
-
-//type User struct {
-//	ID   int
-//	Name string
-//	Sex  string
-//}
+import (
+	"time"
+)
 
 type BadWords struct {
 	ID   int
