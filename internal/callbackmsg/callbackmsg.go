@@ -79,7 +79,7 @@ func WithCallBackDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *loggin
 	case "add_new_mod":
 
 		if update.CallbackQuery.Message.Chat.ID == modGroupId {
-			
+
 			newGroupName := textmsg.MesInfo.Message.Chat.Title
 			newGroupId := textmsg.MesInfo.Message.Chat.ID
 			logger.Info(newGroupName, newGroupId)
@@ -104,6 +104,13 @@ func WithCallBackDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *loggin
 		newGroupId := textmsg.MesInfo.Message.Chat.ID
 
 		if update.CallbackQuery.Message.Chat.ID == modGroupId {
+
+			text := fmt.Sprintf("Внимание! Вы подтверждаетете добавление группы: \n  %s  \nв список администраторов.", newGroupName)
+			msg := tgbotapi.NewEditMessageText(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.MessageID, text)
+			msgConf := tgbotapi.NewEditMessageReplyMarkup(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.MessageID,
+				tgbotapi.NewInlineKeyboardMarkup(tgbotapi.NewInlineKeyboardRow(menu.Button6)))
+			_, _ = bot.Send(msg)
+			_, _ = bot.Send(msgConf)
 
 			b, _, err := functions.AddModeratorsGroup(newGroupId)
 			if b && err != nil {

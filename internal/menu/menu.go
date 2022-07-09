@@ -23,3 +23,4 @@ var button3 = tgbotapi.NewInlineKeyboardButtonData("Добавить групп�
 
 var Button4 = tgbotapi.NewInlineKeyboardButtonData("Добавить группу", "add_new_mod")
 var Button5 = tgbotapi.NewInlineKeyboardButtonData("Да, я уверен!", "add_new_mod_true")
+var Button6 = tgbotapi.NewInlineKeyboardButtonData("Я справился!", "")
