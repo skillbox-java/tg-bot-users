@@ -1,6 +1,5 @@
 package org.codewithoutus.tgbotusers.model;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.NaturalId;

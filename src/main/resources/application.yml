@@ -14,14 +14,14 @@ logging:
         root: info
 
 telegram:
-#    multiplicity: 500
-#    incremental-saves: 2
+    multiplicity: 500
+    incremental-saves: 2
     long-polling-timeout: 1000
 
     bot-user-name: ${BOT_USER_NAME}
     bot-token: ${BOT_TOKEN}
 
-    groups:
-        - moderator-group: -644481529
-          user-groups:
-              - -606991893
+    moderator-chats:
+        - chat-id: -644481529
+          user-chats:
+              - chat-id: -606991893

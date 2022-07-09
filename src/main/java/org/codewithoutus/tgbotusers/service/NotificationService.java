@@ -47,7 +47,7 @@ public class NotificationService {
     
     // TODO organize mailing
     private void sendNotification(Map<String, ?> notification, JoinedUser joinedUser) {
-        groupConfig.getGroups();
+        groupConfig.getModeratorChats();
         
         var sendMessage = new SendMessage(
                 joinedUser.getChatId(),

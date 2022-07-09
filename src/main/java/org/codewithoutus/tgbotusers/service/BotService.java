@@ -22,7 +22,7 @@ public class BotService {
     
     
     public BackendResponse start() {
-        if (status.equals(BotStatus.START)) {
+        if (status != null && status.equals(BotStatus.START)) {
             return new BackendResponse(false, status);
         }
         

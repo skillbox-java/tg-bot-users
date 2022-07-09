@@ -1,10 +1,8 @@
 package org.codewithoutus.tgbotusers.config;
 
-import com.pengrad.telegrambot.TelegramBot;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Getter
@@ -18,6 +16,5 @@ public class AppConfig {
     private int incrementalSaves;
     private String botUserName;
     private String botToken;
-
     
 }
