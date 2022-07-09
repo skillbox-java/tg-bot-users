@@ -2,18 +2,15 @@
 
 
 telegram:
-  tg_token: 5442143387:AAFPH2yakYUcUjPI8lHjTRjLR7ejvgmo7QU
+  tg_token:
   tg_sert:
 
-youtube:
-  api_url: https://www.googleapis.com/youtube/v3
-  access_token: AIzaSyBhSDVnyrB3kmPlibtEKlxySjgwLUu851E
 
 app:
   log_level: trace
 
 moderators:
-  moderators_group: -1001797154869
+  moderators_group:
   moderators_group_golang:
   moderators_group_java:
   moderators_group_python:
