@@ -5,12 +5,15 @@ import lombok.Setter;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Table;
 
-@MappedSuperclass
+@Entity
+@Table(name = "_user")
 @Getter
 @Setter
 public class User {
@@ -20,7 +23,7 @@ public class User {
     private Integer id;
     
     @NaturalId
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     Long userId;
     
 }

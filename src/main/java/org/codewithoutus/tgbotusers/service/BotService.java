@@ -5,9 +5,9 @@ import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.request.GetUpdates;
 import lombok.RequiredArgsConstructor;
 import org.codewithoutus.tgbotusers.config.AppConfig;
-import org.codewithoutus.tgbotusers.config.GroupConfig;
 import org.codewithoutus.tgbotusers.dto.BackendResponse;
 import org.codewithoutus.tgbotusers.dto.enums.BotStatus;
+import org.codewithoutus.tgbotusers.handler.UpdateHandler;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,9 +15,8 @@ import org.springframework.stereotype.Service;
 public class BotService {
     
     private final AppConfig appConfig;
-    private final GroupConfig groupConfig;
     private final TelegramBot bot;
-    private final UpdateService updateService;
+    private final UpdateHandler updateHandler;
     private BotStatus status;
     
     
@@ -28,17 +27,23 @@ public class BotService {
         
         GetUpdates getUpdates = new GetUpdates().timeout(appConfig.getLongPollingTimeout());
         bot.setUpdatesListener(updates -> {
-                    updates.forEach(updateService::process);
+                    updates.forEach(updateHandler::handle);
                     return UpdatesListener.CONFIRMED_UPDATES_ALL;
                 },
                 getUpdates);
         status = BotStatus.START;
+        
         return new BackendResponse(true, status);
     }
     
     public BackendResponse stop() {
-        status = BotStatus.STOP;
+        if (status == null || status.equals(BotStatus.STOP)) {
+            return new BackendResponse(false, status);
+        }
+        
         bot.removeGetUpdatesListener();
+        status = BotStatus.STOP;
+        
         return new BackendResponse(true, status);
     }
     

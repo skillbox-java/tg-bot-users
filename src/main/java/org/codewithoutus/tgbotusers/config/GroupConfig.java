@@ -14,6 +14,15 @@ import java.util.List;
 @ConfigurationProperties(prefix = "telegram")
 public class  GroupConfig {
     
-    private List<ModeratorChat> moderatorChats;
+    private List<ModeratorChatProp> moderatorChats;
+    
+    
+    public record ModeratorChatProp(long id, List<UserChatProp> userChats) {
+    
+    }
+    
+    public record UserChatProp(long id) {
+    
+    }
 
 }

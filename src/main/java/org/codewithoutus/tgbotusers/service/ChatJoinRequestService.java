@@ -1,10 +1,7 @@
 package org.codewithoutus.tgbotusers.service;
 
-import com.pengrad.telegrambot.model.Update;
 import lombok.RequiredArgsConstructor;
-import org.codewithoutus.tgbotusers.handler.ChatJoinRequestHandler;
-import org.codewithoutus.tgbotusers.model.JoinedUser;
-import org.codewithoutus.tgbotusers.repository.JoinedUserRepository;
+import org.codewithoutus.tgbotusers.model.UserJoining;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -15,35 +12,29 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ChatJoinRequestService implements TelegramEntityService {
     
-    private final ChatJoinRequestHandler chatJoinRequestHandler;
-    private final JoinedUserService joinedUserService;
+    private final UserJoiningService userJoiningService;
     private final NotificationService notificationService;
     
-
-    @Override
-    public void process(Update update) {
-        Map<String, ?> userData = chatJoinRequestHandler.handle(update);
-        if (userData.isEmpty()) {
-            return;
-        }
-        
-        JoinedUser joinedUser = buildJoinedUser(userData);
-        joinedUserService.save(joinedUser);
     
-        notificationService.notifyModerators(joinedUser);
+    public void process(Map<String, ?> userData) {
+        UserJoining userJoining = buildUserJoining(userData);
+        
+        userJoiningService.save(userJoining);
+    
+        notificationService.notifyModerators(userJoining);
     }
     
-    private JoinedUser buildJoinedUser(Map<String, ?> userData) {
-        
-        JoinedUser joinedUser = new JoinedUser();
-        
-        joinedUser.setUserId((Long) userData.get("userId"));
-        joinedUser.setChatId((Long) userData.get("chatId"));
-        joinedUser.setNumber((Integer) userData.get("count"));
+    private UserJoining buildUserJoining(Map<String, ?> userData) {
+    
+        UserJoining userJoining = new UserJoining();
+    
+        userJoining.setUserId((Long) userData.get("userId"));
+        userJoining.setChatId((Long) userData.get("chatId"));
+        userJoining.setNumber((Integer) userData.get("count"));
         Instant time = Instant.ofEpochSecond((Long) userData.get("data"));
-        joinedUser.setJoinTime(LocalDateTime.from(time));
+        userJoining.setJoinTime(LocalDateTime.from(time));
         
-        return joinedUser;
+        return userJoining;
     }
     
     

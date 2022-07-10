@@ -21,7 +21,9 @@ telegram:
     bot-user-name: ${BOT_USER_NAME}
     bot-token: ${BOT_TOKEN}
 
-    moderator-chats:
-        - chat-id: -644481529
-          user-chats:
-              - chat-id: -606991893
+    groups:
+
+        moderator-chats:
+            -   chat-id: -1001710185537
+                user-chats:
+                    -   chat-id: -1001793694006

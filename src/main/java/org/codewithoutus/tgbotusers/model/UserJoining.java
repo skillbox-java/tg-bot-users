@@ -5,13 +5,22 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
-public class JoinedUser extends User {
+public class UserJoining {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    
+    @Column(nullable = false)
+    private Long userId;
     
     @Column(nullable = false)
     private Long chatId;
@@ -21,4 +30,5 @@ public class JoinedUser extends User {
     
     @Column(nullable = false)
     private LocalDateTime joinTime;
+
 }

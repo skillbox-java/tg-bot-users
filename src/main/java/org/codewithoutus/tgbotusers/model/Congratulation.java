@@ -9,9 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
 
 @Entity
 @Getter
@@ -23,7 +21,10 @@ public class Congratulation {
     private Integer id;
     
     @OneToOne(optional = false, orphanRemoval = true)
-    @JoinColumn(name = "joined_user_id", nullable = false, unique = true)
-    private JoinedUser joinedUser;
+    @JoinColumn(name = "user_joining_id", nullable = false)
+    private UserJoining userJoining;
+    
+    @Column(nullable = false)
+    private Integer number;
 
 }

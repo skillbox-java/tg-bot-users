@@ -5,9 +5,9 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.User;
 import lombok.RequiredArgsConstructor;
 import org.codewithoutus.tgbotusers.service.BotExecutorService;
+import org.codewithoutus.tgbotusers.service.ChatJoinRequestService;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.Map;
 
 @Component
@@ -17,33 +17,40 @@ public class ChatJoinRequestHandler implements Handler {
     private static final int INCREMENTAL_SAVES = 2; // TODO replace on config
     
     private final BotExecutorService botExecutorService;
+    private final ChatJoinRequestService chatJoinRequestService;
     
     @Override
-    public Map<String, ?> handle(Update update) {
+    public boolean handle(Update update) {
         
         ChatJoinRequest chatJoinRequest = update.chatJoinRequest();
         if (chatJoinRequest == null) {
-            return Collections.emptyMap();
+            return false;
         }
+        
+        // TODO проверить из чата модераторов
         
         long chatId = chatJoinRequest.chat().id();
         int count = botExecutorService.getCount(chatId);
         if (count % MULTIPLICITY > INCREMENTAL_SAVES) {
-            return Collections.emptyMap();
+            return false;
         }
     
         User user = chatJoinRequest.from();
         if (user.isBot()) {
-            return Collections.emptyMap();
+            return false;
         }
         
         int date = chatJoinRequest.date();
-        
-        return Map.of(
+    
+        Map<String, ?> userData = Map.of(
                 "userId", user.id(),
                 "chatId", chatId,
                 "count", count,
                 "date", date);
+        
+        chatJoinRequestService.process(userData);
+        
+        return true;
     }
     
 }
