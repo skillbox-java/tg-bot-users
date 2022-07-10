@@ -1,56 +1,38 @@
 from telebot.types import Message
 
-from config_data.config import USER_THRESHOLD
-from keyboards.inline.congratulate import congratulate_user
-
-from loader import bot
 from config_data.config import ADMINISTRATORS_GROUP_ID, USERS_GROUP
+from config_data.config import USER_THRESHOLD
+from database.save_user_info import insert_user_to_db, insert_counter_and_message_id, duplicate
+from keyboards.inline.congratulate import congratulate_user
+from loader import bot
 from utils.greetings import get_greeting_text
-from utils.user_data import UsersData
-
-COUNTER = 0
 
 
-@bot.message_handler(content_types=['text', ], func=lambda msg: msg.chat.id == ADMINISTRATORS_GROUP_ID[0])
-def f(message: Message):
-    # bot.send_message(message.chat.id, 'Группа админов')
-    bot.send_message(message.chat.id,
-                     f'id группы <code class="language-python">{message.chat.id}</code>')
-
-
-@bot.message_handler(content_types=["new_chat_members"], func=lambda msg: msg.chat.id == USERS_GROUP[0])
+@bot.message_handler(content_types=["new_chat_members"], is_users_group=USERS_GROUP)
 def new_member(message: Message):
-    # global COUNTER
-    # COUNTER += 2
-    UsersData.COUNTER += 4
+    members_count = bot.get_chat_members_count(message.chat.id)
 
-    if USER_THRESHOLD == UsersData.COUNTER:
-        save_user = UsersData.get_user(message=message)
-        text_to_send = get_greeting_text(counter=UsersData.COUNTER,
-                                         user=save_user
+    if (not message.from_user.is_bot
+            and not members_count % USER_THRESHOLD
+            and not duplicate(message.new_chat_members[0].id)
+    ):
+        user_obj = insert_user_to_db(message)
+        text_to_send = get_greeting_text(counter=members_count,
+                                         user=user_obj
                                          )
         msg = bot.send_message(chat_id=ADMINISTRATORS_GROUP_ID[0],
                                text=text_to_send,
-                               reply_markup=congratulate_user(save_user.user_id),
+                               reply_markup=congratulate_user(user_obj.user_id),
                                )
-        save_user.message_id = msg.message_id
-        save_user.user_number = UsersData.COUNTER
-
-        # UsersData.COUNTER = 0
-
-
-# def get_greeting_text(user: 'UsersData',
-#                       to_user: bool = False
-#                       ):
-#     intent = '\t' * 14
-#
-#     if not to_user:
-#         text = (f'🎉В группу <b>{user.group_name}</b>  вступил юбилейный пользователь:\n'
-#                 f'{intent}{user.user_name} - {user.user_mention}\n'
-#                 f'🔢 <b>{COUNTER}</b>, 🕐 <u>{user.current_time}</u>')
-#     else:
-#         text = (f'🎉 Поздравляю, {user.user_mention}, как же удачно вы попали в нужное время и в нужное место!\n'
-#                 f'Вы {user.user_number} участник комьюнити и Вас ждут плюшки и печенюшки!🎉')
-#     return text
+        insert_counter_and_message_id(instance=user_obj,
+                                      user_counter=members_count,
+                                      message_id=msg.message_id)
+    elif (not message.from_user.is_bot
+          and not (members_count - 1) % USER_THRESHOLD or not (members_count - 2) % USER_THRESHOLD
+          and not duplicate(message.new_chat_members[0].id)):
+        user_obj = insert_user_to_db(message)
+        insert_counter_and_message_id(instance=user_obj,
+                                      user_counter=members_count,
+                                      )
 
 
