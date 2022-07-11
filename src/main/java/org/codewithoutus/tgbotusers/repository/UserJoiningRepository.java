@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserJoiningRepository extends CrudRepository<UserJoining, Integer> {
-    
+
     UserJoining findByUserIdAndChatId(Long userId, Long chatId);
 }
-

@@ -13,7 +13,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "_user")
+@Table(name = "users")
 @Getter
 @Setter
 public class User {
@@ -25,5 +25,4 @@ public class User {
     @NaturalId
     @Column(nullable = false)
     Long userId;
-    
 }

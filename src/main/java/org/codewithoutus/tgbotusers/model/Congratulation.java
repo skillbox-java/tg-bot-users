@@ -26,5 +26,4 @@ public class Congratulation {
     
     @Column(nullable = false)
     private Integer number;
-
 }

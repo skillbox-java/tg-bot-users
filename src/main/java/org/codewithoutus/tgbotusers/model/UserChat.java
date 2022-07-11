@@ -29,14 +29,11 @@ public class UserChat {
     @ManyToMany(mappedBy = "userChats")
     private List<ModeratorChat> moderatorChats;
     
-    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        
         UserChat userChat = (UserChat) o;
-    
         return chatId.equals(userChat.chatId);
     }
     

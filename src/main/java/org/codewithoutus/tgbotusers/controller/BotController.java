@@ -1,33 +1,40 @@
 package org.codewithoutus.tgbotusers.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.codewithoutus.tgbotusers.dto.BackendResponse;
-import org.codewithoutus.tgbotusers.service.BotService;
+import org.codewithoutus.tgbotusers.bot.Bot;
+import org.codewithoutus.tgbotusers.bot.BotResponse;
+import org.codewithoutus.tgbotusers.bot.TelegramService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/backend")
+@RequestMapping("/admin")
 @RequiredArgsConstructor
 public class BotController {
 
-    private final BotService botService;
+    private final Bot bot;
+    private final TelegramService telegramService;
 
     @GetMapping("/start")
-    private BackendResponse startBotBackend() {
-        return botService.start();
+    private BotResponse startBotBackend() {
+        return new BotResponse(bot.start(), bot.getStatus());
     }
 
     @GetMapping("/stop")
-    private BackendResponse stopBotBackend() {
-        return botService.stop();
+    private BotResponse stopBotBackend() {
+        return new BotResponse(bot.stop(), bot.getStatus());
     }
 
-    @GetMapping("/sendMessage")
-    private String sendMessage(@RequestParam String message) {
-        botService.sendMessage(-644481529L, message);
-        return "Message send";
+    @GetMapping("/status")
+    private BotResponse getStatus() {
+        return new BotResponse(true, bot.getStatus());
+    }
+
+    @GetMapping("/sendMessage") // chatId = -644481529L
+    private BotResponse sendMessage(@RequestParam Long chatId, @RequestParam String message) {
+        telegramService.sendMessage(chatId, message);
+        return new BotResponse(true, bot.getStatus());
     }
 }

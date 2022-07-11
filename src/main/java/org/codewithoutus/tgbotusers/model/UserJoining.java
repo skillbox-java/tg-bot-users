@@ -37,5 +37,4 @@ public class UserJoining {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private CongratulateStatus status;
-
 }

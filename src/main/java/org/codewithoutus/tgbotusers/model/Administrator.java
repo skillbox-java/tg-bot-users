@@ -14,13 +14,12 @@ import javax.persistence.Id;
 @Getter
 @Setter
 public class Administrator {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    
+
     @NaturalId
     @Column(nullable = false)
     Long userId;
-    
 }

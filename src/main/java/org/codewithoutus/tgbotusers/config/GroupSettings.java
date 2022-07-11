@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.codewithoutus.tgbotusers.model.ModeratorGroup;
+import org.codewithoutus.tgbotusers.model.ModeratorChat;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +25,7 @@ public class GroupSettings {
     private Map<Long, List<Long>> moderatorGroupsData; // only used for loading from application-settings file
 
     @JsonIgnore
-    private List<ModeratorGroup> moderatorGroups; // real group-settings, mapped to DB Entities
+    private List<ModeratorChat> moderatorGroups; // real group-settings, mapped to DB Entities
 
     @PostConstruct
     private void synchronizeDataBaseSettings() {
