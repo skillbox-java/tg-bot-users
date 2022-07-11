@@ -1,5 +1,8 @@
 from loader import bot
 from database.commands import insert
+import datetime
+from database.commands import winner_check
+
 
 
 @bot.message_handler(content_types=['new_chat_members'])
@@ -10,17 +13,29 @@ def handler_new_member(message):
     count = bot.get_chat_members_count(message.chat.id)
     user_number = message.from_user.id
     chat_name = message.chat.title
-    dtime_connetion = message.date
+    # dtime_connetion = message.date
+    dtime_connetion = datetime.datetime.now()
+
+    #
+    # if not winner_check(user_number):
+    #     bot.send_message(message.chat.id, f'Нет в is_winner {winner_check(user_number)}')
+    # else:
+    #     bot.send_message(message.chat.id, f'Уже побеждал {winner_check(user_number)}')
 
 
 
-    if not message.from_user.is_bot: # тут будут еще проверки count % 500 == 0 и проверка есть ли id нового
-                                    #пользователя в списке. Нужно создать функцию проверки в базе.
+    if not message.from_user.is_bot and not winner_check(user_number): # тут будут еще проверки count % 500 == 0 и проверка есть ли id нового
+                                    # пользователя в списке. Нужно создать функцию проверки в базе.
                                     # Если она вернет None, тогда проверка пройдена
 
-        bot.send_message(message.chat.id, 'Тестируем {0} {1} {2} {3} {4} {5} '. #это для проверки реакции бота на добавление
-                         format(nickname, user_name, chat_id, count, user_number, chat_name))
-        insert(nickname, user_name, chat_name, user_number, dtime_connetion)
+        bot.send_message(message.chat.id, 'Не бот и отсутствует в списке победителей')
+        insert(
+            nickname=message.from_user.username, user_name=message.from_user.first_name,
+            user_number=message.from_user.id, dtime=datetime.datetime.now(),
+            chat_id=message.chat.id, is_winer=message.from_user.id
+        )
+    else:
+        bot.send_message(message.chat.id, f'Есть в списке победителей{winner_check(user_number)}')
 
 
 

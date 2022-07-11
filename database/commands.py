@@ -4,22 +4,24 @@ import os
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 DB = os.path.join(ROOT_DIR, 'nvn.db')
 
-def insert(nickname: str, user_name: str, chat_name: str, user_number: int, dtime:str) -> None:
+def insert(nickname: str, user_name: str, user_number: int, dtime:str, chat_id: int, is_winer: int) -> None:
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
         cursor.execute("""
-        INSERT INTO 'users' (nickname, user_name, chat_name, user_number, dtime_connetion) VALUES (?, ?, ?, ?,?);
-        """, (nickname, user_name, chat_name, user_number, dtime))
+        INSERT INTO 'users' (nickname, user_name, user_number, dtime_connetion, chat_id, is_winer) VALUES (?, ?, ?, ?, ?,?);
+        """, (nickname, user_name, user_number, dtime, chat_id, is_winer))
 
-def insert_lite(nickname: str, user_name: str, chat_name: str) -> None:
-    with sqlite3.connect((DB)) as conn:
-        cursor = conn.cursor()
-        cursor.execute(""" INSERT INTO 'users' (nickname, user_name, chat_name) 
-        VALUES (nickname, user_name, chat_name) """)
 
 def select():
     with sqlite3.connect(( DB )) as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM 'users'")
+        result = cursor.fetchall()
+        return result
+
+def winner_check(id):
+    with sqlite3.connect(( DB )) as conn:
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT is_winer FROM users WHERE is_winer={id}")
         result = cursor.fetchall()
         return result
