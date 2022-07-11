@@ -1,20 +1,18 @@
 package org.codewithoutus.tgbotusers.config;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import com.pengrad.telegrambot.TelegramBot;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Getter
-@Setter
 @Configuration
-@ConfigurationProperties(prefix = "telegram")
+@RequiredArgsConstructor
 public class AppConfig {
-    
-    private int longPollingTimeout;
-    private int multiplicity;
-    private int incrementalSaves;
-    private String botUserName;
-    private String botToken;
-    
+
+    private final BotSettings botSettings;
+
+    @Bean
+    public TelegramBot telegramBot() {
+        return new TelegramBot(botSettings.getBotToken());
+    }
 }
