@@ -2,6 +2,7 @@ package org.codewithoutus.tgbotusers.config;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
@@ -9,11 +10,12 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
+@ToString
 @Getter
 @Setter
 @Component
 @Configuration
-@ConfigurationProperties(prefix = "bot-setting.groups-settings")
+@ConfigurationProperties(prefix = "groups-settings")
 public class GroupConfig {
 
     public List<Long> anniversaryNumbers;

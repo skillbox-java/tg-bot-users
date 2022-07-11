@@ -3,6 +3,7 @@ package org.codewithoutus.tgbotusers.config;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.codewithoutus.tgbotusers.model.Group;
 import org.codewithoutus.tgbotusers.model.User;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -12,11 +13,12 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
+@ToString
 @Getter
 @Setter
 @Component
 @Configuration
-@ConfigurationProperties(prefix = "bot-setting.message-templates")
+@ConfigurationProperties(prefix = "message-templates")
 public class NotificationConfig {
 
 /*Default properties (specified by setting SpringApplication.setDefaultProperties).
@@ -35,9 +37,9 @@ public class NotificationConfig {
 // final String format = "%-40s %s%n";
 
 
-    private String JOIN_CONGRATULATION;
-    private String JOIN_ALERT;
-    private String JOIN_USER_INFO;
+    private String join_congratulation;
+    private String join_alert;
+    private String join_user_info;
 
 //    public List<Integer> anniversaryNumbers;
 //    public String userName;
