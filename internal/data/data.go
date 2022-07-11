@@ -21,4 +21,5 @@ type JubileeUser struct {
 	UserNick  string
 	Time      time.Time
 	GroupName string
+	GroupID   int64
 }

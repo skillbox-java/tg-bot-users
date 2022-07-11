@@ -103,31 +103,31 @@ func main() {
 
 		if update.Message != nil {
 
-			// text messages operations
-			textmsg.WithTextQueryDo(update, bot, logger, modGroupId, cfg)
+			if update.Message.Text != "" {
+				// text messages operations
+				textmsg.WithTextQueryDo(update, bot, logger, modGroupId, cfg)
 
-			// social messages from bot in chat
-			socialmsg.WithSocialTextQueryDo(update, bot, logger)
+				// social messages from bot in chat
+				socialmsg.WithSocialTextQueryDo(update, bot, logger)
+			} else if update.Message.Command() != "" {
+
+				//com menu (only moderator's chats)
+				comandmsg.CommandQueryDo(update, bot, logger)
+			} else if update.Message.NewChatMembers != nil {
+
+				chatmembers.WithChatMembersDo(update, bot, logger, cfg)
+			}
+
 		} else if update.CallbackQuery != nil {
-
 			callbackmsg.WithCallBackDo(update, bot, logger, modGroupId, cfg)
-
-		} else if update.Message.Command() != "" {
-
-			//com menu (only moderator's chats)
-			comandmsg.CommandQueryDo(update, bot, logger)
-		} else if update.Message.NewChatMembers != nil {
-
-			chatmembers.WithChatMembersDo(update, bot, logger, cfg)
-		}
-
-		// TODO inline help
-		if update.InlineQuery != nil {
+			// TODO inline help
+		} else if update.InlineQuery != nil {
 			log.Println("response from Inline query")
 			query := update.InlineQuery.Query
 
 			log.Println(query)
 
 		}
+
 	}
 }

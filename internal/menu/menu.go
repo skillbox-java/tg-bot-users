@@ -5,22 +5,27 @@ import (
 )
 
 const ComMenu = "     Список доступных вам команд:  🛠  \n \n" +
-	"✅ `addmoderatorgroup` + номер _(добавление группы модераторов)._\n" +
-	"✅ `moder` _(отправляет запрос из группы на добавление в список групп модераторов)._\n" +
-	"✅ `chatinfo` _(информация о имени и ID группы будет отправлено в админку," +
-	" сообщение будет удалено из группы пользователей, если бот админ)_\n" +
-	"✅ *Мат + слово* _(Слово будет добавлено в базу)._\n"
+	"✅ `addmoderatorgroup` + номер _(добавление группы модераторов)._\n\n" +
+	"✅ `moder` _(отправляет запрос из группы где есть бот, на добавление этой группы в список групп модераторов)._\n\n" +
+	"✅ `chatinfo` _(отправляет информацию в админку о имени и ID группы, откуда отправляется команда" +
+	" сообщение будет удалено из группы отправителя, если бот админ)_\n\n" +
+	"✅ *Мат + слово* _(Слово будет добавлено в базу)._"
 
 var NumericKeyboard = tgbotapi.NewInlineKeyboardMarkup(
 	tgbotapi.NewInlineKeyboardRow(button1),
 	tgbotapi.NewInlineKeyboardRow(button2),
-	tgbotapi.NewInlineKeyboardRow(button3),
+	tgbotapi.NewInlineKeyboardRow(button8),
 )
 
 var button1 = tgbotapi.NewInlineKeyboardButtonData("Список команд", "com_list")
 var button2 = tgbotapi.NewInlineKeyboardButtonData("Список юбилейный", "jubilee_list")
+var button8 = tgbotapi.NewInlineKeyboardButtonData("Весь список новых пользователей ", "all_jubilee_list")
 var button3 = tgbotapi.NewInlineKeyboardButtonData("Добавить группу администраторов", "add_mod")
 
 var Button4 = tgbotapi.NewInlineKeyboardButtonData("Добавить группу", "add_new_mod")
 var Button5 = tgbotapi.NewInlineKeyboardButtonData("Да, я уверен!", "add_new_mod_true")
-var Button6 = tgbotapi.NewInlineKeyboardButtonData("Я справился!", "")
+
+var NewUserCongratulation = tgbotapi.NewInlineKeyboardMarkup(
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData("Поздравить", "new_user"),
+	))

@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"skbot/internal/config"
 	"skbot/internal/data"
+	"skbot/pkg/logging"
 	"strings"
 )
 
@@ -24,7 +25,7 @@ var (
 
 	addNewUsersDB = "CREATE TABLE IF NOT EXISTS newJubileeUsers (id INTEGER PRIMARY KEY, serial INTEGER NOT NULL, " +
 		"user_id INTEGER NOT NULL, user_name VARCHAR (30) NOT NULL, user_nick VARCHAR (50) DEFAULT ('нет ника'), " +
-		"time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, group_name VARCHAR (50) NOT NULL)"
+		"time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, group_name VARCHAR (50) NOT NULL, group_id INTEGER NOT NULL)"
 )
 
 func TrimSymbolsFromSlice(s []string) (words []string, err error) {
@@ -205,7 +206,7 @@ func GetModeratorsGroup(cfg *config.Config) (groups []data.ModeratorsGroup, err 
 
 }
 
-func AddNewJubileeUser(newUser *tgbotapi.User, serial int, groupName string, cfg *config.Config) error {
+func AddNewJubileeUser(newUser *tgbotapi.User, serial int, update tgbotapi.Update, logger *logging.Logger, cfg *config.Config) error {
 
 	db, err := sql.Open("sqlite3", filepath.Join(cfg.DBFilePath, "newJubileeUsers.db"))
 	if err != nil {
@@ -218,10 +219,14 @@ func AddNewJubileeUser(newUser *tgbotapi.User, serial int, groupName string, cfg
 	if err != nil {
 		return err
 	}
-	_, _ = stat.Exec()
+	_, err = stat.Exec()
+	if err != nil {
+		logger.Error(err)
+	}
 
 	stat, err = db.Prepare(fmt.Sprintf("INSERT INTO newJubileeUsers (serial, user_id, user_name, user_nick, "+
-		"group_name) VALUES ('%d', '%d', '%s', '%s', '%s')", serial, newUser.ID, newUser.FirstName, newUser.UserName, groupName))
+		"group_name, group_id) VALUES ('%d', '%d', '%s', '%s', '%s', '%d')", serial, newUser.ID, newUser.FirstName,
+		newUser.UserName, update.Message.Chat.Title, update.Message.Chat.ID))
 	if err != nil {
 		log.Println(err)
 	}
@@ -233,12 +238,12 @@ func AddNewJubileeUser(newUser *tgbotapi.User, serial int, groupName string, cfg
 	return nil
 }
 
-func GetJubileeUsers() (jubUsers []data.JubileeUser, err error) {
+func GetJubileeUsers(cfg *config.Config) (jubUsers []data.JubileeUser, err error) {
 
 	var user data.JubileeUser
 	var users []data.JubileeUser
 
-	db, err := sql.Open("sqlite3", "./tg-bot-users/internal/sqlitedb/newJubileeUsers.db")
+	db, err := sql.Open("sqlite3", filepath.Join(cfg.DBFilePath, "newJubileeUsers.db"))
 	if err != nil {
 		return nil, err
 	}
@@ -250,12 +255,13 @@ func GetJubileeUsers() (jubUsers []data.JubileeUser, err error) {
 	}
 
 	for rows.Next() {
-		err = rows.Scan(&user.ID, &user.Serial, &user.UserID, &user.UserName, &user.UserNick, &user.Time, &user.GroupName)
+		err = rows.Scan(&user.ID, &user.Serial, &user.UserID, &user.UserName, &user.UserNick,
+			&user.Time, &user.GroupName, &user.GroupID)
 		users = append(users, user)
 	}
 
 	for _, v := range users {
-		if v.Serial%500 == 0 || v.Serial%500 == 1 || v.Serial%500 == 2 {
+		if v.Serial%500 == 0 || v.Serial%500 == 1 || v.Serial%500 == 2 || v.Serial%3 == 0 {
 			jubUsers = append(jubUsers, v)
 		}
 	}
@@ -263,3 +269,30 @@ func GetJubileeUsers() (jubUsers []data.JubileeUser, err error) {
 	return jubUsers, nil
 
 }
+
+func GetAllJubileeUsers(cfg *config.Config) (jubUsers []data.JubileeUser, err error) {
+
+	var user data.JubileeUser
+	var users []data.JubileeUser
+
+	db, err := sql.Open("sqlite3", filepath.Join(cfg.DBFilePath, "newJubileeUsers.db"))
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+
+	rows, err := db.Query("SELECT * FROM newJubileeUsers")
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		err = rows.Scan(&user.ID, &user.Serial, &user.UserID, &user.UserName, &user.UserNick,
+			&user.Time, &user.GroupName, &user.GroupID)
+		users = append(users, user)
+	}
+
+	return users, nil
+
+}
+

@@ -15,13 +15,6 @@ import (
 
 var MesInfo tgbotapi.Update
 
-//type Inst struct {
-//	logger *logging.Logger
-//	badWord *data.BadWord
-//	jubUser *data.JubUsers
-//	moderGroup *data.ModeratorsGroup
-//}
-
 func WithTextQueryDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *logging.Logger, modGroupId int64, cfg *config.Config) {
 
 	// trim symbols
@@ -31,62 +24,6 @@ func WithTextQueryDo(update tgbotapi.Update, bot *tgbotapi.BotAPI, logger *loggi
 		if err != nil {
 			logger.Info("error trim symbols from message")
 		}
-
-		//  menu
-		//if strings.Contains(strings.ToLower(command[0]), "меню") {
-		//
-		//	chatMsgDel := update.Message.MessageID
-		//
-		//	moderGroupList, err := functions.GetModeratorsGroup()
-		//	if err != nil {
-		//		logger.Error(err)
-		//	}
-		//
-		//	for _, group := range moderGroupList {
-		//
-		//		if group.GroupID == update.Message.Chat.ID {
-		//
-		//			del, _ := bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, menu.ComMenu))
-		//
-		//			go func() {
-		//				time.Sleep(20 * time.Second)
-		//				_, _ = bot.Send(tgbotapi.NewDeleteMessage(update.Message.Chat.ID, del.MessageID))
-		//				_, _ = bot.Send(tgbotapi.NewDeleteMessage(update.Message.Chat.ID, chatMsgDel))
-		//			}()
-		//		}
-		//	}
-		//}
-
-		// check jubilee users !
-		//if strings.Contains(strings.ToLower(command[0]), "списокюбилейный") {
-		//
-		//	users, err := functions.GetJubileeUsers()
-		//	chatId := update.Message.Chat.ID
-		//	if err != nil {
-		//		logger.Info(err)
-		//	}
-		//
-		//	moderGroupList, err := functions.GetModeratorsGroup()
-		//	if err != nil {
-		//		logger.Error(err)
-		//	}
-		//
-		//	for _, group := range moderGroupList {
-		//
-		//		if group.GroupID == chatId {
-		//
-		//			for _, user := range users {
-		//
-		//				text := fmt.Sprintf("Группа: %s\nИмя: %s\nНик: @%s\nНомер вступления: %d\n"+
-		//					"Время вступления: %s ", user.GroupName, user.UserName, user.UserNick,
-		//					user.Serial, user.Time.Format(config.StructDateTimeFormat))
-		//
-		//				_, _ = bot.Send(tgbotapi.NewMessage(chatId, text))
-		//
-		//			}
-		//		}
-		//	}
-		//}
 
 		// add moderator group
 		if strings.Contains(strings.ToLower(command[0]), "addmoderatorgroup") {
