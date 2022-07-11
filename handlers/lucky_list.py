@@ -2,20 +2,20 @@ from telebot.types import Message
 from loader import bot
 import database.commands as usersbase
 import emoji
+import datetime
+# usersbase.MODERATOR_ID = 1
 
-
-winners = usersbase.select2()
-
+winners = usersbase.select_lucky()
 @bot.message_handler(commands=['luckylist'])
 def bot_lucky_list(message: Message):
+    usersbase.MODERATOR_ID = message.chat.id
+    # winners = usersbase.select_lucky()
+    print(winners)
     for winner in winners:
-        bot.send_message(chat_id=message.chat.id, text=emoji.emojize(f'\U0001F389 {winner[0]} \U0001F464{winner[1]} ({winner[2]}),'
-                        f' \n \U0001F522{winner[3]} \U0001F550	{winner[4]}'))
+        dtime = datetime.datetime.strptime(winner[4], '%Y-%m-%d %H:%M:%S.%f').strftime('%d.%m.%y %H:%M')
 
-    # здесь прописываем выгрузку инфо из базы данных и ее вывод.
-    # По ТЗ вывод формата:
-    # {НазваниеГруппы} {ИмяУчастника} ({НикУчастника}),
-    # {порядковыйНомерВступления} {ВремяВступления}
-    # “Java разработчик” Василий(ника нет),
-    # 500 26.06.22 10: 56
-    pass
+        bot.send_message(chat_id=message.chat.id, text=emoji.emojize(f'\U0001F389  "{winner[0]}"  \U0001F464  {winner[1]}  (@{winner[2]}),'
+                                                                     f'\n\U0001F522  {winner[3]}  \U0001F550 	{dtime}'))
+    print(usersbase.MODERATOR_ID, 'luck')
+
+
