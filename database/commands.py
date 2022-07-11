@@ -34,8 +34,7 @@ def select_lucky():
         print(MODERATOR_ID, 'select1')
         cursor.execute(f"""SELECT group_name, user_name, nickname, user_number, dtime_connetion
                            FROM 'users' JOIN 'user_groups'
-                           ON  chat_id = group_id
-                           WHERE moderator_id = {MODERATOR_ID};""")
+                           ON chat_id = group_id AND moderator_id = abs({MODERATOR_ID});""")
         print(MODERATOR_ID, 'select2')
     result = cursor.fetchall()
     print(result)
