@@ -7,21 +7,25 @@ spring:
             maximum-pool-size: 2
     jpa:
         hibernate:
-            ddl-auto: update
+            ddl-auto: none
+    profiles:
+        include:
+            - main
+            - bot
 
 logging:
     level:
         root: info
 
-telegram:
+#telegram:
 #    multiplicity: 500
 #    incremental-saves: 2
-    long-polling-timeout: 1000
-
-    bot-user-name: ${BOT_USER_NAME}
-    bot-token: ${BOT_TOKEN}
-
-    groups:
-        - moderator-group: -644481529
-          user-groups:
-              - -606991893
+#    long-polling-timeout: 1000
+#
+#    bot-user-name: ${BOT_USER_NAME}
+#    bot-token: ${BOT_TOKEN}
+#
+#    groups:
+#        - moderator-group: -644481529
+#          user-groups:
+#              - -606991893

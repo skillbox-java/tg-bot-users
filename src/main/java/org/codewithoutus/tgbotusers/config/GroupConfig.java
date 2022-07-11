@@ -14,7 +14,7 @@ import java.util.Map;
 @Getter
 @Setter
 @Component
-@Configuration
+//@Configuration
 @ConfigurationProperties(prefix = "groups-settings")
 public class GroupConfig {
 
@@ -23,11 +23,11 @@ public class GroupConfig {
     private Map<Long,List<Long>> userGroups;
 
 
-    private List<ModeratorGroup> groups;    // 24-28 строки были тут
-    public record ModeratorGroup(int id, List<UserGroup> userGroups) {
-    }
-    public record UserGroup(int id) {
-    }
+//    private List<ModeratorGroup> groups;    // 24-28 строки были тут
+//    public record ModeratorGroup(int id, List<UserGroup> userGroups) {
+//    }
+//    public record UserGroup(int id) {
+//    }
 
 
 }

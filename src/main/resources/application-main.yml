@@ -1,17 +1,17 @@
-spring:
-    datasource:
-        url: ${DATASOURCE_URL}
-        username: ${DATASOURCE_USER}
-        password: ${DATASOURCE_PASS}
-        hikari:
-            maximum-pool-size: 2
-    jpa:
-        hibernate:
-            ddl-auto: update
+#spring:
+#    datasource:
+#        url: ${DATASOURCE_URL}
+#        username: ${DATASOURCE_USER}
+#        password: ${DATASOURCE_PASS}
+#        hikari:
+#            maximum-pool-size: 2
+#    jpa:
+#        hibernate:
+#            ddl-auto: update
 
-logging:
-    level:
-        root: info
+#logging:
+#    level:
+#        root: info
 
 bot-settings:
     bot-user-name: ${BOT_USER_NAME}

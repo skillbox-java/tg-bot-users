@@ -21,6 +21,6 @@ public class BotConfig {
 
     public int longPollingTimeout;
     public String botToken;
-    public String botName;
+    public String botUserName;
 
 }

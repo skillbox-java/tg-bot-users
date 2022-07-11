@@ -37,9 +37,9 @@ public class NotificationConfig {
 // final String format = "%-40s %s%n";
 
 
-    private String join_congratulation;
-    private String join_alert;
-    private String join_user_info;
+    private String joinCongratulation;
+    private String joinAlert;
+    private String joinUserInfo;
 
 //    public List<Integer> anniversaryNumbers;
 //    public String userName;
