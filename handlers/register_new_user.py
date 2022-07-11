@@ -1,5 +1,5 @@
 from loader import bot
-from database.commands import insert
+from database.commands import insert, insert2
 import datetime
 from database.commands import winner_check
 from telebot import types
@@ -38,10 +38,10 @@ def callback(call):
     if call.message:
         if call.data == 'grac':
             bot.send_message(call.message.chat.id, 'Поздравили и добавили в базу')
-            insert(
-                nickname=call.from_user.username, user_name=call.from_user.first_name,
-                user_number=call.from_user.id, dtime=datetime.datetime.now(),
-                chat_id=call.chat.id, is_winer=call.from_user.id
+            insert2(
+                nickname=call.message.from_user.username, user_name=call.message.from_user.first_name,
+                user_number=call.message.from_user.id, dtime=datetime.datetime.now(),
+                chat_id=call.chat.id, is_winer=call.message.from_user.id
             )
         else:
             bot.send_message(call.message.chat.id, 'Ничего не делали, так как не победитель')
