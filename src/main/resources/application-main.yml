@@ -14,7 +14,8 @@ logging:
         root: info
 
 bot-settings:
-    bot-user-name: ${BOT_USER_NAME}
-    bot-token: ${BOT_TOKEN}
-    long-polling-timeout: 1000
+    bot-setting:
+        bot-user-name: ${BOT_USER_NAME}
+        bot-token: ${BOT_TOKEN}
+        long-polling-timeout: 1000
 

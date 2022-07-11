@@ -7,19 +7,26 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
 @Component
 @Configuration
-@ConfigurationProperties(prefix = "telegram.groups")
+@ConfigurationProperties(prefix = "bot-setting.groups-settings")
 public class GroupConfig {
-    private List<ModeratorGroup> groups;
-    
-    
+
+    public List<Long> anniversaryNumbers;
+    private Map<Long,List<Long>> moderatorGroups;
+    private Map<Long,List<Long>> userGroups;
+
+
+    private List<ModeratorGroup> groups;    // 24-28 строки были тут
     public record ModeratorGroup(int id, List<UserGroup> userGroups) {
     }
-    
     public record UserGroup(int id) {
     }
+
+
 }
+

@@ -14,10 +14,11 @@ import java.util.Map;
 @Setter
 @Component
 @Configuration
-@ConfigurationProperties(prefix = "bot-setting")
+@ConfigurationProperties(prefix = "bot-setting.bot-setting")
 public class BotConfig {
 
-    public Map<Group,Group> listModerGroups;
-    public Map<User,Group> listUserGroups;
+    public int longPollingTimeout;
+    public String botToken;
+    public String botName;
 
 }

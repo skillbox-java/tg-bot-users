@@ -35,17 +35,15 @@ public class NotificationConfig {
 // final String format = "%-40s %s%n";
 
 
-    private  String JOIN_CONGRATULATION="\uD83C\uDF89Поздравляю,%s, как же удачно попали в нужное время и в нужное время!%nВы %d участник коммьюнити.%nВас ждут плюшки и печенюшки!\uD83C\uDF89";
+    private String JOIN_CONGRATULATION;
+    private String JOIN_ALERT;
+    private String JOIN_USER_INFO;
 
-    private final String JOIN_ALERT="join-congratulation";
-    private final String JOIN_USER_INFO="join-congratulation";
+//    public List<Integer> anniversaryNumbers;
+//    public String userName;
+//
+//    public String PATCH_IMG;//"\uD83C\uDF89";//🎉
 
-    public Map<Group,Group> listModerGroups;
-    public Map<User,Group> listUserGroups;
-    public List<Integer> anniversaryNumbers;
-    public String userName;
-
-    public String pic= " ";//"\uD83C\uDF89";//🎉
 
 
 }
