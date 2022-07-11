@@ -1,5 +1,5 @@
 from . import default_heandlers
-from . import Test_config
+from . import register_new_user
 from . import lucky_list
 from . import admin
 
