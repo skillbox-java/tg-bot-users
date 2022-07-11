@@ -3,9 +3,11 @@ from loader import bot
 import database.commands as usersbase
 import emoji
 
+
 winners = usersbase.select()
 colomns =['Название группы', 'Имя участника', 'Ник участника', 'Порядковый номер вступления', 'Время вступления']
 # print(emoji.emojize('Python is :thumbs_up:'))
+
 
 
 
