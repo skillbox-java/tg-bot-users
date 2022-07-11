@@ -2,9 +2,12 @@ package org.codewithoutus.tgbotusers.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.codewithoutus.tgbotusers.model.enums.CongratulateStatus;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -30,5 +33,9 @@ public class UserJoining {
     
     @Column(nullable = false)
     private LocalDateTime joinTime;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private CongratulateStatus status;
 
 }

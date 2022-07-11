@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @Configuration
 @ConfigurationProperties(prefix = "telegram")
-public class  GroupConfig {
+public class ChatConfig {
     
     private List<ModeratorChatProp> moderatorChats;
     

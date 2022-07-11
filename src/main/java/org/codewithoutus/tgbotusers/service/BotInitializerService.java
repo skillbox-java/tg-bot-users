@@ -5,14 +5,14 @@ import com.pengrad.telegrambot.model.ChatAdministratorRights;
 import com.pengrad.telegrambot.request.GetMyDefaultAdministratorRights;
 import com.pengrad.telegrambot.request.SetMyDefaultAdministratorRights;
 import lombok.RequiredArgsConstructor;
-import org.codewithoutus.tgbotusers.config.GroupConfig;
+import org.codewithoutus.tgbotusers.config.ChatConfig;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class BotInitializerService {
     
-    private final GroupConfig groupConfig;
+    private final ChatConfig chatConfig;
     private final TelegramBot bot;
     
     

@@ -2,6 +2,7 @@ package org.codewithoutus.tgbotusers.service;
 
 import lombok.RequiredArgsConstructor;
 import org.codewithoutus.tgbotusers.model.UserJoining;
+import org.codewithoutus.tgbotusers.model.enums.CongratulateStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -10,7 +11,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class ChatJoinRequestService implements TelegramEntityService {
+public class ChatJoinRequestService {
     
     private final UserJoiningService userJoiningService;
     private final NotificationService notificationService;
@@ -33,6 +34,7 @@ public class ChatJoinRequestService implements TelegramEntityService {
         userJoining.setNumber((Integer) userData.get("count"));
         Instant time = Instant.ofEpochSecond((Long) userData.get("data"));
         userJoining.setJoinTime(LocalDateTime.from(time));
+        userJoining.setStatus(CongratulateStatus.WAIT);
         
         return userJoining;
     }

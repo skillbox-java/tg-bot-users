@@ -11,8 +11,11 @@ public class UserJoiningService {
     
     private final UserJoiningRepository userJoiningRepository;
     
-    public void save(UserJoining userJoining) {
-        userJoiningRepository.save(userJoining);
+    public UserJoining save(UserJoining userJoining) {
+        return userJoiningRepository.save(userJoining);
     }
     
+    public UserJoining findByUserIdAndChatId(Long userId, Long chatId) {
+        return userJoiningRepository.findByUserIdAndChatId(userId, chatId);
+    }
 }

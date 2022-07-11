@@ -32,4 +32,19 @@ public class ModeratorChat {
             joinColumns = @JoinColumn(name = "moderator_chat_id"),
             inverseJoinColumns = @JoinColumn(name = "user_chat_id"))
     private List<UserChat> userChats;
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        
+        ModeratorChat that = (ModeratorChat) o;
+    
+        return chatId.equals(that.chatId);
+    }
+    
+    @Override
+    public int hashCode() {
+        return chatId.hashCode();
+    }
 }

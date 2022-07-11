@@ -7,9 +7,8 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class MessageService implements TelegramEntityService {
+public class MessageService {
     
-    @Override
     public void process(Map<String, ?> messageData) {
     
         // TODO implement logic
