@@ -26,6 +26,9 @@ public class UserChat {
     @Column(nullable = false, unique = true)
     private Long chatId;
     
+    @Column(nullable = false, unique = true)
+    private String name;
+    
     @ManyToMany(mappedBy = "userChats")
     private List<ModeratorChat> moderatorChats;
     

@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserChatRepository extends CrudRepository<UserChat, Integer> {
+    
+    UserChat findByName(String name);
 }

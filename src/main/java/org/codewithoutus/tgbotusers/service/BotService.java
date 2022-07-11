@@ -19,7 +19,6 @@ public class BotService {
     private final UpdateHandler updateHandler;
     private BotStatus status;
     
-    
     public BackendResponse start() {
         if (status != null && status.equals(BotStatus.START)) {
             return new BackendResponse(false, status);
