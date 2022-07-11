@@ -14,4 +14,3 @@ def bot_lucky_list(message: Message):
 
         bot.send_message(chat_id=message.chat.id, text=f'\U0001F389  "{winner[0]}"  \U0001F464  {winner[1]}  '
                                                        f'(@{winner[2]})\n\U0001F522  {winner[3]}  \U0001F550 	{dtime}')
-    print(usersbase.MODERATOR_ID, 'luck')

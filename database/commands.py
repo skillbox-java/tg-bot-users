@@ -15,7 +15,11 @@ def insert(nickname: str, user_name: str, chat_name: str, user_number: int, dtim
         """, (nickname, user_name, chat_name, user_number, dtime))
 
 
-def insert2(nickname: str, user_name: str, chat_id: str, user_number: int, dtime:datetime) -> None:
+def insert2(nickname: str,
+            user_name: str,
+            chat_id: int,
+            user_number: int,
+            dtime: datetime = datetime.datetime.now().isoformat()) -> None:
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
         cursor.execute("""
@@ -23,7 +27,7 @@ def insert2(nickname: str, user_name: str, chat_id: str, user_number: int, dtime
         """, (nickname, user_name, chat_id, user_number, dtime))
 
 
-def select():
+def select_lucky():
     with sqlite3.connect(( DB )) as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM 'users'")
