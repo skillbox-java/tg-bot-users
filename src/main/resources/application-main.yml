@@ -1,0 +1,20 @@
+spring:
+    datasource:
+        url: ${DATASOURCE_URL}
+        username: ${DATASOURCE_USER}
+        password: ${DATASOURCE_PASS}
+        hikari:
+            maximum-pool-size: 2
+    jpa:
+        hibernate:
+            ddl-auto: update
+
+logging:
+    level:
+        root: info
+
+bot-settings:
+    bot-user-name: ${BOT_USER_NAME}
+    bot-token: ${BOT_TOKEN}
+    long-polling-timeout: 1000
+
