@@ -5,7 +5,8 @@ from peewee import (SqliteDatabase,
                     CharField,
                     IntegerField,
                     DateTimeField,
-                    ForeignKeyField
+                    ForeignKeyField,
+                    BooleanField
                     )
 
 from config_data.config import BASE_DIR
@@ -31,6 +32,7 @@ class UserCounter(BaseModel):
     owner = ForeignKeyField(User)
     user_counter = IntegerField()
     message_id = IntegerField(null=True)
+    deleted = BooleanField(default=False)
 
 
 # db.create_tables([User, UserCounter])
