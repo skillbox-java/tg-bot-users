@@ -1,31 +1,22 @@
 spring:
     datasource:
-        url: jdbc:postgresql://localhost:5432/tg-bot-users
-        username: postgres
-        password: testtest
+        url: ${DATASOURCE_URL}
+        username: ${DATASOURCE_USER}
+        password: ${DATASOURCE_PASS}
         hikari:
             maximum-pool-size: 2
     jpa:
         hibernate:
-            ddl-auto: none
+            ddl-auto: validate
     profiles:
         include:
-            - main
             - bot
 
 logging:
     level:
         root: info
 
-#telegram:
-#    multiplicity: 500
-#    incremental-saves: 2
-#    long-polling-timeout: 1000
-#
-#    bot-user-name: ${BOT_USER_NAME}
-#    bot-token: ${BOT_TOKEN}
-#
-#    groups:
-#        - moderator-group: -644481529
-#          user-groups:
-#              - -606991893
+bot-settings:
+    bot-user-name: ${BOT_USER_NAME}
+    bot-token: ${BOT_TOKEN}
+    long-polling-timeout: 1000
