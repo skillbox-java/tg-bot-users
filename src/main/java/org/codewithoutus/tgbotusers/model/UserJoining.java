@@ -3,6 +3,7 @@ package org.codewithoutus.tgbotusers.model;
 import lombok.Getter;
 import lombok.Setter;
 import org.codewithoutus.tgbotusers.model.enums.CongratulateStatus;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-public class UserJoining {
+public class UserJoining implements Comparable<UserJoining> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,4 +38,9 @@ public class UserJoining {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private CongratulateStatus status;
+
+    @Override
+    public int compareTo(UserJoining o) {
+        return o == null ? 1 : number.compareTo(o.getNumber());
+    }
 }
