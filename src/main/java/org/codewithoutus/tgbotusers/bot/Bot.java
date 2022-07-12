@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.GetUpdates;
+import org.codewithoutus.tgbotusers.bot.enums.BotStatus;
 import org.codewithoutus.tgbotusers.handler.Handler;
 
 import java.util.List;

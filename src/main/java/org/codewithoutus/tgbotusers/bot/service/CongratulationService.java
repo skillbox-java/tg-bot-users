@@ -1,19 +1,17 @@
-package org.codewithoutus.tgbotusers.service;
+package org.codewithoutus.tgbotusers.bot.service;
 
-import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.request.GetChatMember;
 import lombok.RequiredArgsConstructor;
 import org.codewithoutus.tgbotusers.model.UserJoining;
 import org.codewithoutus.tgbotusers.model.enums.CongratulateStatus;
+import org.codewithoutus.tgbotusers.service.UserJoiningService;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CallbackQueryService {
-    
-    private final TelegramBot bot;
-    private final NotificationService notificationService;
+public class CongratulationService {
+
     private final UserJoiningService userJoiningService;
     
 //    public void process(UserJoining userJoining, CongratulateStatus settableStatus) {

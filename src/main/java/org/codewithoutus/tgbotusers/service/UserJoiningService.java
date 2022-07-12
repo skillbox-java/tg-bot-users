@@ -2,6 +2,7 @@ package org.codewithoutus.tgbotusers.service;
 
 import lombok.RequiredArgsConstructor;
 import org.codewithoutus.tgbotusers.model.UserJoining;
+import org.codewithoutus.tgbotusers.model.enums.CongratulateStatus;
 import org.codewithoutus.tgbotusers.repository.UserJoiningRepository;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,11 @@ import java.util.List;
 public class UserJoiningService {
     
     private final UserJoiningRepository userJoiningRepository;
-    
+
+//    public void setCongratulateStatus(UserJoining userJoining, CongratulateStatus settableStatus) {
+//        userJoining
+//    }
+
     public UserJoining save(UserJoining userJoining) {
         return userJoiningRepository.save(userJoining);
     }

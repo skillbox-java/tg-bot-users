@@ -1,15 +1,15 @@
-package org.codewithoutus.tgbotusers.service.enums;
+package org.codewithoutus.tgbotusers.bot.enums;
 
 import lombok.Getter;
 
 @Getter
-public enum BotCommand {
+public enum BotCommands {
     
     LUCKY_LIST("/luckyList");
     
     private final String command;
     
-    BotCommand(String command) {
+    BotCommands(String command) {
         this.command = command;
     }
 }

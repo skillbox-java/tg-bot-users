@@ -1,15 +1,9 @@
-package org.codewithoutus.tgbotusers.service;
+package org.codewithoutus.tgbotusers.bot.service;
 
-import com.pengrad.telegrambot.model.MessageEntity;
 import lombok.RequiredArgsConstructor;
-import org.codewithoutus.tgbotusers.model.UserChat;
-import org.codewithoutus.tgbotusers.model.UserJoining;
-import org.codewithoutus.tgbotusers.service.enums.BotCommand;
+import org.codewithoutus.tgbotusers.service.UserChatService;
+import org.codewithoutus.tgbotusers.service.UserJoiningService;
 import org.springframework.stereotype.Service;
-
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor

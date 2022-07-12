@@ -1,7 +1,10 @@
-package org.codewithoutus.tgbotusers.service;
+package org.codewithoutus.tgbotusers.bot.service;
 
+import com.google.gson.JsonObject;
 import com.pengrad.telegrambot.TelegramBot;
 import lombok.RequiredArgsConstructor;
+import org.codewithoutus.tgbotusers.model.UserJoining;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -111,7 +114,7 @@ public class NotificationService {
 //        return jsonObject;
 //    }
 //
-//    public void removeKeyboardFromNotification() {
-//        // TODO implement
-//    }
+////    public void removeKeyboardFromNotification() {
+////        // TODO implement
+////    }
 }

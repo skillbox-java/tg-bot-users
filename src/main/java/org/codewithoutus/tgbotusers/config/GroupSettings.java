@@ -31,5 +31,6 @@ public class GroupSettings {
 
     @PostConstruct
     private void synchronizeDataBaseSettings() {
+
     }
 }

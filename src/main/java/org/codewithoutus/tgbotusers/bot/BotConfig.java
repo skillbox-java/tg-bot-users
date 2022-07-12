@@ -22,7 +22,6 @@ public class BotConfig {
     private final ChatJoinRequestHandler chatJoinRequestHandler;
     private final PrivateMessageHandler privateMessageHandler;
 
-
     @PostConstruct
     private void botStart() {
         List<Handler> updateHandlers = List.of(

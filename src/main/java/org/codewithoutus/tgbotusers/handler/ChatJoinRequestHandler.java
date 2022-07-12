@@ -4,7 +4,7 @@ import com.pengrad.telegrambot.model.ChatJoinRequest;
 import com.pengrad.telegrambot.model.Update;
 import lombok.RequiredArgsConstructor;
 import org.codewithoutus.tgbotusers.bot.TelegramService;
-import org.codewithoutus.tgbotusers.service.ChatJoinRequestService;
+import org.codewithoutus.tgbotusers.bot.service.ChatJoinRequestService;
 import org.springframework.stereotype.Component;
 
 @Component
