@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.Update;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.codewithoutus.tgbotusers.bot.TelegramService;
+import org.codewithoutus.tgbotusers.bot.UpdateService;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -14,10 +15,10 @@ import java.util.Map;
 public class CallbackQueryHandler implements Handler {
 
     private final TelegramService telegramService;
-
+    private final UpdateService updateService;
     @Override
     public boolean handle(Update update) {
-        Map<String, String> callbackQueryData = telegramService.getCallbackData(update);
+        Map<String, String> callbackQueryData = updateService.getCallbackData(update);
         if (callbackQueryData == null) {
             return false;
         }

@@ -1,6 +1,6 @@
 groups-settings:
     rewrite-database-settings-on-startup: false
-    moderator-groups:
+    moderator-groups-data:
         11111:
             - 222
             - 333

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ChatJoinRequestHandler implements Handler {
 
-    private final TelegramService botExecutorService;
+    private final TelegramService telegramService;
     private final ChatJoinRequestService chatJoinRequestService;
     
     @Override
@@ -24,7 +24,7 @@ public class ChatJoinRequestHandler implements Handler {
 //        // TODO проверить из чата модераторов
 //
 //        long chatId = chatJoinRequest.chat().id();
-//        int count = botExecutorService.getCount(chatId);
+//        int count = telegramService.getCount(chatId);
 //        if (count % MULTIPLICITY > INCREMENTAL_SAVES) {
 //            return false;
 //        }

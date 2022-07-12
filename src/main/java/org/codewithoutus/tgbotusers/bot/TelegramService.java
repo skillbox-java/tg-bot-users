@@ -3,7 +3,6 @@ package org.codewithoutus.tgbotusers.bot;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.User;
@@ -22,11 +21,10 @@ import java.util.Optional;
 @Slf4j
 public class TelegramService {
 
-    private final TelegramBot bot;
-    private final ObjectMapper objectMapper;
+    private final Bot bot;
 
-    public void sendMessage(Long chatId, String message) {
-        bot.execute(new SendMessage(chatId, message));
+    public void sendMessage(Long chatId, String text) {
+        bot.execute(new SendMessage(chatId, text));
     }
 
     public int getChatMembersCount(long chatId) {
@@ -39,22 +37,5 @@ public class TelegramService {
         var getChatMember = new GetChatMember(chatId, userId);
         var getChatMemberResponse = bot.execute(getChatMember);
         return getChatMemberResponse.chatMember().user();
-    }
-
-    public Map<String, String> getCallbackData(Update update) {
-        return Optional
-                .ofNullable(update.callbackQuery())
-                .map(CallbackQuery::data)
-                .filter(data -> !data.isBlank())
-                .map(data -> {
-                    try {
-                        return objectMapper.readValue(data, new TypeReference<Map<String, String>>() {
-                        });
-                    } catch (JsonProcessingException e) {
-                        log.error("CallbackQuery json parsing from update {}", this);
-                        return null;
-                    }
-                })
-                .orElse(null);
     }
 }

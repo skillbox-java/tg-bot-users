@@ -1,17 +1,22 @@
 spring:
-#    datasource:
-#        url: jdbc:postgresql://localhost:5432/tg-bot-users
-#        username: tg-admin
-#        password: 9en2w0oc
+    #    datasource:
+    #        url: ${DATASOURCE_URL}
+    #        username: ${DATASOURCE_USER}
+    #        password: ${DATASOURCE_PASS}
     datasource:
-        url: ${DATASOURCE_URL}
-        username: ${DATASOURCE_USER}
-        password: ${DATASOURCE_PASS}
+        driver-class-name: org.postgresql.Driver
+        url: jdbc:postgresql://localhost:5432/tg-bot-users
+        username: tg-admin
+        password: 9en2w0oc
         hikari:
             maximum-pool-size: 2
+
     jpa:
+        database-platform: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: true
         hibernate:
             ddl-auto: none
+
     profiles:
         include:
             - bot
