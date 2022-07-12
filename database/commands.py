@@ -4,7 +4,7 @@ import datetime
 
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-DB = os.path.join(ROOT_DIR, 'nvn v2.db')
+DB = os.path.join(ROOT_DIR, 'database.db')
 
 
 def insert(nickname: str, user_name: str, chat_name: str, user_number: int, dtime=datetime.datetime.now().isoformat()) -> None:
