@@ -40,8 +40,8 @@ def callback(call):
             bot.send_message(call.message.chat.id, 'Поздравили и добавили в базу')
             insert2(
                 nickname=call.message.from_user.username, user_name=call.message.from_user.first_name,
-                user_number=call.message.from_user.id, dtime=datetime.datetime.now(),
-                chat_id=call.chat.id, is_winer=call.message.from_user.id
+                user_id=call.message.from_user.id, dtime=datetime.datetime.now(),
+                chat_id=call.message.chat.id, is_winner=1
             )
         else:
             bot.send_message(call.message.chat.id, 'Ничего не делали, так как не победитель')
