@@ -4,12 +4,14 @@ import lombok.Getter;
 
 @Getter
 public enum BotCommands {
-    
-    LUCKY_LIST("/luckyList");
-    
-    private final String command;
-    
-    BotCommands(String command) {
-        this.command = command;
+
+    LUCKY_LIST("/luckyList"),
+    CONGRATULATE("/congratulate"),
+    DECLINE("/decline");
+
+    private final String text;
+
+    BotCommands(String text) {
+        this.text = text;
     }
 }

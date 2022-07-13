@@ -1,6 +1,6 @@
-groups-settings:
+chats-settings:
     rewrite-database-settings-on-startup: false
-    moderator-groups-data:
+    chats-settings-data:
         11111:
             - 222
             - 333
@@ -9,6 +9,7 @@ groups-settings:
             - 444
             - 555
             - 666
+    anniversary-numbers-delta: 3
     anniversary-numbers:
         - 100
         - 500
