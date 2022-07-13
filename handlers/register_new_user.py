@@ -33,7 +33,7 @@ def handler_new_member(message):
     else:
         bot.send_message(message.chat.id, f'Есть в списке победителей{winner_check(user_number)}')
 
-@bot.callback_query_handler(func=lambda call: True)
+@bot.callback_query_handler(func=lambda call: call.data == "grac" or call.data == "decline")
 def callback(call):
     if call.message:
         if call.data == 'grac':
