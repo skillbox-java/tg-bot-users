@@ -109,3 +109,22 @@ def get_moderator_id() -> List[int]:
         for moderator_id in moderator_id_list:
             result.append(moderator_id[0])
         return result
+
+def select_id_from_users(user_id) -> None:
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT id FROM 'users' WHERE user_id={user_id}")
+        record_id = cursor.fetchall()
+        return record_id[0][0]
+
+
+
+def temp_save(
+            chat_id: int,
+            record_id: int,
+            message_id: int) -> None:
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+        INSERT INTO 'temp_storage' (chat_id, record_id, bot_message_id) VALUES (?, ?, ?);
+        """, (chat_id, record_id, message_id))
