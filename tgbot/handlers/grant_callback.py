@@ -1,6 +1,7 @@
 from contextlib import suppress
 
 from aiogram import Dispatcher, types
+from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.handler import CancelHandler
 from aiogram.types import ChatType
 from aiogram.utils.exceptions import MessageCantBeEdited, MessageToEditNotFound, MessageNotModified
@@ -66,5 +67,4 @@ async def grant_user(call: types.CallbackQuery):
 
 def register_grant(dp: Dispatcher):
     chat_types = [ChatType.GROUP, ChatType.SUPERGROUP, ChatType.CHANNEL]
-    dp.register_callback_query_handler(grant_user, lambda call: call.data and call.data.split('|')[0] == "grant",
-                                       chat_type=chat_types)
+    dp.register_callback_query_handler(grant_user, Text(startswith='grant'), chat_type=chat_types)
