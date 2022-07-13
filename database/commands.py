@@ -1,6 +1,7 @@
 import sqlite3
 import os
 import datetime
+from typing import List
 
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -49,17 +50,43 @@ def winner_check(id):
         return result
 
 
-def insert_to_groups(group_id: int, moderator_id: int) -> None:
+def insert_to_groups(moderator_id: int, group_id: int) -> None:
+    """
+    Функция, которая записывает id группы модераторов и групп пользователей в таблицу groups_relation (по связи многие
+    ко многим; одной записи соответствует одна пара).
+    :param moderator_id: id группы модераторов
+    :param group_id: id группы пользователей
+    :return: None
+    """
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
-        cursor.execute("""
-        INSERT INTO 'user_groups' (group_id, moderator_id) VALUES (?, ?);
-        """, (group_id, moderator_id))
+        cursor.execute(
+            """INSERT INTO 'groups_relation' (moderator_id, group_id) 
+            VALUES (?, ?);""",
+            (moderator_id, group_id)
+        )
 
 
-def select_from_groups():
+def select_from_groups() -> List[tuple]:
+    """
+    Генератор, который из таблицы groups_relation возвращает данные о записях id групп модераторов и пользователей,
+    сгруппированные по id групп модераторов.
+    :return List[tuple]: id групп модераторов и пользователей
+    """
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM 'user_groups'")
-        result = cursor.fetchall()
-        return result
+        cursor.execute("SELECT DISTINCT moderator_id "
+                       "FROM 'groups_relation'")
+        moderator_id_list = cursor.fetchall()
+        for moderator_id in moderator_id_list:
+            cursor.execute(f"SELECT moderator_id, group_id "
+                           f"FROM 'groups_relation'"
+                           f"WHERE moderator_id={moderator_id[0]}")
+            result = cursor.fetchall()
+            yield result
+
+
+# def truncate_groups() -> None:
+#     with sqlite3.connect((DB)) as conn:
+#         cursor = conn.cursor()
+#         cursor.execute("TRUNCATE 'groups_relation'")
