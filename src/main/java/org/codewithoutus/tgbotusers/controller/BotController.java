@@ -1,33 +1,43 @@
 package org.codewithoutus.tgbotusers.controller;
 
+import com.pengrad.telegrambot.request.SendMessage;
 import lombok.RequiredArgsConstructor;
-import org.codewithoutus.tgbotusers.dto.BackendResponse;
-import org.codewithoutus.tgbotusers.service.BotService;
+import org.codewithoutus.tgbotusers.bot.service.BotService;
+import org.codewithoutus.tgbotusers.bot.service.TelegramService;
+import org.codewithoutus.tgbotusers.config.ChatSettings;
+import org.codewithoutus.tgbotusers.controller.dto.BotResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/backend")
+@RequestMapping("/admin")
 @RequiredArgsConstructor
 public class BotController {
 
+    private final ChatSettings chatSettings;
     private final BotService botService;
+    private final TelegramService telegramService;
 
     @GetMapping("/start")
-    private BackendResponse startBotBackend() {
-        return botService.start();
+    private BotResponse startBotBackend() {
+        return new BotResponse(botService.start(), botService.getStatus());
     }
 
     @GetMapping("/stop")
-    private BackendResponse stopBotBackend() {
-        return botService.stop();
+    private BotResponse stopBotBackend() {
+        return new BotResponse(botService.stop(), botService.getStatus());
+    }
+
+    @GetMapping("/status")
+    private BotResponse getStatus() {
+        return new BotResponse(true, botService.getStatus());
     }
 
     @GetMapping("/sendMessage")
-    private String sendMessage(@RequestParam String message) {
-        botService.sendMessage(-644481529L, message);
-        return "Message send";
+    private BotResponse sendMessage(@RequestParam Long chatId, @RequestParam String message) {
+        telegramService.sendMessage(new SendMessage(chatId, message));
+        return new BotResponse(true, botService.getStatus());
     }
 }
