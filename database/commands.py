@@ -86,7 +86,26 @@ def select_from_groups() -> List[tuple]:
             yield result
 
 
-# def truncate_groups() -> None:
-#     with sqlite3.connect((DB)) as conn:
-#         cursor = conn.cursor()
-#         cursor.execute("TRUNCATE 'groups_relation'")
+def delete_from_groups() -> None:
+    """
+    Функция, которая полностью очищает таблицу groups_relation.
+    :return: None
+    """
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM 'groups_relation'")
+
+
+def get_moderator_id() -> List[int]:
+    """
+    Функция, которая возвращает список id групп модераторов из таблицы groups_relation.
+    :return List[int]: список id групп модераторов
+    """
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT moderator_id FROM 'groups_relation'")
+        moderator_id_list = cursor.fetchall()
+        result = []
+        for moderator_id in moderator_id_list:
+            result.append(moderator_id[0])
+        return result
