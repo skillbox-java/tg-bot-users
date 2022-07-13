@@ -8,6 +8,6 @@ def yes_no_keyboard() -> InlineKeyboardMarkup:
     """
 
     keyboard = InlineKeyboardMarkup()
-    keyboard.add(InlineKeyboardButton(text="да", callback_data="yes_admin"),
-                 InlineKeyboardButton(text="нет", callback_data="no_admin"))
+    keyboard.add(InlineKeyboardButton(text="да", callback_data="yes_admin_add"),
+                 InlineKeyboardButton(text="нет", callback_data="no_admin_add"))
     return keyboard
