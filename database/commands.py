@@ -45,7 +45,7 @@ def select_lucky(moderator_id):
 def winner_check(id):
     with sqlite3.connect(( DB )) as conn:
         cursor = conn.cursor()
-        cursor.execute(f"SELECT is_winner FROM users WHERE is_winner={id}")
+        cursor.execute(f"SELECT * FROM users WHERE user_id={id} AND is_winner=1")
         result = cursor.fetchall()
         return result
 
