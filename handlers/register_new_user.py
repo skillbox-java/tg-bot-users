@@ -1,7 +1,7 @@
 from loader import bot
 from database.commands import insert, insert2
 import datetime
-from database.commands import winner_check, select_id_from_users, temp_save
+from database.commands import winner_check, select_id_from_users, temp_save, buttons_remover
 from telebot import types
 
 
@@ -15,7 +15,7 @@ def handler_new_member(message):
     markup.add(congratulations, shame)
 
     if not message.from_user.is_bot and not winner_check(user_number): # тут будет еще проверка count % 500 == 0
-        record_id = select_id_from_users(message.from_user.id)
+        # record_id = select_id_from_users(message.from_user.id)
 
         insert2(
             nickname=message.from_user.username, user_name=message.from_user.first_name,
@@ -23,7 +23,7 @@ def handler_new_member(message):
             chat_id=message.chat.id, is_winner=0)
 
 
-        bot.send_message(message.chat.id, f'Не бот и отсутствует в списке победителей. Что с ним делать?{record_id}',
+        bot.send_message(message.chat.id, f'Не бот и отсутствует в списке победителей. Что с ним делать?{select_id_from_users(message.from_user.id)}',
                          reply_markup=markup)
 
         temp_save(chat_id=message.chat.id,
@@ -40,7 +40,7 @@ def callback(call):
         if call.data == 'grac':
 
             bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
-            bot.send_message(call.message.chat.id, f'Поздравили и добавили в базу. Тест по message id {message_id}')
+            bot.send_message(call.message.chat.id, f'Поздравили и добавили в базу. Тест по message id {buttons_remover()}')
 
         else:
             bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)

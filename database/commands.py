@@ -130,3 +130,14 @@ def temp_save(
         INSERT INTO 'temp_storage' (chat_id, record_id, bot_message_id) VALUES (?, ?, ?);
         """, (chat_id, record_id, bot_message_id))
 
+
+
+def buttons_remover():
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT bot_message_id FROM 'temp_storage'")
+        result = cursor.fetchall()
+        delete_list = []
+        for i in result:
+            delete_list.extend(i)
+        return delete_list
