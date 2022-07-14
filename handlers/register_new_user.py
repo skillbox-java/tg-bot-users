@@ -1,7 +1,7 @@
 from loader import bot
 from database.commands import insert, insert2
 import datetime
-from database.commands import winner_check, select_id_from_users, temp_save, buttons_remover
+from database.commands import winner_check, select_id_from_users, temp_save, buttons_remover, storage_cleaner
 from telebot import types
 
 
@@ -17,6 +17,7 @@ def handler_new_member(message):
     if not message.from_user.is_bot and not winner_check(user_number): # тут будет еще проверка count % 500 == 0
         # record_id = select_id_from_users(message.from_user.id)
 
+
         insert2(
             nickname=message.from_user.username, user_name=message.from_user.first_name,
             user_id=message.from_user.id, dtime=datetime.datetime.now(),
@@ -30,6 +31,8 @@ def handler_new_member(message):
                   record_id=select_id_from_users(user_id=message.from_user.id),
                   bot_message_id=message.id
                   )
+
+        storage_cleaner(chat_id=message.chat.id)
 
     else:
         bot.send_message(message.chat.id, f'Есть в списке победителей{winner_check(user_number)}')

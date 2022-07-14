@@ -143,3 +143,14 @@ def buttons_remover(
         for i in result:
             delete_list.extend(i)
         return delete_list
+
+
+def storage_cleaner(
+        chat_id: int,
+        ) -> None:
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        cursor.execute(f'''DELETE FROM 'temp_storage' WHERE chat_id={chat_id};''')
+
+
+
