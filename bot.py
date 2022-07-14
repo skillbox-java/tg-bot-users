@@ -8,9 +8,18 @@ from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.types import AllowedUpdates
 
 from filters.moder_group import IsModerGroup
+from handlers.add_groups_callback import register_add_groups
 from handlers.check import register_check_queue
+from handlers.configure_groups import register_configure_groups
+from handlers.delete_from_groups import register_delete_from_groups
+from handlers.delete_groups_callback import register_delete_groups_cb
 from handlers.get_granted import register_get_granted
+from handlers.get_mod_group import register_get_mod_group
+from handlers.get_users_groups import register_get_users_group
+from handlers.reset_menu import register_reset_menu
 from handlers.restore import register_restore
+from handlers.show_groups_callback import register_show_groups
+from misc.set_commands import set_default_commands
 from tgbot.handlers.grant_cancel_callback import register_cancel_grant
 from tgbot.handlers.grant_callback import register_grant
 from tgbot.filters.granted import IsNotGranted
@@ -51,6 +60,14 @@ def register_all_handlers(dp):
     register_check_queue(dp)
     register_restore(dp)
     register_get_granted(dp)
+    register_configure_groups(dp)
+    register_show_groups(dp)
+    register_add_groups(dp)
+    register_get_mod_group(dp)
+    register_get_users_group(dp)
+    register_reset_menu(dp)
+    register_delete_groups_cb(dp)
+    register_delete_from_groups(dp)
 
 
 
@@ -70,6 +87,7 @@ async def main():
     register_all_middlewares(dp)
     register_all_filters(dp)
     register_all_handlers(dp)
+    await set_default_commands(dp)
     await create_tables()
 
     # start

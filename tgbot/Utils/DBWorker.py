@@ -2,24 +2,26 @@ import os
 import aiosqlite
 
 
-async def db_execute(string, values=None, multiple=False, get=False) -> bool:
+async def db_execute(string, values=None, multiple=False, get=False, get_delete_info=False) -> bool:
     """Функция для выполнения SQL запросов"""
     db_name = os.getenv('DB_NAME')
     async with aiosqlite.connect(db_name) as db:
         if multiple:
-            await db.executemany(string, values)
-            await db.commit()
+            async with db.executemany(string, values) as cursor:
+                await db.commit()
+                return cursor.rowcount
         elif values:
-            await db.execute(string, values)
-            await db.commit()
+            async with db.execute(string, values) as cursor:
+                await db.commit()
+                return cursor.rowcount
         else:
             if get:
                 async with db.execute(string) as cursor:
                     return await cursor.fetchall()
             else:
-                await db.execute(string)
-                await db.commit()
-                return True
+                async with db.execute(string) as cursor:
+                    await db.commit()
+                    return cursor.rowcount
 
 
 async def create_tables() -> None:
@@ -42,7 +44,7 @@ async def create_tables() -> None:
 
     string = """CREATE TABLE IF NOT EXISTS groups(
                    id INTEGER PRIMARY KEY autoincrement,
-                   mod_group_id INTEGER,
+                   mod_group_id INTEGER UNIQUE,
                    user_group_ids TEXT);
                 """
     await db_execute(string)
@@ -62,6 +64,13 @@ async def create_tables() -> None:
                     """
     await db_execute(string)
 
+    string = """CREATE TABLE IF NOT EXISTS grant_numbers(
+                           id INTEGER PRIMARY KEY autoincrement,
+                           group_id INTEGER UNIQUE,
+                           numbers TEXT);
+                        """
+    await db_execute(string)
+
 
 async def get_users_groups(group_id):
     return await db_execute(string=f'SELECT user_group_ids FROM groups WHERE mod_group_id={group_id}',
@@ -73,11 +82,19 @@ async def get_moder_groups(group_id):
                             get=True)
 
 
+async def set_group_ids_grant_numbers(values):
+    return await db_execute(string=
+                            f"INSERT OR IGNORE INTO grant_numbers(group_id) VALUES(?);", values=values, multiple=True)
+
+
+async def delete_data_from_groups(ids):
+    return await db_execute(string=f'DELETE FROM groups WHERE id=?', values=ids, multiple=True)
+
+
 async def set_data_queue(values):
     return await db_execute(string=
                             f"INSERT INTO queue(message_id, group_id_users, name_group, group_id_mod, user_id, user, count, datetime_update, UUID, username) "
-                            f"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
-                            values=values)
+                            f"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", values=values)
 
 
 async def update_data_queue(message_id, old_message_id, group_id):
@@ -91,6 +108,7 @@ async def set_data_granted(values):
                             f"INSERT INTO granted(group_id_users, name_group, user_id, user, group_id_mod, moder_id, count, datetime_update, datetime_granted, username) "
                             f"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
                             values=values, multiple=True)
+
 
 async def get_data_granted(group_id_moder):
     return await db_execute(string=f'SELECT * FROM granted WHERE group_id_mod={group_id_moder} ORDER BY group_id_users',
@@ -129,6 +147,28 @@ async def count_from_queue(group_id):
     return await db_execute(
         string=f"SELECT count FROM queue WHERE group_id_users={group_id} ORDER BY datetime_update limit 1",
         get=True)
+
+
+async def get_groups():
+    return await db_execute(string='SELECT * FROM groups', get=True)
+
+
+async def get_user_ids_from_groups(mod_group_id):
+    return await db_execute(string=f'SELECT user_group_ids FROM groups WHERE mod_group_id={mod_group_id}', get=True)
+
+
+async def set_data_groups(values):
+    return await db_execute(string=f'INSERT OR REPLACE INTO groups(mod_group_id, user_group_ids)'
+                                   f' VALUES(?, ?);', values=values)
+
+
+async def check_grant_numbers(group_id):
+    return await db_execute(
+        string=f"SELECT COUNT(*) FROM grant_numbers WHERE group_id LIKE '%{group_id}%'", get=True)
+
+
+async def check_data_from_grant_numbers(group_id):
+    return await db_execute(string=f'SELECT COUNT(*) FROM grant_numbers WHERE group_id={group_id} LIMIT 1', get=True)
 
 
 async def vacuum():

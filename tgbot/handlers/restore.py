@@ -25,6 +25,8 @@ async def restore(message: types.Message, ids: List[tuple[str]]):
                                                              reply_markup=await get_gran_kb(uid=message_in_queue[9]))
                 await update_data_queue(message_id=new_message.message_id, old_message_id=message_in_queue[1],
                                         group_id=message_in_queue[2])
+        else:
+            await message.answer('Нет сообщений для восстановления')
 
 
 def register_restore(dp: Dispatcher):
