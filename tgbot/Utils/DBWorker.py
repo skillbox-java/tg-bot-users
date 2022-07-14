@@ -2,7 +2,7 @@ import os
 import aiosqlite
 
 
-async def db_execute(string, values=None, multiple=False, get=False, get_delete_info=False) -> bool:
+async def db_execute(string, values=None, multiple=False, get=False) -> bool:
     """Функция для выполнения SQL запросов"""
     db_name = os.getenv('DB_NAME')
     async with aiosqlite.connect(db_name) as db:
@@ -167,8 +167,8 @@ async def check_grant_numbers(group_id):
         string=f"SELECT COUNT(*) FROM grant_numbers WHERE group_id LIKE '%{group_id}%'", get=True)
 
 
-async def check_data_from_grant_numbers(group_id):
-    return await db_execute(string=f'SELECT COUNT(*) FROM grant_numbers WHERE group_id={group_id} LIMIT 1', get=True)
+async def get_data_from_grant_numbers(group_id):
+    return await db_execute(string=f'SELECT numbers FROM grant_numbers WHERE group_id={group_id}', get=True)
 
 
 async def vacuum():

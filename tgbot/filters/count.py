@@ -2,7 +2,8 @@ from aiogram import types
 from aiogram.dispatcher.filters import BoundFilter
 from aiogram.dispatcher.handler import CancelHandler
 
-from tgbot.Utils.DBWorker import get_count_queue, check_data_from_grant_numbers
+from Utils.get_numbers import get_grant_numbers
+from tgbot.Utils.DBWorker import get_count_queue
 
 
 class IsGrantCount(BoundFilter):
@@ -18,7 +19,7 @@ class IsGrantCount(BoundFilter):
             raise CancelHandler()
         count = await update.chat.get_member_count()
         count_to_delete = await get_count_queue(update.chat.id)
-        saved_grant_numbers = await check_data_from_grant_numbers(update.chat.id)
-        if count_to_delete[0][0] < 3 or saved_grant_numbers[0][0] or not count % config_count:
+        saved_grant_numbers = await get_grant_numbers(update.chat.id)
+        if 0 < count_to_delete[0][0] < 3 or (count in saved_grant_numbers) or not count % config_count:
             return {"count": count}
         return False
