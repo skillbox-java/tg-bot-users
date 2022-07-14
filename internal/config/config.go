@@ -11,14 +11,12 @@ type Config struct {
 		Token string `yaml:"tg_token" env:"TG-BOT-TOKEN" env-required:"true"`
 		Sert  string `yaml:"tg_sert"`
 	}
-	YouTube struct {
-		APIURL      string `yaml:"api_url"`
-		AccessToken string `yaml:"access_token"`
-	}
 	AppConfig       AppConfig       `yaml:"app"`
 	ChatCountConfig ChatCountConfig `yaml:"chat_count_config"`
 	ModersGroupID   ModersGroupID   `yaml:"moderators"`
+	MsgText         MsgText         `yaml:"msg_text"`
 	DBFilePath      string          `yaml:"db_file_path" env:"DB-FILE-PATH" env-required:"true"`
+	Multiplicity    int             `yaml:"multiplicity" env:"multiplicity" env-required:"true"`
 }
 
 type AppConfig struct {
@@ -31,12 +29,17 @@ type ChatCountConfig struct {
 }
 
 type ModersGroupID struct {
-	ModeratorsGroup       int64 `yaml:"moderators_group" env:"moderators_group" env-required:"true"`
-	ModeratorsGroupGolang int64 `yaml:"moderators_group_golang" env:"moderators_group_golang"`
-	ModeratorsGroupJava   int64 `yaml:"moderators_group_java" env:"moderators_group_java"`
-	ModeratorsGroupPython int64 `yaml:"moderators_group_python" env:"moderators_group_python"`
-	ModeratorsGroup1S     int64 `yaml:"moderators_group_1s" env:"moderators_group_1s"`
-	ModeratorsGroupCSharp int64 `yaml:"moderators_group_csharp" env:"moderators_group_csharp"`
+	ModeratorsGroup int64 `yaml:"moderators_group" env:"moderators_group" env-required:"true"`
+	//ModeratorsGroupGolang int64 `yaml:"moderators_group_golang" env:"moderators_group_golang"`
+	//ModeratorsGroupJava   int64 `yaml:"moderators_group_java" env:"moderators_group_java"`
+	//ModeratorsGroupPython int64 `yaml:"moderators_group_python" env:"moderators_group_python"`
+	//ModeratorsGroup1S     int64 `yaml:"moderators_group_1s" env:"moderators_group_1s"`
+	//ModeratorsGroupCSharp int64 `yaml:"moderators_group_csharp" env:"moderators_group_csharp"`
+}
+
+type MsgText struct {
+	MsgOfBadWordToUserChat string `yaml:"msg_of_bad_word_to_user_chat" env:"MSG-OF-BAD-WORDS-TO-USER-CHAT" env-required:"true"`
+	MsgToChatIfNewUser     string `yaml:"msg_to_chat_if_new_user" env:"MSG-TO-CHAT-IF-NEW-USER" env-required:"true"`
 }
 
 var instance *Config

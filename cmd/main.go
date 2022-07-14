@@ -8,7 +8,6 @@ import (
 	"skbot/internal/comandmsg"
 	"skbot/internal/config"
 	"skbot/internal/functions"
-	"skbot/internal/socialmsg"
 	"skbot/internal/textmsg"
 	"skbot/pkg/client/telegram"
 	"skbot/pkg/logging"
@@ -28,13 +27,17 @@ func main() {
 	log.Print("logger initializing")
 	logger := logging.GetLogger(cfg.AppConfig.LogLevel)
 
-	modGroupId := cfg.ModersGroupID.ModeratorsGroup
-	_, _, err := functions.AddModeratorsGroup(cfg.ModersGroupID.ModeratorsGroup, cfg)
-	_, _, err = functions.AddModeratorsGroup(cfg.ModersGroupID.ModeratorsGroupGolang, cfg)
-	_, _, err = functions.AddModeratorsGroup(cfg.ModersGroupID.ModeratorsGroupJava, cfg)
-	_, _, err = functions.AddModeratorsGroup(cfg.ModersGroupID.ModeratorsGroupPython, cfg)
-	_, _, err = functions.AddModeratorsGroup(cfg.ModersGroupID.ModeratorsGroup1S, cfg)
-	_, _, err = functions.AddModeratorsGroup(cfg.ModersGroupID.ModeratorsGroupCSharp, cfg)
+	db, err := functions.NewFuncList(cfg, logger)
+	if err != nil {
+		logger.Fatal(err)
+	}
+
+	err = db.NewData()
+	if err != nil {
+		logger.Error(err)
+	}
+
+	_, _, err = db.AddModeratorsGroup(cfg.ModersGroupID.ModeratorsGroup)
 	if err != nil {
 		logger.Info(err)
 	}
@@ -54,10 +57,8 @@ func main() {
 
 			if update.Message.Text != "" {
 				// text messages operations
-				textmsg.WithTextQueryDo(update, bot, logger, modGroupId, cfg)
+				textmsg.WithTextQueryDo(update, bot, logger, cfg)
 
-				// command messages
-				socialmsg.WithSocialTextQueryDo(update, bot, logger)
 			} else if update.Message.Command() != "" {
 
 				//com menu (only moderator's chats)
@@ -68,7 +69,7 @@ func main() {
 			}
 
 		} else if update.CallbackQuery != nil {
-			callbackmsg.WithCallBackDo(update, bot, logger, modGroupId, cfg)
+			callbackmsg.WithCallBackDo(update, bot, logger, cfg)
 			// TODO inline help
 		} else if update.InlineQuery != nil {
 			log.Println("response from Inline query")
