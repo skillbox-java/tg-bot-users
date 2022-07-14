@@ -132,10 +132,12 @@ def temp_save(
 
 
 
-def buttons_remover():
+def buttons_remover(
+        chat_id: int,
+        ) -> None:
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
-        cursor.execute(f"SELECT bot_message_id FROM 'temp_storage'")
+        cursor.execute(f"SELECT bot_message_id FROM 'temp_storage' WHERE chat_id={chat_id}")
         result = cursor.fetchall()
         delete_list = []
         for i in result:

@@ -40,7 +40,8 @@ def callback(call):
         if call.data == 'grac':
 
             bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
-            bot.send_message(call.message.chat.id, f'Поздравили и добавили в базу. Тест по message id {buttons_remover()}')
+            bot.send_message(call.message.chat.id, f'Поздравили и добавили в базу. Тест по message id '
+                                                   f'{buttons_remover(chat_id=call.message.chat.id)}')
 
         else:
             bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
