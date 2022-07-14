@@ -27,82 +27,88 @@ func WithChatMembersDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logge
 
 	if !newUser.IsBot {
 
-		count, err := bot.GetChatMembersCount(tgb.ChatMemberCountConfig{
-			ChatConfig: tgb.ChatConfig{
-				ChatID:             chatId,
-				SuperGroupUsername: groupName,
-			},
-		})
-
-		msg := tgb.NewMessage(chatId, fmt.Sprintf("Рады вас приветствовать "+
-			"%s! Давайте знакомиться, расскажите нам о себе пожалуйста.\n"+
-			"Как вас зовут? \nИз какого вы города? \nЧто вас привело к нам?", newUser.FirstName))
-
-		ans, _ := bot.Send(msg)
-
-		go func() {
-
-			time.Sleep(60 * time.Second)
-			_, _ = bot.Send(tgb.NewDeleteMessage(chatId, ans.MessageID))
-		}()
-
-		if count%cfg.Multiplicity == 0 || count%cfg.Multiplicity == 1 || count%cfg.Multiplicity == 2 || count%3 == 0 {
-
-			err = db.AddNewJubileeUser(&newUser, count, update)
-			if err != nil {
-				logger.Error(err)
-			}
-		}
-
-		var newCheckUser data.JubileeUser
-		newUsers, err := db.GetJubileeUsers()
+		moderGroupList, err := db.GetModeratorsGroup()
 		if err != nil {
 			logger.Error(err)
 		}
 
-		for _, user := range newUsers {
-			if int64(user.UserID) == NewUserID {
-				newCheckUser = user
-				userCount++
-			}
-		}
+		for _, group := range moderGroupList {
 
-		if userCount > 1 {
-			msg := tgb.NewMessage(cfg.ModersGroupID.ModeratorsGroup,
-				fmt.Sprintf("*Внимание!* У нас новый пользователь! Но *найдено совпавдение* с таким ID `%d`, "+
-					"рекомендую проверить весь список новых пользователей перед поздравлением.\nВызовите `меню`", newCheckUser.UserID))
+			if update.Message.Chat.ID == group.UserGroupID {
 
-			msg.ParseMode = "markdown"
-			_, _ = bot.Send(msg)
-		}
-		//TODO FIX count 3
-		if count%cfg.Multiplicity == 0 || count%3 == 0 {
+				count, err := bot.GetChatMembersCount(tgb.ChatMemberCountConfig{
+					ChatConfig: tgb.ChatConfig{
+						ChatID:             chatId,
+						SuperGroupUsername: groupName,
+					},
+				})
 
-			moderGroupList, err := db.GetModeratorsGroup()
-			if err != nil {
-				logger.Error(err)
-			}
+				msg := tgb.NewMessage(chatId, fmt.Sprintf("Рады вас приветствовать "+
+					"%s! Давайте знакомиться, расскажите нам о себе пожалуйста.\n"+
+					"Как вас зовут? \nИз какого вы города? \nЧто вас привело к нам?", newUser.FirstName))
 
-			for _, group := range moderGroupList {
+				ans, _ := bot.Send(msg)
 
-				if group.ModerGroupID == cfg.ModersGroupID.ModeratorsGroup {
+				go func() {
 
-					text := fmt.Sprintf("🎉 В группу: %s вступил юбилейный пользователь!\nИмя: %s "+
-						"\nНик: @%s, \nНомер вступления: %d. \nВремя вступления %s",
-						groupName, newUser.FirstName, newUser.UserName, count,
-						time.Now().Format(config.StructDateTimeFormat))
-					msg := tgb.NewMessage(group.ModerGroupID, text)
-					msg.ReplyMarkup = menu.NewUserCongratulation
+					time.Sleep(60 * time.Second)
+					_, _ = bot.Send(tgb.NewDeleteMessage(chatId, ans.MessageID))
+				}()
 
+				if count%cfg.Multiplicity == 0 || count%cfg.Multiplicity == 1 || count%cfg.Multiplicity == 2 || count%3 == 0 {
+
+					err = db.AddNewJubileeUser(&newUser, count, update)
+					if err != nil {
+						logger.Error(err)
+					}
+				}
+
+				var newCheckUser data.JubileeUser
+				newUsers, err := db.GetJubileeUsers()
+				if err != nil {
+					logger.Error(err)
+				}
+
+				for _, user := range newUsers {
+					if int64(user.UserID) == NewUserID {
+						newCheckUser = user
+						userCount++
+					}
+				}
+
+				if userCount > 1 {
+					msg := tgb.NewMessage(cfg.ModersGroupID.ModeratorsGroup,
+						fmt.Sprintf("*Внимание!* У нас новый пользователь! Но *найдено совпавдение* с таким ID `%d`, "+
+							"рекомендую проверить весь список новых пользователей перед поздравлением.\nВызовите `меню`", newCheckUser.UserID))
+
+					msg.ParseMode = "markdown"
 					_, _ = bot.Send(msg)
+				}
+				//TODO FIX count 3
+				if count%cfg.Multiplicity == 0 || count%3 == 0 {
 
-				} else {
-					text := fmt.Sprintf("🎉 В группу: %s вступил юбилейный пользователь!\nИмя: %s "+
-						"\nНик: @%s, \nНомер вступления: %d. \nВремя вступления %s",
-						groupName, newUser.FirstName, newUser.UserName, count,
-						time.Now().Format(config.StructDateTimeFormat))
+					for _, group := range moderGroupList {
 
-					_, _ = bot.Send(tgb.NewMessage(group.ModerGroupID, text))
+						if group.ModerGroupID == cfg.ModersGroupID.ModeratorsGroup {
+
+							text := fmt.Sprintf("🎉 В группу: %s вступил юбилейный пользователь!\nИмя: %s "+
+								"\nНик: @%s, \nНомер вступления: %d. \nВремя вступления %s",
+								groupName, newUser.FirstName, newUser.UserName, count,
+								time.Now().Format(config.StructDateTimeFormat))
+							msg := tgb.NewMessage(group.ModerGroupID, text)
+							msg.ReplyMarkup = menu.NewUserCongratulation
+
+							_, _ = bot.Send(msg)
+
+						} else if update.Message.Chat.ID == group.UserGroupID {
+							text := fmt.Sprintf("🎉 В группу: %s вступил юбилейный пользователь!\nИмя: %s "+
+								"\nНик: @%s, \nНомер вступления: %d. \nВремя вступления %s",
+								groupName, newUser.FirstName, newUser.UserName, count,
+								time.Now().Format(config.StructDateTimeFormat))
+
+							_, _ = bot.Send(tgb.NewMessage(group.ModerGroupID, text))
+						}
+					}
 				}
 			}
 		}

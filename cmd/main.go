@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	tgb "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"log"
 	"skbot/internal/callbackmsg"
 	"skbot/internal/chatmembers"
@@ -37,15 +38,17 @@ func main() {
 		logger.Error(err)
 	}
 
-	_, _, err = db.AddModeratorsGroup(cfg.ModersGroupID.ModeratorsGroup)
-	if err != nil {
-		logger.Info(err)
-	}
-
 	updChan, bot, err := telegram.StartBotByChan(cfg, logger)
 	if err != nil {
 		logger.Fatal(err)
 	}
+
+	groupInfo, _ := bot.Send(tgb.NewMessage(cfg.ModersGroupID.ModeratorsGroup, "test"))
+	_, _, err = db.AddModeratorsGroup(cfg.ModersGroupID.ModeratorsGroup, groupInfo.Chat.Title)
+	if err != nil {
+		logger.Info(err)
+	}
+	_, _ = bot.Send(tgb.NewDeleteMessage(groupInfo.Chat.ID, groupInfo.MessageID))
 
 	defer bot.StopReceivingUpdates()
 
@@ -78,6 +81,5 @@ func main() {
 			log.Println(query)
 
 		}
-
 	}
 }

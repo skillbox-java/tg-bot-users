@@ -162,7 +162,7 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 				msg := tgb.NewEditMessageText(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.MessageID, text)
 				_, _ = bot.Send(msg)
 
-				b, _, err := db.AddModeratorsGroup(newGroupId)
+				b, _, err := db.AddModeratorsGroup(newGroupId, newGroupName)
 				if b && err != nil {
 					_, _ = bot.Send(tgb.NewMessage(cfg.ModersGroupID.ModeratorsGroup, fmt.Sprintf("Группа %s уже есть.", newGroupName)))
 				} else if b && err == nil {
@@ -185,7 +185,7 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 			_, _ = bot.Request(tgb.NewCallback(update.CallbackQuery.ID, "✅"))
 		}
 
-	case "new_user":
+	case "congratulation_new_user":
 
 		msg := tgb.NewEditMessageText(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.MessageID, update.CallbackQuery.Message.Text)
 		_, _ = bot.Send(msg)
@@ -227,6 +227,31 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 			if _, err := bot.Request(callback); err != nil {
 				logger.Error(err)
 			}
+		}
+
+	case "moderator_group_list":
+
+		var list = "Список групп модераторов и пользователей: "
+
+		groups, err := db.GetModeratorsGroup()
+		if err != nil {
+			logger.Error(err)
+		}
+
+		for _, group := range groups {
+
+			text := fmt.Sprintf("\n№: %d\nМодераторы: %s\nПользователи: %s", group.ID,
+				group.ModerGroupTitle, group.UserGroupTitle)
+
+			list = list + text + "\n\n"
+
+		}
+
+		_, _ = bot.Send(tgb.NewMessage(update.CallbackQuery.Message.Chat.ID, list))
+
+		callback := tgb.NewCallback(update.CallbackQuery.ID, "✅")
+		if _, err := bot.Request(callback); err != nil {
+			logger.Error(err)
 		}
 
 	}

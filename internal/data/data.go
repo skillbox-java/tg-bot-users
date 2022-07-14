@@ -9,9 +9,11 @@ type BadWords struct {
 	Word string
 }
 type ModeratorsGroup struct {
-	ID           int
-	ModerGroupID int64
-	UserGroupID  int64
+	ID              int
+	ModerGroupID    int64
+	ModerGroupTitle string
+	UserGroupID     int64
+	UserGroupTitle  string
 }
 
 type JubileeUser struct {

@@ -38,7 +38,8 @@ func NewFuncList(cfg *config.Config, logger *logging.Logger) (FuncList, error) {
 func (l *list) NewData() error {
 
 	stat, err := l.db.Prepare("CREATE TABLE IF NOT EXISTS moderators " +
-		"(id INTEGER PRIMARY KEY, moder_group_id INTEGER NOT NULL, user_group_id INTEGER DEFAULT 0)")
+		"(id INTEGER PRIMARY KEY, moder_group_id INTEGER NOT NULL, moder_group_title TEXT DEFAULT no_title, " +
+		"user_group_id INTEGER DEFAULT 0, user_group_title TEXT DEFAULT no_title)")
 	_, err = stat.Exec()
 	if err != nil {
 		return err
@@ -65,10 +66,10 @@ func (l *list) NewData() error {
 
 type FuncList interface {
 	NewData() error
-	AddUserGroupList(moderGroup, userGroup int64) (bool, error)
+	AddUserGroupList(moderGroup, userGroup int64, moderTitle, userTitle string) (bool, error)
 	CheckBadWords(badList []string) (clearList []string, haveBadWords bool, err error)
 	AddBadWord(word string) (bool, error)
-	AddModeratorsGroup(group int64) (haveGroup bool, modGroups []data.ModeratorsGroup, err error)
+	AddModeratorsGroup(group int64, title string) (haveGroup bool, modGroups []data.ModeratorsGroup, err error)
 	GetModeratorsGroup() (groups []data.ModeratorsGroup, err error)
 	AddNewJubileeUser(newUser *tgbotapi.User, serial int, update tgbotapi.Update) error
 	GetJubileeUsers() (jubUsers []data.JubileeUser, err error)
@@ -154,7 +155,7 @@ func (l *list) AddBadWord(word string) (bool, error) {
 
 }
 
-func (l *list) AddModeratorsGroup(group int64) (haveGroup bool, modGroups []data.ModeratorsGroup, err error) {
+func (l *list) AddModeratorsGroup(group int64, title string) (haveGroup bool, modGroups []data.ModeratorsGroup, err error) {
 
 	var modGroup data.ModeratorsGroup
 	haveGroup = false
@@ -165,7 +166,7 @@ func (l *list) AddModeratorsGroup(group int64) (haveGroup bool, modGroups []data
 	}
 
 	for rows.Next() {
-		err = rows.Scan(&modGroup.ID, &modGroup.ModerGroupID, &modGroup.UserGroupID)
+		err = rows.Scan(&modGroup.ID, &modGroup.ModerGroupID, &modGroup.ModerGroupTitle, &modGroup.UserGroupID, &modGroup.UserGroupTitle)
 		modGroups = append(modGroups, modGroup)
 	}
 
@@ -177,7 +178,8 @@ func (l *list) AddModeratorsGroup(group int64) (haveGroup bool, modGroups []data
 	}
 
 	if !haveGroup && group != 0 {
-		_, err = l.db.Exec(fmt.Sprintf("INSERT INTO moderators (moder_group_id) VALUES ('%d')", group))
+		_, err = l.db.Exec(fmt.Sprintf("INSERT INTO moderators (moder_group_id, moder_group_title, user_group_id , "+
+			"user_group_title) VALUES ('%d', '%s', '0', 'Без пользователей.')", group, title))
 		if err != nil {
 			log.Println(err)
 		}
@@ -197,7 +199,7 @@ func (l *list) GetModeratorsGroup() (groups []data.ModeratorsGroup, err error) {
 
 	var group data.ModeratorsGroup
 	for rows.Next() {
-		err = rows.Scan(&group.ID, &group.ModerGroupID, &group.UserGroupID)
+		err = rows.Scan(&group.ID, &group.ModerGroupID, &group.ModerGroupTitle, &group.UserGroupID, &group.UserGroupTitle)
 		groups = append(groups, group)
 	}
 
@@ -266,11 +268,11 @@ func (l *list) GetAllJubileeUsers() (jubUsers []data.JubileeUser, err error) {
 
 }
 
-func (l *list) AddUserGroupList(moderGroup, userGroup int64) (bool, error) {
+func (l *list) AddUserGroupList(moderGroup, userGroup int64, moderTitle, userTitle string) (bool, error) {
 
 	var moderatorGroup data.ModeratorsGroup
 	var moderatorGroups []data.ModeratorsGroup
-	//var haveGroup bool
+	var haveGroup = false
 
 	l.logger.Infof("moder from func %d", moderGroup)
 
@@ -280,38 +282,41 @@ func (l *list) AddUserGroupList(moderGroup, userGroup int64) (bool, error) {
 	}
 
 	for rows.Next() {
-		err := rows.Scan(&moderatorGroup.ID, &moderatorGroup.ModerGroupID, &moderatorGroup.UserGroupID)
+		err := rows.Scan(&moderatorGroup.ID, &moderatorGroup.ModerGroupID, &moderatorGroup.ModerGroupTitle, &moderatorGroup.UserGroupID, &moderatorGroup.UserGroupTitle)
 		if err != nil {
 			return false, err
-		}
-
-		if moderatorGroup.UserGroupID == userGroup {
-			return true, err
 		}
 
 		moderatorGroups = append(moderatorGroups, moderatorGroup)
 	}
 
 	for _, group := range moderatorGroups {
-		if group.ModerGroupID == moderGroup && group.UserGroupID == 0 {
-			_, err = l.db.Exec(fmt.Sprintf("UPDATE moderators SET (user_group_id) = ('%d') WHERE moder_group_id = ('%d')", userGroup, moderGroup))
+
+		if group.ModerGroupID == moderGroup && group.UserGroupID == userGroup {
+			haveGroup = true
+			return true, nil
+
+		} else if group.ModerGroupID == moderGroup && group.UserGroupID == 0 {
+			_, err = l.db.Exec(fmt.Sprintf("UPDATE moderators SET (user_group_id, user_group_title) = ('%d', '%s') "+
+				"WHERE moder_group_id = ('%d')", userGroup, userTitle, moderGroup))
 			if err != nil {
 				return false, err
 			}
+
+			haveGroup = true
 			return false, nil
-			break
+
 		}
 	}
 
-	_, err = l.db.Exec(fmt.Sprintf("INSERT INTO moderators (moder_group_id, user_group_id) VALUES ('%d', '%d)", userGroup, moderGroup))
-	if err != nil {
-		return false, err
+	if !haveGroup {
+		_, err = l.db.Exec(fmt.Sprintf("INSERT INTO moderators (moder_group_id, moder_group_title, user_group_id, user_group_title) "+
+			"VALUES ('%d', '%s', '%d', '%s')", moderGroup, moderTitle, userGroup, userTitle))
+		if err != nil {
+			return false, err
+		}
 	}
 
 	return false, nil
 
 }
-
-//func GetUserGroupList(update tgbotapi.Update) {
-//
-//}
