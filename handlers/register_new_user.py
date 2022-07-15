@@ -34,7 +34,6 @@ def handler_new_member(message):
                   bot_message_id=bot_message.id
                   )
 
-        # storage_cleaner(chat_id=message.chat.id)
 
     else:
         bot.send_message(message.chat.id, f'Есть в списке победителей{winner_check(user_number)}')
@@ -45,10 +44,14 @@ def callback(call):
         if call.data == 'grac':
             winner = is_winner_id_select(bot_message_id=call.message.message_id)
             print(winner)
-            is_winner_record(winner_id=winner, winner_result=1)
+            is_winner_record(winner_id=winner)
 
+            remove_list = buttons_remover(chat_id=call.message.chat.id)
+            for message in remove_list:
+                bot.delete_message(chat_id=call.message.chat.id, message_id=message)
 
-            bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
+            storage_cleaner(chat_id=call.message.chat.id)
+
             bot.send_message(call.message.chat.id, f'Поздравили и добавили в базу.')
 
         else:

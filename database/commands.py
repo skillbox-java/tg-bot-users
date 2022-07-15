@@ -158,21 +158,17 @@ def is_winner_id_select(
         ) -> None:
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
-        # cursor.execute(f'''INSERT INTO users (is_winner) VALUES (?)
-        #                 SELECT users.is_winner FROM users Join temp_storage ON users.id=temp_storage.record_id
-        #                 WHERE temp_storage.bot_message_id={bot_message_id};''', (is_winner,))
         result = cursor.execute(f'''SELECT users.id FROM users Join temp_storage ON users.id=temp_storage.record_id
                         WHERE temp_storage.bot_message_id={bot_message_id};''')
         id = []
         for i in result:
+            print(i)
             id.append(i)
 
-        print(id[0][0])
         return id[0][0]
 
 
 def is_winner_record(winner_id: int,
-                     winner_result: int,
         ) -> None:
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
