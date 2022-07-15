@@ -237,7 +237,7 @@ func WithTextQueryDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger,
 				chatName, chatId, userName, userNick, time.Now().Format(config.StructDateTimeFormat))
 
 			msg := tgb.NewMessage(cfg.ModersGroupID.ModeratorsGroup, text)
-			msg.ReplyMarkup = tgb.NewInlineKeyboardMarkup(tgb.NewInlineKeyboardRow(menu.Button4))
+			msg.ReplyMarkup = tgb.NewInlineKeyboardMarkup(tgb.NewInlineKeyboardRow(menu.Button4, menu.Button11))
 
 			msgDel, err := bot.Send(msg)
 			if err != nil {

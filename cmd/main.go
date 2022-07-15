@@ -74,7 +74,7 @@ func main() {
 			} else if update.Message.Command() != "" {
 
 				//com menu (only moderator's chats)
-				comandmsg.CommandQueryDo(update, bot, logger)
+				comandmsg.CommandQueryDo(update, bot, logger, cfg)
 
 			} else if update.Message.NewChatMembers != nil {
 
@@ -94,5 +94,6 @@ func main() {
 			log.Println(query)
 
 		}
+
 	}
 }

@@ -127,7 +127,7 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 				for _, user := range users {
 
 					text := fmt.Sprintf("№: %d, Группа: %s, Имя: %s,  Ник: @%s, Номер: %d, "+
-						"Время: %s ", user.UserID, user.GroupName, user.UserName, user.UserNick,
+						"Время: %s ", user.ID, user.GroupName, user.UserName, user.UserNick,
 						user.Serial, user.Time.Format(config.StructDateTimeFormat))
 
 					list = list + text + "\n\n"
@@ -156,7 +156,7 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 				text := fmt.Sprintf("Внимание! Вы подтверждаетете добавление группы: \n  %s  \nв список администраторов.", newGroupName)
 				msg := tgb.NewEditMessageText(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.MessageID, text)
 				msgConf := tgb.NewEditMessageReplyMarkup(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.MessageID,
-					tgb.NewInlineKeyboardMarkup(tgb.NewInlineKeyboardRow(menu.Button5)))
+					tgb.NewInlineKeyboardMarkup(tgb.NewInlineKeyboardRow(menu.Button5, menu.Button11)))
 
 				_, _ = bot.Send(msg)
 				_, _ = bot.Send(msgConf)

@@ -30,9 +30,11 @@ var button9 = tgbotapi.NewInlineKeyboardButtonData("Памятка модера�
 
 var Button4 = tgbotapi.NewInlineKeyboardButtonData("Добавить группу", "add_new_mod")
 var Button5 = tgbotapi.NewInlineKeyboardButtonData("Да, я уверен!", "add_new_mod_true")
+var Button10 = tgbotapi.NewInlineKeyboardButtonData("Поздравить", "congratulation_new_user")
+var Button11 = tgbotapi.NewInlineKeyboardButtonData("Отклонить", "remove_button")
 
 var NewUserCongratulation = tgbotapi.NewInlineKeyboardMarkup(
 	tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData("Поздравить", "congratulation_new_user"),
-		tgbotapi.NewInlineKeyboardButtonData("Отклонить", "remove_button"),
+		Button10,
+		Button11,
 	))
