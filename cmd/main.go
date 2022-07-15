@@ -17,7 +17,7 @@ import (
 var cfgPath string
 
 func init() {
-	flag.StringVar(&cfgPath, "config", "tg-bot-users/conf.yml", "config file path")
+	flag.StringVar(&cfgPath, "config", "/home/azat/GolandProjects/telegram_bot_skb/etc/tgbot/conf.yml", "config file path")
 }
 
 func main() {
