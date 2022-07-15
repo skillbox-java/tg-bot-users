@@ -1,0 +1,23 @@
+---
+
+
+telegram:
+  tg_token: 
+  tg_sert:
+
+
+
+app:
+  log_level: trace
+
+chat_count_config:
+  test_chat_id_count:
+  chat_id_count:
+
+moderators:
+  moderators_group:
+  moderators_group_golang:
+  moderators_group_java:
+  moderators_group_python:
+  moderators_group_1s:
+  moderators_group_csharp:
