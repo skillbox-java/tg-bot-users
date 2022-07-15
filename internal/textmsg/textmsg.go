@@ -257,19 +257,15 @@ func WithTextQueryDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger,
 				moderInfo, err1 := bot.Send(tgb.NewMessage(moderGroup, "test"))
 				if err != nil {
 					logger.Error(err1)
-				} else {
-					_, _ = bot.Send(tgb.NewDeleteMessage(moderInfo.Chat.ID, moderInfo.MessageID))
 				}
 
 				userInfo, err2 := bot.Send(tgb.NewMessage(userGroup, "test"))
 				if err2 != nil {
 					logger.Error(err2)
-				} else {
-					_, _ = bot.Send(tgb.NewDeleteMessage(userInfo.Chat.ID, userInfo.MessageID))
 				}
 
-				//_, _ = bot.Send(tgb.NewDeleteMessage(moderInfo.Chat.ID, moderInfo.MessageID))
-				//_, _ = bot.Send(tgb.NewDeleteMessage(userInfo.Chat.ID, userInfo.MessageID))
+				_, _ = bot.Send(tgb.NewDeleteMessage(moderInfo.Chat.ID, moderInfo.MessageID))
+				_, _ = bot.Send(tgb.NewDeleteMessage(userInfo.Chat.ID, userInfo.MessageID))
 
 				b, err = db.AddUserGroupList(moderGroup, userGroup, moderInfo.Chat.Title, userInfo.Chat.Title)
 				if !b && err != nil {

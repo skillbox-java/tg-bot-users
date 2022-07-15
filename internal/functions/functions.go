@@ -12,6 +12,7 @@ import (
 	"skbot/internal/data"
 	"skbot/pkg/logging"
 	"strings"
+	"time"
 )
 
 type list struct {
@@ -209,12 +210,14 @@ func (l *list) GetModeratorsGroup() (groups []data.ModeratorsGroup, err error) {
 
 func (l *list) AddNewJubileeUser(newUser *tgbotapi.User, serial int, update tgbotapi.Update) error {
 
-	_, err := l.db.Exec(fmt.Sprintf("INSERT INTO newJubileeUsers (serial, user_id, user_name, user_nick, "+
-		"group_name, group_id) VALUES ('%d', '%d', '%s', '%s', '%s', '%d')", serial, newUser.ID, newUser.FirstName,
-		newUser.UserName, update.Message.Chat.Title, update.Message.Chat.ID))
+	t := time.Now().Local().Format(config.StructDateTimeFormat)
+	
+	_, err := l.db.Exec(fmt.Sprintf("INSERT INTO newJubileeUsers (serial, user_id, user_name, user_nick, time, "+
+		"group_name, group_id) VALUES ('%d', '%d', '%s', '%s', '%s', '%s', '%d')", serial, newUser.ID, newUser.FirstName,
+		newUser.UserName, t, update.Message.Chat.Title, update.Message.Chat.ID))
 
 	if err != nil {
-		log.Println(err)
+		l.logger.Error(err)
 	}
 
 	return nil
@@ -226,7 +229,7 @@ func (l *list) GetJubileeUsers() (jubUsers []data.JubileeUser, err error) {
 	var users []data.JubileeUser
 
 	//TODO limit 3 last users
-	rows, err := l.db.Query("SELECT * FROM newJubileeUsers")
+	rows, err := l.db.Query("SELECT * FROM newJubileeUsers ORDER BY id DESC LIMIT 4 ")
 	if err != nil {
 		return nil, err
 	}

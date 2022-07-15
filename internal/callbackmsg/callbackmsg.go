@@ -20,7 +20,7 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 
 	switch callBackDoData {
 
-	// menu
+	// command list
 	case "com_list":
 
 		msg := tgb.NewMessage(update.CallbackQuery.Message.Chat.ID, menu.ComMenu)
@@ -37,8 +37,7 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 			_, _ = bot.Send(tgb.NewDeleteMessage(update.CallbackQuery.Message.Chat.ID, delMsg.MessageID))
 		}()
 
-		// jubilee users
-
+	// jubilee users
 	case "jubilee_list":
 
 		var list string
@@ -61,8 +60,8 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 				for _, user := range users {
 
 					text := fmt.Sprintf("№: `%d` \nГруппа: *%s*\nИмя: *%s*  Ник: *@%s*\nНомер: *%d*  "+
-						"Время: *%s* ", user.UserID, user.GroupName, user.UserName, user.UserNick,
-						user.Serial, user.Time.Format(config.StructDateTimeFormat))
+						"Время: *%s* ", user.ID, user.GroupName, user.UserName, user.UserNick,
+						user.Serial, user.Time.UTC().Format(config.StructDateTimeFormat))
 
 					list = list + text + "\n\n"
 					count++
@@ -253,6 +252,11 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 		if _, err := bot.Request(callback); err != nil {
 			logger.Error(err)
 		}
+
+	case "remove_button":
+
+		msg := tgb.NewEditMessageText(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.MessageID, update.CallbackQuery.Message.Text)
+		_, _ = bot.Send(msg)
 
 	}
 
