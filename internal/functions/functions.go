@@ -77,13 +77,13 @@ type FuncList interface {
 	GetAllJubileeUsers() (jubUsers []data.JubileeUser, err error)
 }
 
-func TrimSymbolsFromSlice(s []string) (words []string, err error) {
+func TrimSymbolsFromSlice(s []string, cfg *config.Config) (words []string, err error) {
 
 	var messageUpd []string
 
 	for _, k := range s {
 
-		k = strings.Trim(k, "([]{}*).,!")
+		k = strings.Trim(k, cfg.MsgText.MsgTrimSymbol)
 		messageUpd = append(messageUpd, k)
 	}
 
@@ -167,18 +167,22 @@ func (l *list) AddModeratorsGroup(group int64, title string) (haveGroup bool, mo
 	}
 
 	for rows.Next() {
+
 		err = rows.Scan(&modGroup.ID, &modGroup.ModerGroupID, &modGroup.ModerGroupTitle, &modGroup.UserGroupID, &modGroup.UserGroupTitle)
 		modGroups = append(modGroups, modGroup)
 	}
 
 	for _, grp := range modGroups {
+
 		if grp.ModerGroupID == group {
+
 			haveGroup = true
 			return haveGroup, modGroups, errors.New("have group")
 		}
 	}
 
 	if !haveGroup && group != 0 {
+
 		_, err = l.db.Exec(fmt.Sprintf("INSERT INTO moderators (moder_group_id, moder_group_title, user_group_id , "+
 			"user_group_title) VALUES ('%d', '%s', '0', 'Без пользователей.')", group, title))
 		if err != nil {
@@ -199,7 +203,9 @@ func (l *list) GetModeratorsGroup() (groups []data.ModeratorsGroup, err error) {
 	}
 
 	var group data.ModeratorsGroup
+
 	for rows.Next() {
+
 		err = rows.Scan(&group.ID, &group.ModerGroupID, &group.ModerGroupTitle, &group.UserGroupID, &group.UserGroupTitle)
 		groups = append(groups, group)
 	}
@@ -211,7 +217,7 @@ func (l *list) GetModeratorsGroup() (groups []data.ModeratorsGroup, err error) {
 func (l *list) AddNewJubileeUser(newUser *tgbotapi.User, serial int, update tgbotapi.Update) error {
 
 	t := time.Now().Local().Format(config.StructDateTimeFormat)
-	
+
 	_, err := l.db.Exec(fmt.Sprintf("INSERT INTO newJubileeUsers (serial, user_id, user_name, user_nick, time, "+
 		"group_name, group_id) VALUES ('%d', '%d', '%s', '%s', '%s', '%s', '%d')", serial, newUser.ID, newUser.FirstName,
 		newUser.UserName, t, update.Message.Chat.Title, update.Message.Chat.ID))
@@ -228,17 +234,18 @@ func (l *list) GetJubileeUsers() (jubUsers []data.JubileeUser, err error) {
 	var user data.JubileeUser
 	var users []data.JubileeUser
 
-	//TODO limit 3 last users
-	rows, err := l.db.Query("SELECT * FROM newJubileeUsers ORDER BY id DESC LIMIT 4 ")
+	rows, err := l.db.Query("SELECT * FROM newJubileeUsers ORDER BY id DESC LIMIT 3 ")
 	if err != nil {
 		return nil, err
 	}
 
 	for rows.Next() {
+
 		err = rows.Scan(&user.ID, &user.Serial, &user.UserID, &user.UserName, &user.UserNick,
 			&user.Time, &user.GroupName, &user.GroupID)
 		users = append(users, user)
 	}
+
 	//TODO FIX serial 3
 	for _, v := range users {
 
@@ -262,6 +269,7 @@ func (l *list) GetAllJubileeUsers() (jubUsers []data.JubileeUser, err error) {
 	}
 
 	for rows.Next() {
+
 		err = rows.Scan(&user.ID, &user.Serial, &user.UserID, &user.UserName, &user.UserNick,
 			&user.Time, &user.GroupName, &user.GroupID)
 		users = append(users, user)
@@ -277,14 +285,13 @@ func (l *list) AddUserGroupList(moderGroup, userGroup int64, moderTitle, userTit
 	var moderatorGroups []data.ModeratorsGroup
 	var haveGroup = false
 
-	l.logger.Infof("moder from func %d", moderGroup)
-
 	rows, err := l.db.Query("SELECT * FROM moderators")
 	if err != nil {
 		return false, err
 	}
 
 	for rows.Next() {
+
 		err := rows.Scan(&moderatorGroup.ID, &moderatorGroup.ModerGroupID, &moderatorGroup.ModerGroupTitle, &moderatorGroup.UserGroupID, &moderatorGroup.UserGroupTitle)
 		if err != nil {
 			return false, err
@@ -296,10 +303,12 @@ func (l *list) AddUserGroupList(moderGroup, userGroup int64, moderTitle, userTit
 	for _, group := range moderatorGroups {
 
 		if group.ModerGroupID == moderGroup && group.UserGroupID == userGroup {
+
 			haveGroup = true
 			return true, nil
 
 		} else if group.ModerGroupID == moderGroup && group.UserGroupID == 0 {
+
 			_, err = l.db.Exec(fmt.Sprintf("UPDATE moderators SET (user_group_id, user_group_title) = ('%d', '%s') "+
 				"WHERE moder_group_id = ('%d')", userGroup, userTitle, moderGroup))
 			if err != nil {
@@ -308,11 +317,11 @@ func (l *list) AddUserGroupList(moderGroup, userGroup int64, moderTitle, userTit
 
 			haveGroup = true
 			return false, nil
-
 		}
 	}
 
 	if !haveGroup {
+
 		_, err = l.db.Exec(fmt.Sprintf("INSERT INTO moderators (moder_group_id, moder_group_title, user_group_id, user_group_title) "+
 			"VALUES ('%d', '%s', '%d', '%s')", moderGroup, moderTitle, userGroup, userTitle))
 		if err != nil {
@@ -321,5 +330,4 @@ func (l *list) AddUserGroupList(moderGroup, userGroup int64, moderTitle, userTit
 	}
 
 	return false, nil
-
 }

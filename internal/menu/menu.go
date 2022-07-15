@@ -19,12 +19,14 @@ var NumericKeyboard = tgbotapi.NewInlineKeyboardMarkup(
 	tgbotapi.NewInlineKeyboardRow(button2),
 	tgbotapi.NewInlineKeyboardRow(button8),
 	tgbotapi.NewInlineKeyboardRow(button3),
+	tgbotapi.NewInlineKeyboardRow(button9),
 )
 
 var button1 = tgbotapi.NewInlineKeyboardButtonData("Список команд", "com_list")
-var button2 = tgbotapi.NewInlineKeyboardButtonData("Список юбилейный", "jubilee_list")
-var button8 = tgbotapi.NewInlineKeyboardButtonData("Весь список новых пользователей ", "all_jubilee_list")
+var button2 = tgbotapi.NewInlineKeyboardButtonData("Список юбилейный (крайние трое)", "jubilee_list")
+var button8 = tgbotapi.NewInlineKeyboardButtonData("Весь список юбилейных пользователей ", "all_jubilee_list")
 var button3 = tgbotapi.NewInlineKeyboardButtonData("Список групп модераторов и пользователей.", "moderator_group_list")
+var button9 = tgbotapi.NewInlineKeyboardButtonData("Памятка модераторам.", "moderator_member")
 
 var Button4 = tgbotapi.NewInlineKeyboardButtonData("Добавить группу", "add_new_mod")
 var Button5 = tgbotapi.NewInlineKeyboardButtonData("Да, я уверен!", "add_new_mod_true")

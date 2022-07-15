@@ -54,7 +54,7 @@ func WithChatMembersDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logge
 					time.Sleep(60 * time.Second)
 					_, _ = bot.Send(tgb.NewDeleteMessage(chatId, ans.MessageID))
 				}()
-
+				// TODO fix count 3
 				if count%cfg.Multiplicity == 0 || count%cfg.Multiplicity == 1 || count%cfg.Multiplicity == 2 || count%3 == 0 {
 
 					err = db.AddNewJubileeUser(&newUser, count, update)

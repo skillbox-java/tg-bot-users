@@ -22,7 +22,7 @@ func WithTextQueryDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger,
 	// trim symbols
 	if len(update.Message.Text) > 0 {
 
-		command, err := functions.TrimSymbolsFromSlice(strings.Split(update.Message.Text, " "))
+		command, err := functions.TrimSymbolsFromSlice(strings.Split(update.Message.Text, " "), cfg)
 		if err != nil {
 			logger.Info("error trim symbols from message")
 		}
@@ -91,6 +91,7 @@ func WithTextQueryDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger,
 					logger.Error(err)
 
 				}
+
 				info, _ := bot.Send(tgb.NewMessage(newModGroup, "test"))
 
 				b, _, err := db.AddModeratorsGroup(newModGroup, info.Chat.Title)
@@ -189,7 +190,9 @@ func WithTextQueryDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger,
 			if err != nil {
 				return
 			}
+
 			for _, group := range moderatorGroups {
+
 				if group.ModerGroupID == chatId {
 
 					_, _ = bot.Send(tgb.NewDeleteMessage(update.Message.Chat.ID, update.Message.MessageID))

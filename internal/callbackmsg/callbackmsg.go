@@ -10,6 +10,8 @@ import (
 	"skbot/internal/menu"
 	"skbot/internal/textmsg"
 	"skbot/pkg/logging"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -17,6 +19,33 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 
 	db, _ := functions.NewFuncList(cfg, logger)
 	callBackDoData := update.CallbackQuery.Data
+
+	callInfo := strings.Split(callBackDoData, " ")
+
+	var localUserId []string
+
+	if callInfo[0] == "congratulation_again" && len(callInfo) > 1 {
+
+		luckyMan, err := strconv.Atoi(callInfo[1])
+		if err != nil {
+			logger.Error(err)
+		}
+
+		jubileeUsers, err := db.GetAllJubileeUsers()
+		if err != nil {
+			logger.Error(err)
+		}
+
+		user := jubileeUsers[luckyMan-1]
+
+		_, _ = bot.Send(tgb.NewMessage(user.GroupID, fmt.Sprintf(cfg.MsgText.MsgToChatIfNewUser, user.UserName, user.Serial)))
+
+		_, _ = bot.Request(tgb.NewCallback(update.CallbackQuery.ID, "✅"))
+
+		msg2 := tgb.NewEditMessageText(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.MessageID, update.CallbackQuery.Message.Text)
+		_, _ = bot.Send(msg2)
+
+	}
 
 	switch callBackDoData {
 
@@ -27,10 +56,7 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 		msg.ParseMode = "markdown"
 		delMsg, _ := bot.Send(msg)
 
-		callback := tgb.NewCallback(update.CallbackQuery.ID, "✅")
-		if _, err := bot.Request(callback); err != nil {
-			logger.Error(err)
-		}
+		_, _ = bot.Request(tgb.NewCallback(update.CallbackQuery.ID, "✅"))
 
 		go func() {
 			time.Sleep(30 * time.Second)
@@ -40,8 +66,6 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 	// jubilee users
 	case "jubilee_list":
 
-		var list string
-		var count = 1
 		users, err := db.GetJubileeUsers()
 		chatId := update.CallbackQuery.Message.Chat.ID
 		if err != nil {
@@ -63,27 +87,28 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 						"Время: *%s* ", user.ID, user.GroupName, user.UserName, user.UserNick,
 						user.Serial, user.Time.UTC().Format(config.StructDateTimeFormat))
 
-					list = list + text + "\n\n"
-					count++
+					localUserId = append(localUserId, strconv.Itoa(user.ID))
+					msg := tgb.NewMessage(update.CallbackQuery.Message.Chat.ID, "Список юбилейный:\n"+text)
+					msg.ParseMode = "markdown"
+					msg.ReplyMarkup = tgb.NewInlineKeyboardMarkup(
+						tgb.NewInlineKeyboardRow(
+							tgb.NewInlineKeyboardButtonData("Поздравить", "congratulation_again"+" "+strconv.Itoa(user.ID)),
+							tgb.NewInlineKeyboardButtonData("Отклонить", "remove_button"),
+						))
+					_, _ = bot.Send(msg)
 
 				}
 			}
 		}
-		msg := tgb.NewMessage(update.CallbackQuery.Message.Chat.ID, "Список юбилейный:\n"+list)
-		msg.ParseMode = "markdown"
-		_, _ = bot.Send(msg)
 
-		callback := tgb.NewCallback(update.CallbackQuery.ID, "✅")
-		if _, err := bot.Request(callback); err != nil {
-			logger.Error(err)
-		}
+		_, _ = bot.Request(tgb.NewCallback(update.CallbackQuery.ID, "✅"))
 
 		// add new moderators group
 
 	case "all_jubilee_list":
 
 		var list string
-		var count = 1
+
 		users, err := db.GetAllJubileeUsers()
 		chatId := update.CallbackQuery.Message.Chat.ID
 		if err != nil {
@@ -106,18 +131,14 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 						user.Serial, user.Time.Format(config.StructDateTimeFormat))
 
 					list = list + text + "\n\n"
-					count++
 
 				}
 			}
 		}
-		msg := tgb.NewMessage(update.CallbackQuery.Message.Chat.ID, "Список новых пользователей:\n"+list)
-		_, _ = bot.Send(msg)
 
-		callback := tgb.NewCallback(update.CallbackQuery.ID, "✅")
-		if _, err := bot.Request(callback); err != nil {
-			logger.Error(err)
-		}
+		_, _ = bot.Send(tgb.NewMessage(update.CallbackQuery.Message.Chat.ID, "Список новых пользователей:\n"+list))
+
+		_, _ = bot.Request(tgb.NewCallback(update.CallbackQuery.ID, "✅"))
 
 		// add new moderators group
 
@@ -127,6 +148,7 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 		newGroupId := textmsg.MesInfo.Message.Chat.ID
 
 		if newGroupId != 0 {
+
 			if update.CallbackQuery.Message.Chat.ID == cfg.ModersGroupID.ModeratorsGroup {
 
 				logger.Info(newGroupName, newGroupId)
@@ -139,12 +161,11 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 				_, _ = bot.Send(msg)
 				_, _ = bot.Send(msgConf)
 
-				callback := tgb.NewCallback(update.CallbackQuery.ID, "✅")
-				if _, err := bot.Request(callback); err != nil {
-					logger.Error(err)
-				}
+				_, _ = bot.Request(tgb.NewCallback(update.CallbackQuery.ID, "✅"))
 			}
+
 		} else {
+
 			_, _ = bot.Send(tgb.NewMessage(update.CallbackQuery.Message.Chat.ID, "Время вышло, повторите запрос."))
 			_, _ = bot.Request(tgb.NewCallback(update.CallbackQuery.ID, "✅"))
 		}
@@ -155,6 +176,7 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 		newGroupId := textmsg.MesInfo.Message.Chat.ID
 
 		if newGroupId != 0 {
+
 			if update.CallbackQuery.Message.Chat.ID == cfg.ModersGroupID.ModeratorsGroup {
 
 				text := fmt.Sprintf("Внимание! Вы подтверждаетете добавление группы: \n  %s  \nв список администраторов.", newGroupName)
@@ -162,7 +184,9 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 				_, _ = bot.Send(msg)
 
 				b, _, err := db.AddModeratorsGroup(newGroupId, newGroupName)
+
 				if b && err != nil {
+
 					_, _ = bot.Send(tgb.NewMessage(cfg.ModersGroupID.ModeratorsGroup, fmt.Sprintf("Группа %s уже есть.", newGroupName)))
 				} else if b && err == nil {
 
@@ -170,16 +194,14 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 				} else {
 					logger.Error(err)
 				}
-				textmsg.MesInfo.Message.Chat.ID = 0
 
-				callback := tgb.NewCallback(update.CallbackQuery.ID, "✅")
-				if _, err := bot.Request(callback); err != nil {
-					logger.Error(err)
-				}
+				_, _ = bot.Request(tgb.NewCallback(update.CallbackQuery.ID, "✅"))
 
 				textmsg.MesInfo.Message.Chat.ID = 0
 			}
+
 		} else {
+
 			_, _ = bot.Send(tgb.NewMessage(update.CallbackQuery.Message.Chat.ID, "Время вышло, повторите запрос."))
 			_, _ = bot.Request(tgb.NewCallback(update.CallbackQuery.ID, "✅"))
 		}
@@ -194,7 +216,6 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 		if err != nil {
 			logger.Error(err)
 		}
-		logger.Infof("from callback new user %d", chatmembers.NewUserID)
 
 		for _, user := range users {
 
@@ -210,22 +231,17 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 
 			_, _ = bot.Send(msg)
 
-			callback := tgb.NewCallback(update.CallbackQuery.ID, "✅")
-			if _, err := bot.Request(callback); err != nil {
-				logger.Error(err)
-			}
+			_, _ = bot.Request(tgb.NewCallback(update.CallbackQuery.ID, "✅"))
 
 		} else {
 
 			msg := tgb.NewMessage(cfg.ModersGroupID.ModeratorsGroup, "ID пользователя == 0! Видимо прошло слишком много времени."+
 				"Списки пользователей можно запросить из `меню`.")
 			msg.ParseMode = "markdown"
-			_, _ = bot.Send(msg)
 
-			callback := tgb.NewCallback(update.CallbackQuery.ID, "❌")
-			if _, err := bot.Request(callback); err != nil {
-				logger.Error(err)
-			}
+			_, _ = bot.Send(msg)
+			_, _ = bot.Request(tgb.NewCallback(update.CallbackQuery.ID, "❌"))
+
 		}
 
 	case "moderator_group_list":
@@ -242,21 +258,23 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 			text := fmt.Sprintf("\n№: %d\nМодераторы: %s\nПользователи: %s", group.ID,
 				group.ModerGroupTitle, group.UserGroupTitle)
 
-			list = list + text + "\n\n"
+			list = list + text + "\n"
 
 		}
 
 		_, _ = bot.Send(tgb.NewMessage(update.CallbackQuery.Message.Chat.ID, list))
 
-		callback := tgb.NewCallback(update.CallbackQuery.ID, "✅")
-		if _, err := bot.Request(callback); err != nil {
-			logger.Error(err)
-		}
+		_, _ = bot.Request(tgb.NewCallback(update.CallbackQuery.ID, "✅"))
+
+	case "moderator_member":
+
+		_, _ = bot.Send(tgb.NewMessage(update.CallbackQuery.Message.Chat.ID, cfg.MsgText.MsgModeratorMember))
+
+		_, _ = bot.Request(tgb.NewCallback(update.CallbackQuery.ID, "📩"))
 
 	case "remove_button":
 
-		msg := tgb.NewEditMessageText(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.MessageID, update.CallbackQuery.Message.Text)
-		_, _ = bot.Send(msg)
+		_, _ = bot.Send(tgb.NewEditMessageText(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.MessageID, update.CallbackQuery.Message.Text))
 
 	}
 

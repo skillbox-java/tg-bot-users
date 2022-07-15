@@ -75,15 +75,19 @@ func main() {
 
 				//com menu (only moderator's chats)
 				comandmsg.CommandQueryDo(update, bot, logger)
+
 			} else if update.Message.NewChatMembers != nil {
 
 				chatmembers.WithChatMembersDo(update, bot, logger, cfg)
 			}
 
 		} else if update.CallbackQuery != nil {
+
 			callbackmsg.WithCallBackDo(update, bot, logger, cfg)
 			// TODO inline help
+
 		} else if update.InlineQuery != nil {
+
 			log.Println("response from Inline query")
 			query := update.InlineQuery.Query
 
