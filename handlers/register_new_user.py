@@ -43,7 +43,6 @@ def callback(call):
     if call.message:
         if call.data == 'grac':
             winner = is_winner_id_select(bot_message_id=call.message.message_id)
-            print(winner)
             is_winner_record(winner_id=winner)
 
             remove_list = buttons_remover(chat_id=call.message.chat.id)

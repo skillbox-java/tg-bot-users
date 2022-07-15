@@ -162,7 +162,6 @@ def is_winner_id_select(
                         WHERE temp_storage.bot_message_id={bot_message_id};''')
         id = []
         for i in result:
-            print(i)
             id.append(i)
 
         return id[0][0]
