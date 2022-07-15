@@ -18,6 +18,10 @@ public class UserJoiningNotificationService {
     }
 
     public List<UserJoiningNotification> findByChatIdAndAnniversaryNumber(Long chatId, Integer anniversaryNumber) {
-        return userJoiningNotificationRepository.findByChatIdAndAnniversaryNumber(chatId, anniversaryNumber);
+        return userJoiningNotificationRepository.findByUserJoining_ChatIdAndUserJoining_AnniversaryNumber(chatId, anniversaryNumber);
+    }
+
+    public List<UserJoiningNotification> findByUserIdAndChatIdAndAnniversaryNumber(Long userId, Long chatId, Integer anniversaryNumber) {
+        return userJoiningNotificationRepository.findByUserJoining_UserIdAndUserJoining_ChatIdAndUserJoining_AnniversaryNumber(userId, chatId, anniversaryNumber);
     }
 }

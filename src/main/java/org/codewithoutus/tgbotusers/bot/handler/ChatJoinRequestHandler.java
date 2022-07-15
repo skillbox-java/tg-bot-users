@@ -32,15 +32,14 @@ public class ChatJoinRequestHandler extends Handler {
             return false;
         }
 
-        // TODO: если присоединяется сразу несколько в чат -- на будущее
-        // TODO: если присоединяющийся пользователь бот и юбилейный -- на далёкое будущее
-        // TODO: юбилейные номера могут быть разные для каждого чата -- на далёкое будущее
+        // TODO: Pavel (подумать) -- если присоединяется сразу несколько в чат (на будущее)
+        // TODO: Pavel (подумать) -- если присоединяющийся пользователь бот и юбилейный (на далёкое будущее)
+        // TODO: Pavel (подумать) -- юбилейные номера могут быть разные для каждого чата (на далёкое будущее)
 
         User user = chatJoinRequest.from();
         long chatId = chatJoinRequest.chat().id();
         int joinNumber = telegramService.getChatMembersCount(chatId);
         int anniversaryNumber = chatSettings.getAnniversaryJoinNumber(chatId, joinNumber);
-
         if (anniversaryNumber == 0 || !chatUserService.isChatUser(chatId)) {
             return false;
         }
@@ -52,10 +51,9 @@ public class ChatJoinRequestHandler extends Handler {
         userJoining.setJoinTime(LocalDateTime.from(Instant.ofEpochSecond(chatJoinRequest.date())));
         userJoining = userJoiningService.save(userJoining);
 
-        // TODO: оповещение модераторов
-        // проверяем, что ещё никто не был поздравлен в этой группе с этим юбилейным номером, иначе ничего не делаем
-        // notificationService.notifyModeratorsAboutUserJoining();
-
+        if (!userJoiningService.existCongratulatedUser(chatId, anniversaryNumber)) {
+            notificationService.notifyModeratorsAboutUserJoining(userJoining);
+        }
         return true;
     }
 }

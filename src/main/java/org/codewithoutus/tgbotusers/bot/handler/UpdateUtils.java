@@ -20,6 +20,12 @@ public class UpdateUtils {
                 .orElse(Boolean.FALSE);
     }
 
+    public static boolean isForwardMessage(Update update) {
+        return Optional.ofNullable(update.message())
+                .map(Message::forwardDate)
+                .isPresent();
+    }
+
     public static String getMessageText(Update update) {
         return Optional.ofNullable(update.message())
                 .map(Message::text)
@@ -29,12 +35,6 @@ public class UpdateUtils {
     public static Chat getChat(Update update) {
         return Optional.ofNullable(update.message())
                 .map(Message::chat)
-                .orElse(null);
-    }
-
-    public static User getFromUser(Update update) {
-        return Optional.ofNullable(update.message())
-                .map(Message::from)
                 .orElse(null);
     }
 

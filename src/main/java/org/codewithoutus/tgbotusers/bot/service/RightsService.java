@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RightsService {
 
+    // TODO: Алекс -- нам это нужно?
+
 //    private final TelegramBot bot;
 //
 //    public void initialiseAdministratorRights() {
@@ -23,7 +25,7 @@ public class RightsService {
 //    }
 //
 //    private void setAdministratorRights() {
-//        var chatAdministratorRights = new ChatAdministratorRights();    // TODO add isAnonymous(boolean)
+//        var chatAdministratorRights = new ChatAdministratorRights();
 //        chatAdministratorRights.canInviteUsers(true);
 //
 //        var setMyDefaultAdministratorRights = new SetMyDefaultAdministratorRights();

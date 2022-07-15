@@ -1,6 +1,5 @@
 package org.codewithoutus.tgbotusers.bot.handler;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.pengrad.telegrambot.model.Update;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,14 +8,12 @@ import org.codewithoutus.tgbotusers.bot.keyboard.CongratulationDecisionKeyboard;
 import org.codewithoutus.tgbotusers.bot.keyboard.KeyboardUtils;
 import org.codewithoutus.tgbotusers.bot.service.NotificationService;
 import org.codewithoutus.tgbotusers.config.AppStaticContext;
-import org.codewithoutus.tgbotusers.model.entity.TelegramCallbackData;
 import org.codewithoutus.tgbotusers.model.entity.UserJoining;
 import org.codewithoutus.tgbotusers.model.enums.CongratulateStatus;
-import org.codewithoutus.tgbotusers.model.service.TelegramCallbackDataService;
 import org.codewithoutus.tgbotusers.model.service.UserJoiningService;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
@@ -27,7 +24,6 @@ public class CallbackQueryHandler extends Handler {
 
     private final NotificationService notificationService;
     private final UserJoiningService userJoiningService;
-    private final TelegramCallbackDataService telegramCallbackDataService;
 
     @Override
     protected boolean handle(Update update) {
@@ -50,66 +46,51 @@ public class CallbackQueryHandler extends Handler {
         }
     }
 
+    @Transactional
     private boolean handleCongratulationDecision(String command, Map<String, Object> callbackQueryData) {
-        // TODO: доделать реакцию на команду модераторов "поздравить" или "отклонить"
         Optional<CongratulationDecisionKeyboard> key = KeyboardUtils.defineKey(CongratulationDecisionKeyboard.class, command);
         if (key.isEmpty()) {
             return false;
         }
         CongratulationDecisionKeyboard decision = key.get();
-        Map<String, Object> callbackData = getCallbackDataFromDatabase(callbackQueryData);
+        Integer userJoiningId = (Integer) callbackQueryData.get(AppStaticContext.CALLBACK_QUERY_DATA_ID_FIELD);
+        UserJoining userJoining = userJoiningService.findById(userJoiningId)
+                .orElseThrow(() -> new IllegalStateException("CallbackQueryData with no exist user joining ID" + userJoiningId));
 
-        // TODO: проверить, что данные есть в мапе callbackData
-        // TODO: все данные определены в NotificationService.notifyModeratorsAboutUserJoining()
-        Long chatId = (Long) callbackData.get("chatId");
-        Long userId = (Long) callbackData.get("userId");
-        Integer anniversaryNumber = (Integer) callbackData.get("anniversaryNumber");
+        Long chatId = userJoining.getChatId();
+        Long userId = userJoining.getUserId();
+        Integer anniversaryNumber = userJoining.getAnniversaryNumber();
 
-        // TODO: проверить, что уже не поздравили кого-тотме, иначе отмена
-        // TODO: проверить, что кого хотим поздравить в статусе WAIT, иначе отмена
+        // TODO: Pavel (подумать) -- если из списка, то можно поздравить отклоненного раннее, а иначе нельзя
+        if (userJoiningService.existCongratulatedUser(chatId, anniversaryNumber)) {
+            return true;
+        }
 
         CongratulateStatus newStatus = (decision == CongratulationDecisionKeyboard.CONGRATULATE)
                 ? CongratulateStatus.CONGRATULATE
                 : CongratulateStatus.DECLINE;
-        UserJoining userJoining = userJoiningService.findByUserIdAndChatId(userId, chatId);
         userJoining.setStatus(newStatus);
-        userJoiningService.save(userJoining);
+//        userJoiningService.save(userJoining); // TODO: Алекс -- check, that entity was updated without save() method
 
         if (decision == CongratulationDecisionKeyboard.CONGRATULATE) {
-            // TODO: удалить кнопки у всех неудачников =)
-            // notificationService.deleteKeyboardFromJoiningNotifications(chatId, LIST, anniversaryNumber);
-            notificationService.notifyUserAboutJoining(chatId, userId, anniversaryNumber);
+            notificationService.deleteKeyboardFromAllJoiningNotifications(chatId, anniversaryNumber);
+            notificationService.notifyUserAboutAnniversaryJoining(userJoining);
 
-        } else {
-            notificationService.deleteKeyboardFromJoiningNotification(chatId, userId, anniversaryNumber);
+        } else if (decision == CongratulationDecisionKeyboard.DECLINE) {
+            notificationService.deleteKeyboardFromJoiningNotification(userId, chatId, anniversaryNumber);
         }
         return true;
     }
 
+    @Transactional
     private boolean handleProvidingAnniversaryStatistic(String command, Map<String, Object> callbackQueryData) {
-        // TODO: реализовать вывод списка счастивчиков "/списокЮбилейный" или "/luckyList"
-        // TODO: уже поздравленные имеют корону, можно добавить в шаблоны и вставлять в начало, неудачники не показываются
-        // TODO: если на anniversary number не было поздравления, то выводятся все претенденты с кнопками CongratulationDecisionKeyboard
-        // TODO: если поздравленного нет, то отклоненные тоже выводятся
-        // TODO: все новые кнопки нужно записывать в таблицу UserJoiningNotification, чтобы потом также удалялись
-        // TODO: можно попробовать выводить все-все чаты, а потом доработать -- на будущее
-        return false;
-    }
+        // TODO: Алекс -- реализовать вывод списка счастивчиков "/списокЮбилейный" или "/luckyList"
 
-    private Map<String, Object> getCallbackDataFromDatabase(Map<String, Object> callbackQueryData) {
-        Integer id = (Integer) callbackQueryData.get(AppStaticContext.CALLBACK_QUERY_DATA_ID_FIELD);
-        if (id == null) {
-            return Collections.emptyMap();
-        }
-        try {
-            TelegramCallbackData telegramCallbackData = telegramCallbackDataService.findById(id);
-            if (telegramCallbackData != null) {
-                return AppStaticContext.OBJECT_MAPPER.readValue(telegramCallbackData.getData(), new TypeReference<>() {
-                });
-            }
-        } catch (Exception ex) {
-            log.error("CallbackData with id {} deserialize error", id);
-        }
-        return Collections.emptyMap();
+        // TODO: Алекс -- уже поздравленные имеют корону, можно добавить в шаблоны и вставлять в начало, неудачники не показываются
+        // TODO: Алекс -- если на anniversary number не было поздравления, то выводятся все претенденты с кнопками CongratulationDecisionKeyboard
+        // TODO: Алекс -- если поздравленного нет, то отклоненные тоже выводятся
+        // TODO: Алекс -- все новые кнопки нужно записывать в таблицу UserJoiningNotification, чтобы потом также удалялись
+        // TODO: Алекс -- можно попробовать выводить все-все чаты, а потом доработать -- на будущее
+        return false;
     }
 }

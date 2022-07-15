@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class ChatModerator {
+public class ChatModerator { // TODO: Pavel -- переименовать сущность и сопутствующие переменные (после задачи Макса)
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

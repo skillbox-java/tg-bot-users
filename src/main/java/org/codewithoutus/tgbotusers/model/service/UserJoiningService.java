@@ -2,10 +2,12 @@ package org.codewithoutus.tgbotusers.model.service;
 
 import lombok.RequiredArgsConstructor;
 import org.codewithoutus.tgbotusers.model.entity.UserJoining;
+import org.codewithoutus.tgbotusers.model.enums.CongratulateStatus;
 import org.codewithoutus.tgbotusers.model.repository.UserJoiningRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,11 +19,15 @@ public class UserJoiningService {
         return userJoiningRepository.save(userJoining);
     }
 
-    public UserJoining findByUserIdAndChatId(Long userId, Long chatId) {
-        return userJoiningRepository.findByUserIdAndChatId(userId, chatId);
+    public Optional<UserJoining> findById(int id) {
+        return userJoiningRepository.findById(id);
     }
 
     public List<UserJoining> findByChatId(Long chatId) {
         return userJoiningRepository.findByChatId(chatId);
+    }
+
+    public boolean existCongratulatedUser(long chatId, int anniversaryNumber) {
+        return userJoiningRepository.existsByChatIdAndAnniversaryNumberAndStatus(chatId, anniversaryNumber, CongratulateStatus.CONGRATULATE);
     }
 }

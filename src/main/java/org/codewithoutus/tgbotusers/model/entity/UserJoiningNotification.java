@@ -20,12 +20,6 @@ public class UserJoiningNotification {
     @Column(nullable = false)
     private Long sentMessageChatId;
 
-    @Column(nullable = false)
-    private Long userId;
-
-    @Column(nullable = false)
-    private Long chatId;
-
-    @Column(nullable = false)
-    private Integer anniversaryNumber;
+    @ManyToOne
+    private UserJoining userJoining;
 }

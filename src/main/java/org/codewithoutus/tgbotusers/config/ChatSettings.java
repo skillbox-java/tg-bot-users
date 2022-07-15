@@ -1,6 +1,5 @@
 package org.codewithoutus.tgbotusers.config;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -37,9 +36,6 @@ public class ChatSettings {
     @Getter(AccessLevel.NONE)
     private Map<Long, List<Long>> chatsSettingsData; // only used for loading from application-settings file
 
-    @JsonIgnore
-    private List<ChatModerator> moderatorsChats; // real group-settings, mapped to DB Entities
-
     public int getAnniversaryJoinNumber(long chatId, int joinNumber) {
         return anniversaryNumbers.stream()
                 .filter(anniversaryNumber -> joinNumber >= anniversaryNumber)
@@ -50,11 +46,9 @@ public class ChatSettings {
 
     @PostConstruct
     private void synchronizeDataBaseSettings() {
-        moderatorsChats = chatModeratorService.findAll();
-        if (rewriteDatabaseSettingsOnStartup || moderatorsChats.isEmpty()) {
+        if (rewriteDatabaseSettingsOnStartup || chatModeratorService.findAll().isEmpty()) {
             rewriteDataBaseSettings();
         }
-        moderatorsChats = chatModeratorService.findAll();
     }
 
     @Transactional

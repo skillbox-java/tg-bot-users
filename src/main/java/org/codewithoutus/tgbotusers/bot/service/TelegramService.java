@@ -1,6 +1,8 @@
 package org.codewithoutus.tgbotusers.bot.service;
 
+import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.User;
+import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.*;
 import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.SendResponse;
@@ -40,16 +42,19 @@ public class TelegramService {
         return sendRequest(message);
     }
 
-
-    public void editMessageReplyMarkup(EditMessageReplyMarkup editMessageReplyMarkup) {
-        sendRequest(editMessageReplyMarkup);
-    }
-
-    public int getChatMembersCount(long chatId) {
-        return sendRequest(new GetChatMemberCount(chatId)).count();
+    public void removeKeyboardFromMessage(long chatId, int messageId) {
+        sendRequest(new EditMessageReplyMarkup(chatId, messageId).replyMarkup(new InlineKeyboardMarkup()));
     }
 
     public User getUser(long chatId, long userId) {
         return sendRequest(new GetChatMember(chatId, userId)).chatMember().user();
+    }
+
+    public Chat getChat(long chatId) {
+        return sendRequest(new GetChat(chatId)).chat();
+    }
+
+    public int getChatMembersCount(long chatId) {
+        return sendRequest(new GetChatMemberCount(chatId)).count();
     }
 }
