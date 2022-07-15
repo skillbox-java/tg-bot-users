@@ -7,6 +7,7 @@ build:
 
 image:
 	docker build -t skillbot:latest .
+	docker image prune --filter label=stage=tgbotbuilder
 
 run:
 	go run cmd/main.go
