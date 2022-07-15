@@ -153,4 +153,21 @@ def storage_cleaner(
         cursor.execute(f'''DELETE FROM 'temp_storage' WHERE chat_id={chat_id};''')
 
 
+def is_winner_record(
+        bot_message_id: int,
+        ) -> None:
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        # cursor.execute(f'''INSERT INTO users (is_winner) VALUES (?)
+        #                 SELECT users.is_winner FROM  users Join temp_storage ON users.id=temp_storage.record_id
+        #                 WHERE temp_storage.bot_message_id={bot_message_id};''')
+        a = cursor.execute(f'''SELECT users.is_winner FROM users Join temp_storage ON users.id=temp_storage.record_id
+                        WHERE temp_storage.bot_message_id={bot_message_id};''')
+        for i in a:
+
+            print(i, end='')
+
+
+
+
 

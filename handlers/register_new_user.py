@@ -1,7 +1,8 @@
 from loader import bot
 from database.commands import insert, insert2
 import datetime
-from database.commands import winner_check, select_id_from_users, temp_save, buttons_remover, storage_cleaner
+from database.commands import winner_check, select_id_from_users,\
+    temp_save, buttons_remover, storage_cleaner, is_winner_record
 from telebot import types
 
 
@@ -14,25 +15,26 @@ def handler_new_member(message):
     shame = types.InlineKeyboardButton(text='Не поздравляем', callback_data='decline')
     markup.add(congratulations, shame)
 
+
     if not message.from_user.is_bot and not winner_check(user_number): # тут будет еще проверка count % 500 == 0
         # record_id = select_id_from_users(message.from_user.id)
-
 
         insert2(
             nickname=message.from_user.username, user_name=message.from_user.first_name,
             user_id=message.from_user.id, dtime=datetime.datetime.now(),
-            chat_id=message.chat.id, is_winner=0)
+            chat_id=message.chat.id, is_winner=1)
 
 
-        bot.send_message(message.chat.id, f'Не бот и отсутствует в списке победителей. Что с ним делать?{select_id_from_users(message.from_user.id)}',
+        bot_message = bot.send_message(message.chat.id, f'Не бот и отсутствует в списке победителей. '
+                                          f'Что с ним делать?',
                          reply_markup=markup)
 
         temp_save(chat_id=message.chat.id,
                   record_id=select_id_from_users(user_id=message.from_user.id),
-                  bot_message_id=message.id
+                  bot_message_id=bot_message.id
                   )
 
-        storage_cleaner(chat_id=message.chat.id)
+        # storage_cleaner(chat_id=message.chat.id)
 
     else:
         bot.send_message(message.chat.id, f'Есть в списке победителей{winner_check(user_number)}')
@@ -41,10 +43,10 @@ def handler_new_member(message):
 def callback(call):
     if call.message:
         if call.data == 'grac':
+            is_winner_record(bot_message_id=call.message.message_id)
 
             bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
-            bot.send_message(call.message.chat.id, f'Поздравили и добавили в базу. Тест по message id '
-                                                   f'{buttons_remover(chat_id=call.message.chat.id)}')
+            bot.send_message(call.message.chat.id, f'Поздравили и добавили в базу.')
 
         else:
             bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
