@@ -2,7 +2,7 @@ from loader import bot
 from database.commands import insert, insert2
 import datetime
 from database.commands import winner_check, select_id_from_users,\
-    temp_save, buttons_remover, storage_cleaner, is_winner_record
+    temp_save, buttons_remover, storage_cleaner, is_winner_id_select, is_winner_record
 from telebot import types
 
 
@@ -22,7 +22,7 @@ def handler_new_member(message):
         insert2(
             nickname=message.from_user.username, user_name=message.from_user.first_name,
             user_id=message.from_user.id, dtime=datetime.datetime.now(),
-            chat_id=message.chat.id, is_winner=1)
+            chat_id=message.chat.id, is_winner=0)
 
 
         bot_message = bot.send_message(message.chat.id, f'Не бот и отсутствует в списке победителей. '
@@ -43,7 +43,10 @@ def handler_new_member(message):
 def callback(call):
     if call.message:
         if call.data == 'grac':
-            is_winner_record(bot_message_id=call.message.message_id)
+            winner = is_winner_id_select(bot_message_id=call.message.message_id)
+            print(winner)
+            is_winner_record(winner_id=winner, winner_result=1)
+
 
             bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
             bot.send_message(call.message.chat.id, f'Поздравили и добавили в базу.')

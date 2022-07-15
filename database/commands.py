@@ -153,19 +153,31 @@ def storage_cleaner(
         cursor.execute(f'''DELETE FROM 'temp_storage' WHERE chat_id={chat_id};''')
 
 
-def is_winner_record(
+def is_winner_id_select(
         bot_message_id: int,
         ) -> None:
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
         # cursor.execute(f'''INSERT INTO users (is_winner) VALUES (?)
-        #                 SELECT users.is_winner FROM  users Join temp_storage ON users.id=temp_storage.record_id
-        #                 WHERE temp_storage.bot_message_id={bot_message_id};''')
-        a = cursor.execute(f'''SELECT users.is_winner FROM users Join temp_storage ON users.id=temp_storage.record_id
+        #                 SELECT users.is_winner FROM users Join temp_storage ON users.id=temp_storage.record_id
+        #                 WHERE temp_storage.bot_message_id={bot_message_id};''', (is_winner,))
+        result = cursor.execute(f'''SELECT users.id FROM users Join temp_storage ON users.id=temp_storage.record_id
                         WHERE temp_storage.bot_message_id={bot_message_id};''')
-        for i in a:
+        id = []
+        for i in result:
+            id.append(i)
 
-            print(i, end='')
+        print(id[0][0])
+        return id[0][0]
+
+
+def is_winner_record(winner_id: int,
+                     winner_result: int,
+        ) -> None:
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        cursor.execute(f'''UPDATE users set is_winner = '1' 
+                        WHERE id={winner_id}''')
 
 
 
