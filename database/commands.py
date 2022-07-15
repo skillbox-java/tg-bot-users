@@ -20,13 +20,18 @@ def insert2(nickname: str,
             user_name: str,
             chat_id: int,
             user_id: int,
+            chat_name: str,
+            congr_number: int,
             is_winner: int,
             dtime: datetime = datetime.datetime.now().isoformat()) -> None:
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
         cursor.execute("""
-        INSERT INTO 'users' (nickname, user_name, chat_id, user_id, dtime_connetion, is_winner) VALUES (?, ?, ?, ?,?,?);
-        """, (nickname, user_name, chat_id, user_id, dtime, is_winner))
+        INSERT INTO 'users' (nickname, user_name, chat_name,
+                            congr_number, chat_id, user_id, 
+                            dtime_connetion, is_winner) 
+                            VALUES (?, ?, ?, ?,?,?,?,?);
+        """, (nickname, user_name, chat_name, congr_number, chat_id, user_id, dtime, is_winner))
 
 
 def select_lucky(moderator_id):

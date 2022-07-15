@@ -10,6 +10,14 @@ from telebot import types
 def handler_new_member(message):
     count = bot.get_chat_members_count(message.chat.id)
     user_number=message.from_user.id
+    chat_name = message.chat.title
+    nickname = message.from_user.username
+    user_name = message.from_user.first_name
+    dtime = datetime.datetime.now()
+
+
+
+
     markup = types.InlineKeyboardMarkup(row_width=1)
     congratulations = types.InlineKeyboardButton(text='Поздравляем', callback_data='grac')
     shame = types.InlineKeyboardButton(text='Не поздравляем', callback_data='decline')
@@ -17,16 +25,18 @@ def handler_new_member(message):
 
 
     if not message.from_user.is_bot and not winner_check(user_number): # тут будет еще проверка count % 500 == 0
-        # record_id = select_id_from_users(message.from_user.id)
+
 
         insert2(
             nickname=message.from_user.username, user_name=message.from_user.first_name,
+            congr_number = count, chat_name=message.chat.title,
             user_id=message.from_user.id, dtime=datetime.datetime.now(),
             chat_id=message.chat.id, is_winner=0)
 
 
-        bot_message = bot.send_message(message.chat.id, f'Не бот и отсутствует в списке победителей. '
-                                          f'Что с ним делать?',
+        bot_message = bot.send_message(message.chat.id,
+                f'В {chat_name} вступил юбилейный пользователь {nickname} {user_name}\n'
+                f'Порядковый номер вступления: {count}, время вступления: {dtime}',
                          reply_markup=markup)
 
         temp_save(chat_id=message.chat.id,
@@ -35,8 +45,8 @@ def handler_new_member(message):
                   )
 
 
-    else:
-        bot.send_message(message.chat.id, f'Есть в списке победителей{winner_check(user_number)}')
+    # else:
+    #     bot.send_message(message.chat.id, f'Есть в списке победителей{winner_check(user_number)}')
 
 @bot.callback_query_handler(func=lambda call: call.data == "grac" or call.data == "decline")
 def callback(call):
