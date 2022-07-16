@@ -162,13 +162,17 @@ async def set_data_groups(values):
                                    f' VALUES(?, ?);', values=values)
 
 
-async def check_grant_numbers(group_id):
-    return await db_execute(
-        string=f"SELECT COUNT(*) FROM grant_numbers WHERE group_id LIKE '%{group_id}%'", get=True)
+# async def check_grant_numbers(group_id):
+#     return await db_execute(
+#         string=f"SELECT COUNT(*) FROM grant_numbers WHERE group_id LIKE '%{group_id}%'", get=True)
 
 
 async def get_data_from_grant_numbers(group_id):
     return await db_execute(string=f'SELECT numbers FROM grant_numbers WHERE group_id={group_id}', get=True)
+
+
+async def get_numbers():
+    return await db_execute(string='SELECT * FROM grant_numbers', get=True)
 
 
 async def vacuum():

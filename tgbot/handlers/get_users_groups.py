@@ -5,6 +5,7 @@ from aiogram.types import ChatType
 from Utils.check_message_user_groups import check_users_groups
 from Utils.delete_doubles import delete_doubles_ids
 from Utils.get_ids_for_grant_numbers import get_ids_for_multiple_record
+from keyboards.inline import get_conf_groups_kb
 from misc.states import Configure
 from tgbot.Utils.DBWorker import set_data_groups, get_user_ids_from_groups, set_group_ids_grant_numbers
 
@@ -34,6 +35,8 @@ async def get_users_group(message: types.Message, state: FSMContext):
 
     await message.answer('Записал')
     await state.finish()
+    await message.answer(text='⚙ Настройка таблицы соответствия групп ⚙',
+                         reply_markup=await get_conf_groups_kb())
 
 
 def register_get_users_group(dp: Dispatcher):

@@ -9,16 +9,20 @@ from aiogram.types import AllowedUpdates
 
 from filters.moder_group import IsModerGroup
 from handlers.add_groups_callback import register_add_groups
+from handlers.cancel import register_cancel_menu
 from handlers.check import register_check_queue
-from handlers.configure_groups import register_configure_groups
+from handlers.configure_groups_callback import register_configure_groups
+from handlers.configure_numbers_callback import register_configure_numbers
 from handlers.delete_from_groups import register_delete_from_groups
 from handlers.delete_groups_callback import register_delete_groups_cb
 from handlers.get_granted import register_get_granted
 from handlers.get_mod_group import register_get_mod_group
 from handlers.get_users_groups import register_get_users_group
-from handlers.reset_menu import register_reset_menu
+from handlers.main_menu import register_main_menu
+from handlers.back_to_main_menu import register_back_to_main
 from handlers.restore import register_restore
 from handlers.show_groups_callback import register_show_groups
+from handlers.show_numbers_callback import register_show_numbers
 from misc.set_commands import set_default_commands
 from tgbot.handlers.grant_cancel_callback import register_cancel_grant
 from tgbot.handlers.grant_callback import register_grant
@@ -65,10 +69,13 @@ def register_all_handlers(dp):
     register_add_groups(dp)
     register_get_mod_group(dp)
     register_get_users_group(dp)
-    register_reset_menu(dp)
     register_delete_groups_cb(dp)
     register_delete_from_groups(dp)
-
+    register_main_menu(dp)
+    register_back_to_main(dp)
+    register_cancel_menu(dp)
+    register_configure_numbers(dp)
+    register_show_numbers(dp)
 
 
 async def main():
