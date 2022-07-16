@@ -171,6 +171,15 @@ async def get_data_from_grant_numbers(group_id):
     return await db_execute(string=f'SELECT numbers FROM grant_numbers WHERE group_id={group_id}', get=True)
 
 
+async def set_data_numbers(values):
+    return await db_execute(string=f'INSERT OR REPLACE INTO grant_numbers(group_id, numbers)'
+                                   f' VALUES(?, ?);', values=values)
+
+
+async def delete_data_from_grant_numbers(ids):
+    return await db_execute(string=f'DELETE FROM grant_numbers WHERE id=?', values=ids, multiple=True)
+
+
 async def get_numbers():
     return await db_execute(string='SELECT * FROM grant_numbers', get=True)
 

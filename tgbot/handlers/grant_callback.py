@@ -29,8 +29,8 @@ async def grant_user(call: types.CallbackQuery):
 
     chat_member = await call.bot.get_chat_member(group_id_users, user_id)
     if not chat_member:
-        await call.answer(text="Такого пользователя уже нет в группе", show_alert=True)
         await call.bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=message_id, reply_markup=None)
+        await call.answer(text="Такого пользователя уже нет в группе", show_alert=True)
         raise CancelHandler()
 
     text = f'🎉 Поздравляю, {user}, как же удачно попали в нужное место и в нужное время!\n' \
