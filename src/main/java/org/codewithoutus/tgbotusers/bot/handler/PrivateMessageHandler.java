@@ -26,6 +26,7 @@ public class PrivateMessageHandler extends Handler {
     private final TelegramService telegramService;
     private final ChatModeratorService chatModeratorService;
 
+
     @Override
     protected boolean handle(Update update) {
         if (!UpdateUtils.isPrivateMessage(update)) {
@@ -36,10 +37,11 @@ public class PrivateMessageHandler extends Handler {
         Long chatId = UpdateUtils.getChat(update).id();
 
         if (handleForwardMessage(chatId, update)
-                || handleAdminRequest(chatId, text)
+                || handleAdminRequest(update, chatId, text)
                 || handleTestRequest(chatId, text)) {
             return true;
         }
+
         telegramService.sendMessage(new SendMessage(chatId, SORRY));
         return false;
     }
@@ -56,10 +58,41 @@ public class PrivateMessageHandler extends Handler {
         return true;
     }
 
-    private boolean handleAdminRequest(Long chatId, String text) {
+    private boolean handleAdminRequest(Update update, Long chatId, String text) {
         // TODO: Макс -- реализовать админку (добавление и удаление чатов)
         // TODO: Макс -- вначале строковыми командами, а потом можно попробовать кнопки
         // TODO: Макс -- изменения настроек должны сохраняться в базе
+
+        //мой id=161855902  /11725
+        //TODO проверка пришла ли команда от админа или от левого,если от админа дальше иначе брек
+        //TODO получить номер группы
+        //TODO добавить группу в БД
+
+        if (text.startsWith(ADD_MODER_CHAT)) {//парсим команду
+            long chatID = Integer.parseInt(text.substring(ADD_MODER_CHAT.length()).trim());//парсим id группы
+            Chat chatFrom = UpdateUtils.getChat(update);//получаем чат из которого писали боту
+
+            if (chatID > 0) {//проверяем на валидность номер чата
+                //вариант от Алексея
+//                if(!chatModeratorService.findByIDModerChatInDatabase(chatID)){//проверяем есть ли этот ид уже в базе
+//                    telegramService.sendMessage(new SendMessage(chatFrom.id(), String.format(ADD,chatID)));
+                ChatModeratorRepository rep = chatModeratorService.getChatModeratorRepository();
+                if ((rep.findByChatId(chatID).isEmpty())) {
+                    telegramService.sendMessage(new SendMessage(chatFrom.id(), String.format(ADD, chatID)));
+                    System.out.println("--------list empty, add ID-----------");
+                    System.out.println(rep.findByChatId(chatID).toString());
+                    return true;
+                } else {
+                    System.out.println("--------list NOT empty,NOT add ID-----------");
+                    System.out.println(rep.findByChatId(chatID).toString());
+                    telegramService.sendMessage(new SendMessage(chatFrom.id(), String.format(NOT, chatID)));
+                    return true;
+                }
+            }
+            telegramService.sendMessage(new SendMessage(chatFrom.id(), String.format(ERROR, chatID)));
+            return true;
+        }
+
         return false;
     }
 
@@ -77,37 +110,7 @@ public class PrivateMessageHandler extends Handler {
                 }
             }
         }
-        //мой id=161855902  /11725
-        //TODO проверка пришла ли команда от админа или от левого,если от админа дальше иначе брек
-        //TODO получить номер группы
-        //TODO добавить группу в БД
-        else if (text.startsWith(ADD_MODER_CHAT)) {//парсим команду
-            long chatID = Integer.parseInt(text.substring(ADD_MODER_CHAT.length()).trim());//парсим id группы
-            Chat chatFrom = UpdateUtils.getChat(update);//получаем чат из которого писали боту
-            if (chatID > 0) {//проверяем на валидность номер чата
-                //вариант от Алексея
-//                if(!chatModeratorService.findByIDModerChatInDatabase(chatID)){//проверяем есть ли этот ид уже в базе
-//                    telegramService.sendMessage(new SendMessage(chatFrom.id(), String.format(ADD,chatID)));
-                ChatModeratorRepository rep = chatModeratorService.getChatModeratorRepository();
-                if ((rep.findByChatId(chatID).toString().matches("Optional.empty"))) {
-                    telegramService.sendMessage(new SendMessage(chatFrom.id(), String.format(ADD, chatID)));
-                    System.out.println("--------list empty, add ID-----------");
-                    System.out.println(rep.findByChatId(chatID).toString());
-                    return true;
-                } else {
-                    System.out.println("--------list NOT empty,NOT add ID-----------");
-                    System.out.println(rep.findByChatId(chatID).toString());
-                    telegramService.sendMessage(new SendMessage(chatFrom.id(), String.format(NOT, chatID)));
-                    return true;
-                }
-            }
-            telegramService.sendMessage(new SendMessage(chatFrom.id(), String.format(ERROR, chatID)));
-            return true;
-        }
-
-        // TODO: реализовать админку: добавление и удаление чатов
-
-        telegramService.sendMessage(new SendMessage(chat.id(), String.format(SORRY, text)));
+        telegramService.sendMessage(new SendMessage(chatId, String.format(SORRY, text)));
         return true;
     }
 }
