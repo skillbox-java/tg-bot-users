@@ -31,4 +31,13 @@ public class ChatModeratorService {
     public List<ChatModerator> findByChatUsersId(Long chatId) {
         return chatModeratorRepository.findByChatUsers_ChatId(chatId);
     }
+
+    public ChatModeratorRepository getChatModeratorRepository() {
+        return chatModeratorRepository;
+    }
+    public boolean findByIDModerChatInDatabase(Long chatId){
+        return chatModeratorRepository.existsByChatId(chatId);
+    }
+
+
 }
