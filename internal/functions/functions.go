@@ -7,6 +7,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
+	"os"
 	"path"
 	"skbot/internal/config"
 	"skbot/internal/data"
@@ -22,6 +23,11 @@ type list struct {
 }
 
 func NewFuncList(cfg *config.Config, logger *logging.Logger) (FuncList, error) {
+
+	err := os.MkdirAll(cfg.DBFilePath, 0777)
+	if err != nil {
+		logger.Error(err)
+	}
 
 	liteDb, err := sql.Open("sqlite3", path.Join(cfg.DBFilePath, "skb_bot_db.db"))
 	if err != nil {
