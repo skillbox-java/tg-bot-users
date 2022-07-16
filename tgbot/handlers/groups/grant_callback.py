@@ -58,7 +58,6 @@ async def grant_user(call: types.CallbackQuery):
             granted.append((message[2], message[3], message[5], message[6], message[4], '', message[7], message[8],
                             '', message[10]))
 
-
     await delete_from_queue(group_id_users)
     await vacuum()
 

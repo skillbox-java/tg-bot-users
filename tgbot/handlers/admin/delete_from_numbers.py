@@ -2,7 +2,7 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import ChatType
 
-from Utils.DBWorker import delete_data_from_groups, delete_data_from_grant_numbers
+from Utils.DBWorker import delete_data_from_grant_numbers, vacuum
 from Utils.check_message_user_groups import check_users_groups
 from Utils.get_ids_for_grant_numbers import get_ids_for_multiple_record
 from keyboards.inline import get_conf_numbers_kb
@@ -23,6 +23,7 @@ async def delete_numbers(message: types.Message, state: FSMContext):
     deleted_records = await delete_data_from_grant_numbers(ids)
     if deleted_records:
         await message.answer(f'Удалил {deleted_records} записи(-ей)')
+        await vacuum()
     else:
         await message.answer(f'Таких строк нет в таблице')
     await state.finish()

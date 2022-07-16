@@ -7,41 +7,44 @@ from aiogram.contrib.fsm_storage.redis import RedisStorage2
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.types import AllowedUpdates
 
-from filters.moder_group import IsModerGroup
-from handlers.add_groups_callback import register_add_groups
-from handlers.add_numbers_callback import register_add_numbers
-from handlers.cancel import register_cancel_menu
-from handlers.check import register_check_queue
-from handlers.configure_groups_callback import register_configure_groups
-from handlers.configure_numbers_callback import register_configure_numbers
-from handlers.delete_from_groups import register_delete_from_groups
-from handlers.delete_from_numbers import register_delete_numbers
-from handlers.delete_groups_callback import register_delete_groups_cb
-from handlers.delete_numbers_callback import register_delete_numbers_cb
-from handlers.get_granted import register_get_granted
-from handlers.get_mod_group import register_get_mod_group
-from handlers.get_numbers import register_get_grant_numbers
-from handlers.get_numbers_group import register_numbers_group
-from handlers.get_users_groups import register_get_users_group
-from handlers.main_menu import register_main_menu
-from handlers.back_to_main_menu import register_back_to_main
-from handlers.restore import register_restore
-from handlers.show_groups_callback import register_show_groups
-from handlers.show_numbers_callback import register_show_numbers
+from handlers.admin.add_groups_callback import register_add_groups
+from handlers.admin.add_numbers_callback import register_add_numbers
+from handlers.admin.cancel import register_cancel_menu
+from handlers.admin.configure_groups_callback import register_configure_groups
+from handlers.admin.configure_numbers_callback import register_configure_numbers
+from handlers.admin.delete_from_groups import register_delete_from_groups
+from handlers.admin.delete_from_numbers import register_delete_numbers
+from handlers.admin.delete_groups_callback import register_delete_groups_cb
+from handlers.admin.delete_numbers_callback import register_delete_numbers_cb
+from handlers.admin.get_mod_group import register_get_mod_group
+from handlers.admin.get_numbers import register_get_grant_numbers
+from handlers.admin.get_numbers_group import register_numbers_group
+from handlers.admin.get_users_groups import register_get_users_group
+from handlers.admin.main_menu import register_main_menu
+from handlers.admin.back_to_main_menu import register_back_to_main
+from handlers.admin.show_groups_callback import register_show_groups
+from handlers.admin.show_numbers_callback import register_show_numbers
+from handlers.admin.user import register_user
+from handlers.admin.admin import register_admin
+
+from handlers.groups.check import register_check_queue
+from handlers.groups.get_granted import register_get_granted
+from handlers.groups.restore import register_restore
+from handlers.groups.grant_cancel_callback import register_cancel_grant
+from handlers.groups.grant_callback import register_grant
+from handlers.groups.catch_update import register_catch
+from handlers.groups.echo import register_echo
+
 from misc.set_commands import set_default_commands
-from tgbot.handlers.grant_cancel_callback import register_cancel_grant
-from tgbot.handlers.grant_callback import register_grant
-from tgbot.filters.granted import IsNotGranted
-from tgbot.filters.count import IsGrantCount
-from tgbot.filters.user_group import IsUserGroup
-from tgbot.Utils.DBWorker import create_tables
-from tgbot.config import load_config
-from tgbot.filters.admin import AdminFilter
-from tgbot.filters.group_join import IsGroupJoin
-from tgbot.handlers.admin import register_admin
-from tgbot.handlers.catch_update import register_catch
-from tgbot.handlers.echo import register_echo
-from tgbot.handlers.user import register_user
+
+from filters.moder_group import IsModerGroup
+from filters.granted import IsNotGranted
+from filters.count import IsGrantCount
+from filters.user_group import IsUserGroup
+from Utils.DBWorker import create_tables
+from config import load_config
+from filters.admin import AdminFilter
+from filters.group_join import IsGroupJoin
 
 logger = logging.getLogger(__name__)
 
