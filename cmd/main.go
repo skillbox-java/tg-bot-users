@@ -17,7 +17,6 @@ import (
 var cfgPath string
 
 func init() {
-	//flag.StringVar(&cfgPath, "config", "/tg-bot-users/conf.yml", "config file path")
 	flag.StringVar(&cfgPath, "config", "/tg-bot-users/conf.yml", "config file path")
 }
 
