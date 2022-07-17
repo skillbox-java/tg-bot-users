@@ -1,18 +1,18 @@
 package org.codewithoutus.tgbotusers.bot.keyboard;
 
 import lombok.Getter;
-import org.codewithoutus.tgbotusers.bot.enums.BotCommands;
+import org.codewithoutus.tgbotusers.bot.enums.BotCommand;
 
 @Getter
 public enum CongratulationDecisionKeyboard implements Keyboard {
 
-    CONGRATULATE(BotCommands.CONGRATULATE, "Поздравить \uD83E\uDD73"),
-    DECLINE(BotCommands.DECLINE, "Отклонить 🚫");
+    CONGRATULATE(BotCommand.CONGRATULATE, "Поздравить \uD83E\uDD73"),
+    DECLINE(BotCommand.DECLINE, "Отклонить 🚫");
 
-    private final BotCommands botCommand;
+    private final BotCommand botCommand;
     private final String representation;
 
-    CongratulationDecisionKeyboard(BotCommands botCommand, String representation) {
+    CongratulationDecisionKeyboard(BotCommand botCommand, String representation) {
         this.botCommand = botCommand;
         this.representation = representation;
     }

@@ -28,8 +28,8 @@ public class NotificationService {
 
     @Transactional
     public void notifyModeratorsAboutUserJoining(UserJoining userJoining) {
-        List<ChatModerator> moderators = chatModeratorService.findByChatUsersId(userJoining.getChatId());
-        if (moderators.isEmpty()) {
+        List<ChatModerator> moderatorChats = chatModeratorService.findByChatUsersId(userJoining.getChatId());
+        if (moderatorChats.isEmpty()) {
             log.warn("");
             return;
         }
@@ -39,13 +39,13 @@ public class NotificationService {
 
         String notificationText = userJoining.toString(); // TODO: Алекс -- подтянуть шаблон
 
-        for (ChatModerator moderator : moderators) {
-            SendMessage message = new SendMessage(moderator.getChatId(), notificationText).replyMarkup(keyboard);
+        for (ChatModerator moderatorChat : moderatorChats) {
+            SendMessage message = new SendMessage(moderatorChat.getChatId(), notificationText).replyMarkup(keyboard);
             SendResponse response = telegramService.sendMessage(message);
 
             UserJoiningNotification notification = new UserJoiningNotification();
             notification.setUserJoining(userJoining);
-            notification.setSentMessageChatId(moderator.getChatId());
+            notification.setSentMessageChatId(moderatorChat.getChatId());
             notification.setSentMessageId(response.message().messageId());
             userJoiningNotificationService.save(notification);
         }

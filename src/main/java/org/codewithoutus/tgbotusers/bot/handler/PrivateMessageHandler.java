@@ -1,6 +1,5 @@
 package org.codewithoutus.tgbotusers.bot.handler;
 
-import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;

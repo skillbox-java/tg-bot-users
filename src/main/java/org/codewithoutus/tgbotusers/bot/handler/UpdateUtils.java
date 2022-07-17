@@ -39,8 +39,7 @@ public class UpdateUtils {
     }
 
     public static String getCallbackQueryData(Update update) {
-        return Optional
-                .ofNullable(update.callbackQuery())
+        return Optional.ofNullable(update.callbackQuery())
                 .map(CallbackQuery::data)
                 .filter(data -> !data.isBlank())
                 .orElse("{}");

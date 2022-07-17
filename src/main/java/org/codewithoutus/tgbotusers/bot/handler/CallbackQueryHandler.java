@@ -1,8 +1,11 @@
 package org.codewithoutus.tgbotusers.bot.handler;
 
+import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.model.MessageEntity;
 import com.pengrad.telegrambot.model.Update;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.codewithoutus.tgbotusers.bot.enums.BotCommand;
 import org.codewithoutus.tgbotusers.bot.exception.CommandNotFoundException;
 import org.codewithoutus.tgbotusers.bot.keyboard.CongratulationDecisionKeyboard;
 import org.codewithoutus.tgbotusers.bot.keyboard.KeyboardUtils;
@@ -10,10 +13,14 @@ import org.codewithoutus.tgbotusers.bot.service.NotificationService;
 import org.codewithoutus.tgbotusers.config.AppStaticContext;
 import org.codewithoutus.tgbotusers.model.entity.UserJoining;
 import org.codewithoutus.tgbotusers.model.enums.CongratulateStatus;
+import org.codewithoutus.tgbotusers.model.service.ChatModeratorService;
 import org.codewithoutus.tgbotusers.model.service.UserJoiningService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -24,20 +31,23 @@ public class CallbackQueryHandler extends Handler {
 
     private final NotificationService notificationService;
     private final UserJoiningService userJoiningService;
+    private final ChatModeratorService chatModeratorService;
 
     @Override
     protected boolean handle(Update update) {
+        // есть ли callbackQuery в update
         Map<String, Object> callbackQueryData = UpdateUtils.getCallbackQueryDataAsMap(update);
         if (callbackQueryData == null || callbackQueryData.isEmpty()) {
             return false;
         }
+        
+        // есть ли команда в callbackQuery
         String command = (String) callbackQueryData.get("command");
         if (command == null || command.isBlank()) {
             return false;
         }
-
-        if (handleCongratulationDecision(command, callbackQueryData)
-                || handleProvidingAnniversaryStatistic(command, callbackQueryData)) {
+        
+        if (handleCongratulationDecision(command, callbackQueryData)) {
             return true;
 
         } else {
@@ -48,14 +58,18 @@ public class CallbackQueryHandler extends Handler {
 
     @Transactional
     private boolean handleCongratulationDecision(String command, Map<String, Object> callbackQueryData) {
-        Optional<CongratulationDecisionKeyboard> key = KeyboardUtils.defineKey(CongratulationDecisionKeyboard.class, command);
-        if (key.isEmpty()) {
+        // есть ли команда в callbackQuery
+        Optional<CongratulationDecisionKeyboard> decisionOptional =
+                KeyboardUtils.defineKey(CongratulationDecisionKeyboard.class, command);
+        if (decisionOptional.isEmpty()) {
             return false;
         }
-        CongratulationDecisionKeyboard decision = key.get();
+        
+        // есть ли поздравленные в чате с таким порядковым номером
         Integer userJoiningId = (Integer) callbackQueryData.get(AppStaticContext.CALLBACK_QUERY_DATA_ID_FIELD);
         UserJoining userJoining = userJoiningService.findById(userJoiningId)
-                .orElseThrow(() -> new IllegalStateException("CallbackQueryData with no exist user joining ID" + userJoiningId));
+                .orElseThrow(() -> new IllegalStateException(
+                        "CallbackQueryData with no exist user joining ID" + userJoiningId));
 
         Long chatId = userJoining.getChatId();
         Long userId = userJoining.getUserId();
@@ -65,7 +79,9 @@ public class CallbackQueryHandler extends Handler {
         if (userJoiningService.existCongratulatedUser(chatId, anniversaryNumber)) {
             return true;
         }
-
+        
+        
+        CongratulationDecisionKeyboard decision = decisionOptional.get();
         CongratulateStatus newStatus = (decision == CongratulationDecisionKeyboard.CONGRATULATE)
                 ? CongratulateStatus.CONGRATULATE
                 : CongratulateStatus.DECLINE;
@@ -81,16 +97,5 @@ public class CallbackQueryHandler extends Handler {
         }
         return true;
     }
-
-    @Transactional
-    private boolean handleProvidingAnniversaryStatistic(String command, Map<String, Object> callbackQueryData) {
-        // TODO: Алекс -- реализовать вывод списка счастивчиков "/списокЮбилейный" или "/luckyList"
-
-        // TODO: Алекс -- уже поздравленные имеют корону, можно добавить в шаблоны и вставлять в начало, неудачники не показываются
-        // TODO: Алекс -- если на anniversary number не было поздравления, то выводятся все претенденты с кнопками CongratulationDecisionKeyboard
-        // TODO: Алекс -- если поздравленного нет, то отклоненные тоже выводятся
-        // TODO: Алекс -- все новые кнопки нужно записывать в таблицу UserJoiningNotification, чтобы потом также удалялись
-        // TODO: Алекс -- можно попробовать выводить все-все чаты, а потом доработать -- на будущее
-        return false;
-    }
+    
 }

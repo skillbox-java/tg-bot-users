@@ -7,6 +7,8 @@ import org.codewithoutus.tgbotusers.model.entity.ChatUser;
 import org.codewithoutus.tgbotusers.model.repository.ChatUserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Getter
 @Setter
 @Service
@@ -18,6 +20,10 @@ public class ChatUserService {
     public void deleteAll() {
         chatUserRepository.deleteAll();
     }
+    
+    public boolean existsByName(String name) {
+        return chatUserRepository.existsByName(name);
+    }
 
     public ChatUser save(ChatUser entity) {
         return chatUserRepository.save(entity);
@@ -27,6 +33,10 @@ public class ChatUserService {
         return chatUserRepository.findByChatId(chatId);
     }
 
+    public Optional<ChatUser> findByName(String name) {
+        return chatUserRepository.findByName(name);
+    }
+    
     public boolean isChatUser(long id) {
         return chatUserRepository.findByChatModeratorsNotEmpty()
                 .stream()

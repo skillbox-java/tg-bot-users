@@ -51,6 +51,7 @@ public class ChatJoinRequestHandler extends Handler {
         userJoining.setJoinTime(LocalDateTime.from(Instant.ofEpochSecond(chatJoinRequest.date())));
         userJoining = userJoiningService.save(userJoining);
 
+        // если не было поздравненных в чате с таким порядковым номером
         if (!userJoiningService.existCongratulatedUser(chatId, anniversaryNumber)) {
             notificationService.notifyModeratorsAboutUserJoining(userJoining);
         }

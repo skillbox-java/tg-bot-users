@@ -20,6 +20,9 @@ public class ChatUser { // TODO: Pavel -- переименовать сущно�
     @NaturalId
     @Column(nullable = false, unique = true)
     private Long chatId;
+    
+    @Column(nullable = false)
+    private String name;
 
     @ManyToMany(mappedBy = "chatUsers", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private List<ChatModerator> chatModerators;

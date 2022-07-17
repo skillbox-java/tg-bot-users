@@ -5,9 +5,15 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ChatModeratorRepository extends CrudRepository<ChatModerator, Integer> {
-
+    
+    boolean existsByChatId(Long chatId);
+    
     List<ChatModerator> findByChatUsers_ChatId(Long chatId);
+
+    Optional<ChatModerator> findByChatId(Long chatId);
+    
 }

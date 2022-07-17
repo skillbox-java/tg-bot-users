@@ -1,9 +1,9 @@
 package org.codewithoutus.tgbotusers.bot.keyboard;
 
-import org.codewithoutus.tgbotusers.bot.enums.BotCommands;
+import org.codewithoutus.tgbotusers.bot.enums.BotCommand;
 
 public interface Keyboard {
 
-    BotCommands getBotCommand();
+    BotCommand getBotCommand();
     String getRepresentation();
 }

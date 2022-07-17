@@ -3,7 +3,7 @@ package org.codewithoutus.tgbotusers.bot.enums;
 import lombok.Getter;
 
 @Getter
-public enum BotCommands {
+public enum BotCommand {
 
     LUCKY_LIST("/luckyList"),
     CONGRATULATE("/congratulate"),
@@ -11,7 +11,7 @@ public enum BotCommands {
 
     private final String text;
 
-    BotCommands(String text) {
+    BotCommand(String text) {
         this.text = text;
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,5 +31,13 @@ public class ChatModeratorService {
 
     public List<ChatModerator> findByChatUsersId(Long chatId) {
         return chatModeratorRepository.findByChatUsers_ChatId(chatId);
+    }
+    
+    public boolean existsByChatId(Long chatId) {
+        return chatModeratorRepository.existsByChatId(chatId);
+    }
+    
+    public Optional<ChatModerator> findByChatId(Long chatId) {
+        return chatModeratorRepository.findByChatId(chatId);
     }
 }
