@@ -1,6 +1,5 @@
 package org.codewithoutus.tgbotusers.bot.handler;
 
-import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
@@ -10,8 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.codewithoutus.tgbotusers.bot.service.TelegramService;
 import org.codewithoutus.tgbotusers.model.entity.ChatModerator;
 import org.codewithoutus.tgbotusers.model.entity.ChatUser;
-import org.codewithoutus.tgbotusers.model.repository.ChatModeratorRepository;
-import org.codewithoutus.tgbotusers.model.repository.ChatUserRepository;
+import org.codewithoutus.tgbotusers.model.service.AdministratorService;
 import org.codewithoutus.tgbotusers.model.service.ChatModeratorService;
 import org.codewithoutus.tgbotusers.model.service.ChatUserService;
 import org.springframework.stereotype.Component;
@@ -31,12 +29,14 @@ public class PrivateMessageHandler extends Handler {
     private static final String ADD_USER_CHAT = "/addUserChat";
     private static final String BIND_USER_CHAT_TO_MODER = "/bindUserChatToModer";
     private static final String OK_BIND = "Cool, user chat № %s , is add in moder chat № %s";
+    private static final String NOT_BIND = "Oh, user chat № %s , is already in moder chat № %s";
     private static final String OK_MODER = "Cool, moder chat № %s , is add in DB";
     private static final String OK_USER = "Cool, user chat № %s , is add in DB";
     private static final String NOT_MODER = "Oh, moder chat  № %s ,is already in the database";
     private static final String NOT_USER = "Oh, user chat  № %s ,is already in the database";
     private static final String ERROR = "Sorry, \" %s\" ,is invalid format ID";
-    private static final String SORRY = "Sorry, bot does not know this  \"%s\" command";
+    private static final String ANKNOW_COMMAND = "Sorry, bot does not know this  \"%s\" command";
+    private static final String SORRY = "Sorry";
     List<String> listCommandAdd = Arrays.asList(HELP, ADD_MODER_CHAT, ADD_USER_CHAT, BIND_USER_CHAT_TO_MODER);
     List<String> listCommandDelete = Arrays.asList(ADD_MODER_CHAT, ADD_USER_CHAT, BIND_USER_CHAT_TO_MODER);
 
@@ -60,8 +60,7 @@ public class PrivateMessageHandler extends Handler {
                 || handleTestRequest(chatId, text)) {
             return true;
         }
-
-        telegramService.sendMessage(new SendMessage(chatId, SORRY));
+        telegramService.sendMessage(new SendMessage(chatId, SORRY + update.message() + update.toString() + update));
         return false;
     }
 
@@ -90,7 +89,7 @@ public class PrivateMessageHandler extends Handler {
                 }
             }
         }
-        telegramService.sendMessage(new SendMessage(chatId, String.format(SORRY, text)));
+        telegramService.sendMessage(new SendMessage(chatId, String.format(ANKNOW_COMMAND, text)));
         return true;
     }
 
@@ -98,6 +97,7 @@ public class PrivateMessageHandler extends Handler {
         // TODO: Макс -- реализовать админку (добавление и удаление чатов)
         // TODO: Макс -- вначале строковыми командами, а потом можно попробовать кнопки
         // TODO: Макс -- изменения настроек должны сохраняться в базе
+        //        TODO сохраняем в бд группы с + а нужно с -
 
         //мой id=161855902  /11725
         //TODO проверка пришла ли команда от админа или от левого,если от админа дальше иначе брек
@@ -165,29 +165,55 @@ public class PrivateMessageHandler extends Handler {
         return false;
     }
 
-    private boolean bindUserChatToModer(Update update, String text) {
-        Chat chatFrom = UpdateUtils.getChat(update);//получаем чат из которого писали боту
-        int count = text.split(" ").length;
-        if (count == 3) {
-            ChatUserRepository repUser = chatUserService.getChatUserRepository();
-            int idUser = Integer.parseInt(text.split(" ")[1]);
-            if (repUser.findByChatId(idUser) != null) {
-                ChatModeratorRepository repModer = chatModeratorService.getChatModeratorRepository();
-                long idModer = Integer.parseInt(text.split(" ")[2]);
-                if (!repModer.findByChatId(idModer).isEmpty()) {
-                    repModer.findByChatId(idModer).get().addChatUser(repUser.findByChatId(idUser));
-                    repUser.findByChatId(idUser).addChatModerator(repModer.findByChatId(idModer).get());
-                    telegramService.sendMessage(new SendMessage(chatFrom.id(), String.format(OK_BIND, idUser, idModer)));
-                    return true;
-                }
-                telegramService.sendMessage(new SendMessage(chatFrom.id(), String.format(NOT_MODER, idModer)));
-                return true;
-            }
-            telegramService.sendMessage(new SendMessage(chatFrom.id(), String.format(NOT_USER, idUser)));
+    private boolean bindUserChatToModer(Update update, Long chatId, String text) {
+        Matcher matcher = BIND_USER_CHAT_REGEX.matcher(text);
+        if (!matcher.matches()) {
+            return false;
+        }
+        long userGroupId = Long.parseLong(matcher.group(1));
+        long moderatorGroupId = Long.parseLong(matcher.group(2));
+
+        ChatUser chatUser = chatUserService.findByChatId(userGroupId).orElse(null);
+        if (chatUser == null) {
+            telegramService.sendMessage(new SendMessage(chatId, String.format(NOT_USER, userGroupId)));
             return true;
         }
-        telegramService.sendMessage(new SendMessage(chatFrom.id(), String.format(SORRY, text + "-" + count)));
+        ChatModerator chatModerator = chatModeratorService.findByChatId(moderatorGroupId).orElse(null);
+        if (chatModerator == null) {
+            telegramService.sendMessage(new SendMessage(chatId, String.format(NOT_MODER, moderatorGroupId)));
+            return true;
+        }
+        if (chatModerator.getChatUsers().contains(chatUser)) {
+            telegramService.sendMessage(new SendMessage(chatId, String.format(NOT_BIND, userGroupId, moderatorGroupId)));
+            return true;
+        }
+        chatModerator.addChatUser(chatUser);
+        chatModeratorService.save(chatModerator);
+        telegramService.sendMessage(new SendMessage(chatId, String.format(OK_BIND, userGroupId, moderatorGroupId)));
         return true;
+
+//        int count = text.split(" ").length;
+//        if (count == 3) {
+//            //ChatUserRepository repUser = chatUserService.getChatUserRepository();
+//            int idUser = Integer.parseInt(text.split(" ")[1]);
+//            if (repUser.findByChatId(idUser) != null) {
+//                //ChatModeratorRepository repModer = chatModeratorService.getChatModeratorRepository();
+//
+//                long idModer = Integer.parseInt(text.split(" ")[2]);
+//                if (!repModer.findByChatId(idModer).isEmpty()) {
+//                    repModer.findByChatId(idModer).get().addChatUser(repUser.findByChatId(idUser));
+//                    repUser.findByChatId(idUser).addChatModerator(repModer.findByChatId(idModer).get());
+//                    telegramService.sendMessage(new SendMessage(chatFrom.id(), String.format(OK_BIND, idUser, idModer)));
+//                    return true;
+//                }
+//                telegramService.sendMessage(new SendMessage(chatFrom.id(), String.format(NOT_MODER, idModer)));
+//                return true;
+//            }
+//            telegramService.sendMessage(new SendMessage(chatFrom.id(), String.format(NOT_USER, idUser)));
+//            return true;
+//        }
+//        telegramService.sendMessage(new SendMessage(chatFrom.id(), String.format(SORRY, text)));
+//        return true;
     }
 
     private boolean deleteUserChat() {

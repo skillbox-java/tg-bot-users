@@ -9,6 +9,7 @@ import org.codewithoutus.tgbotusers.model.repository.ChatUserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -26,7 +27,7 @@ public class ChatUserService {
         return chatUserRepository.save(entity);
     }
 
-    public ChatUser findByChatId(long chatId) {
+    public Optional<ChatUser> findByChatId(long chatId) {
         return chatUserRepository.findByChatId(chatId);
     }
 

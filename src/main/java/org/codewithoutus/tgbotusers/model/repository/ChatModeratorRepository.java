@@ -15,7 +15,6 @@ public interface ChatModeratorRepository extends CrudRepository<ChatModerator, I
     @Override
     Optional<ChatModerator> findById(Integer integer);
 
-
     boolean existsByChatId(Long chatId);
 
     Optional<ChatModerator>findByChatId(Long chatId);

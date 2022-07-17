@@ -7,6 +7,7 @@ import org.hibernate.annotations.NaturalId;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -39,6 +40,16 @@ public class ChatModerator { // TODO: Pavel -- переименовать сущ
         this.chatUsers = chatUsers;
     }
 
-    public ChatModerator() {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChatModerator that = (ChatModerator) o;
+        return chatId.equals(that.chatId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(chatId);
     }
 }
