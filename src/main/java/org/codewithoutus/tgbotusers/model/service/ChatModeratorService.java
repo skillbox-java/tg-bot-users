@@ -32,6 +32,7 @@ public class ChatModeratorService {
 
     }
 
+
     public List<ChatModerator> findAll() {
         List<ChatModerator> result = new ArrayList<>();
         chatModeratorRepository.findAll().forEach(result::add);

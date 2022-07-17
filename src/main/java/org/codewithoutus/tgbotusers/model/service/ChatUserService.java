@@ -41,4 +41,7 @@ public class ChatUserService {
                 .stream()
                 .anyMatch(chatUser -> chatUser.getChatId().equals(id));
     }
+    public void delete(ChatUser entity) {
+        chatUserRepository.delete(entity);
+    }
 }
