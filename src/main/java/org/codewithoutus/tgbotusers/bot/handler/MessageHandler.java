@@ -3,9 +3,10 @@ package org.codewithoutus.tgbotusers.bot.handler;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.MessageEntity;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.User;
+import com.pengrad.telegrambot.request.SendMessage;
 import lombok.RequiredArgsConstructor;
 import org.codewithoutus.tgbotusers.bot.enums.BotCommand;
+import org.codewithoutus.tgbotusers.bot.keyboard.Template;
 import org.codewithoutus.tgbotusers.bot.service.TelegramService;
 import org.codewithoutus.tgbotusers.model.entity.ChatModerator;
 import org.codewithoutus.tgbotusers.model.entity.ChatUser;
@@ -29,24 +30,16 @@ public class MessageHandler extends Handler {
     private final ChatUserService chatUserService;
     private final UserJoiningService userJoiningService;
     private final TelegramService telegramService;
+    private final Template template;
     
     @Override
     protected boolean handle(Update update) {
         // TODO: Алекс -- реализовать вывод списка счастивчиков "/списокЮбилейный" или "/luckyList"
-    
-        // TODO: Алекс -- уже поздравленные имеют корону, можно добавить в шаблоны и вставлять в начало, неудачники не показываются
+        
         // TODO: Алекс -- если на anniversary number не было поздравления, то выводятся все претенденты с кнопками CongratulationDecisionKeyboard
         // TODO: Алекс -- если поздравленного нет, то отклоненные тоже выводятся
         // TODO: Алекс -- все новые кнопки нужно записывать в таблицу UserJoiningNotification, чтобы потом также удалялись
         // TODO: Алекс -- можно попробовать выводить все-все чаты, а потом доработать -- на будущее
-    
-    
-        // получить команду из update
-        // получить moderatorChatId
-        // получить все подчинённые chatId
-        // получить все userJoining из этих чатов
-        // сформироваь список -> сформировать текст сообщения
-        // оправить сообщение
         
         Message message = update.message();
         Optional<MessageEntity> botEntityOptional = getBotCommandEntity(message);
@@ -62,9 +55,6 @@ public class MessageHandler extends Handler {
         MessageEntity entity = botEntityOptional.get();
     
         handleBotCommand(message.text(), entity, chatId);
-    
-    
-        
         
         return false;
     }
@@ -87,12 +77,9 @@ public class MessageHandler extends Handler {
     }
     
     private void handleBotCommand(String messageText, MessageEntity entity, Long moderatorChatId) {
-        
         if (messageText.contains(BotCommand.LUCKY_LIST.getText())) {
             performLuckyList(messageText, entity, moderatorChatId);
         }
-        
-        
     }
     
     private void performLuckyList(String messageText, MessageEntity entity, Long moderatorChatId) {
@@ -132,28 +119,24 @@ public class MessageHandler extends Handler {
         // получить актуальные данные по каждому объекту
         // собрать список в строку
         return userJoinings.stream()
-                .map(joining -> {
-                    User user = telegramService.getUser(joining.getChatId(), joining.getUserId());
-                    return buildMember(user);
-                })
-                .reduce((member1, member2) -> {
-                    if (!member1.isEmpty()) {
-                        member1.append("\n\n");
+                .map(this::buildUserInfo)
+                .reduce((userInfo1, userInfo2) -> {
+                    if (!userInfo1.isEmpty()) {
+                        userInfo1.append("\n\n");
                     }
-                    member1.append(member2);
-                    return member1;
+                    userInfo1.append(userInfo2);
+                    return userInfo1;
                 })
                 .orElse(new StringBuilder())
                 .toString();
     }
     
-    private StringBuilder buildMember(User user) {
-    
-        return null;
+    private StringBuilder buildUserInfo(UserJoining userJoining) {
+        return new StringBuilder(template.getUserInfoText(userJoining));
     }
     
     private void sendLuckyList(String luckyListText, Long moderatorChatId) {
-    
+        telegramService.sendMessage(new SendMessage(moderatorChatId, luckyListText));
     }
 
 }

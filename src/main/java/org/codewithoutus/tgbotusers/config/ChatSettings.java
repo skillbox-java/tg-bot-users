@@ -11,6 +11,7 @@ import org.codewithoutus.tgbotusers.model.service.ChatModeratorService;
 import org.codewithoutus.tgbotusers.model.service.ChatUserService;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
@@ -60,7 +61,7 @@ public class ChatSettings {
         //  1. при запуске приложения проверять настройки в базе,
         //     если в базе пусто проверять конфигурацию и записывать в базу
         //  2. при каждом запуске запуске актуализировать названия юзерских чатов (поле name)
-        //     (нужно для получения возможности получения списка юбилейных с параметром названия группы,
+        //     (нужно для возможности получения списка юбилейных с параметром названия группы,
         //     пример команды: [/luckyList@UsersTgBot Java разработчик])
         
         for (Map.Entry<Long, List<Long>> moderatorData : chatsSettingsData.entrySet()) {

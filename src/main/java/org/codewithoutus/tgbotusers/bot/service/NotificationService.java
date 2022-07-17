@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.codewithoutus.tgbotusers.bot.keyboard.CongratulationDecisionKeyboard;
 import org.codewithoutus.tgbotusers.bot.keyboard.KeyboardUtils;
+import org.codewithoutus.tgbotusers.bot.keyboard.Template;
 import org.codewithoutus.tgbotusers.model.entity.ChatModerator;
 import org.codewithoutus.tgbotusers.model.entity.UserJoining;
 import org.codewithoutus.tgbotusers.model.entity.UserJoiningNotification;
@@ -21,7 +22,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class NotificationService {
-
+    
+    private final Template template;
     private final TelegramService telegramService;
     private final ChatModeratorService chatModeratorService;
     private final UserJoiningNotificationService userJoiningNotificationService;
@@ -36,8 +38,9 @@ public class NotificationService {
 
         InlineKeyboardMarkup keyboard = KeyboardUtils
                 .createKeyboard(CongratulationDecisionKeyboard.class, String.valueOf(userJoining.getId()));
-
-        String notificationText = userJoining.toString(); // TODO: Алекс -- подтянуть шаблон
+        
+    
+        String notificationText = template.getAlertText(userJoining);
 
         for (ChatModerator moderatorChat : moderatorChats) {
             SendMessage message = new SendMessage(moderatorChat.getChatId(), notificationText).replyMarkup(keyboard);
@@ -53,7 +56,7 @@ public class NotificationService {
 
     @Transactional
     public void notifyUserAboutAnniversaryJoining(UserJoining userJoining) {
-        String notificationText = userJoining.toString(); // TODO: Алекс -- подтянуть шаблон
+        String notificationText = template.getCongratulateText(userJoining);
 
         SendMessage message = new SendMessage(userJoining.getChatId(), notificationText);
         telegramService.sendMessage(message);
