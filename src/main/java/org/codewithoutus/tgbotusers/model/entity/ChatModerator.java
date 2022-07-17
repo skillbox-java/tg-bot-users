@@ -34,6 +34,11 @@ public class ChatModerator { // TODO: Pavel -- переименовать сущ
         }
         chatUsers.add(chatUser);
     }
+    public void deleteChatUser(ChatUser chatUser) {
+        chatUsers.remove(chatUser);
+        chatUsers.remove(chatUser.getChatId());
+
+    }
 
     public ChatModerator(Long chatId, List<ChatUser> chatUsers) {
         this.chatId = chatId;
