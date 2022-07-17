@@ -63,7 +63,7 @@ func (l *list) NewData() error {
 		"(id INTEGER PRIMARY KEY, serial INTEGER NOT NULL, " +
 		"user_id INTEGER NOT NULL, user_name VARCHAR (30) NOT NULL, " +
 		"user_nick VARCHAR (50) DEFAULT ('нет ника'), time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
-		"group_name VARCHAR (50) NOT NULL, group_id INTEGER NOT NULL)")
+		"group_name VARCHAR (50) NOT NULL, group_id INTEGER NOT NULL, mark INTEGER DEFAULT 0)")
 	_, err = stat.Exec()
 	if err != nil {
 		return err
@@ -81,6 +81,7 @@ type FuncList interface {
 	AddNewJubileeUser(newUser *tgbotapi.User, serial int, update tgbotapi.Update) error
 	GetJubileeUsers() (jubUsers []data.JubileeUser, err error)
 	GetAllJubileeUsers() (jubUsers []data.JubileeUser, err error)
+	MarkUser(userId int) error
 }
 
 func TrimSymbolsFromSlice(s []string, cfg *config.Config) (words []string, err error) {
@@ -248,14 +249,14 @@ func (l *list) GetJubileeUsers() (jubUsers []data.JubileeUser, err error) {
 	for rows.Next() {
 
 		err = rows.Scan(&user.ID, &user.Serial, &user.UserID, &user.UserName, &user.UserNick,
-			&user.Time, &user.GroupName, &user.GroupID)
+			&user.Time, &user.GroupName, &user.GroupID, &user.Marked)
 		users = append(users, user)
 	}
 
 	//TODO FIX serial 3
 	for _, v := range users {
 
-		if v.Serial%l.cfg.Multiplicity == 0 || v.Serial%l.cfg.Multiplicity == 1 || v.Serial%l.cfg.Multiplicity == 2 || v.Serial%3 == 0 {
+		if v.Serial%l.cfg.Multiplicity == 0 || v.Serial%l.cfg.Multiplicity == 1 || v.Serial%l.cfg.Multiplicity == 2 || v.Serial%4 == 0 {
 			jubUsers = append(jubUsers, v)
 		}
 	}
@@ -277,7 +278,7 @@ func (l *list) GetAllJubileeUsers() (jubUsers []data.JubileeUser, err error) {
 	for rows.Next() {
 
 		err = rows.Scan(&user.ID, &user.Serial, &user.UserID, &user.UserName, &user.UserNick,
-			&user.Time, &user.GroupName, &user.GroupID)
+			&user.Time, &user.GroupName, &user.GroupID, &user.Marked)
 		users = append(users, user)
 	}
 
@@ -336,4 +337,15 @@ func (l *list) AddUserGroupList(moderGroup, userGroup int64, moderTitle, userTit
 	}
 
 	return false, nil
+}
+
+func (l *list) MarkUser(userId int) error {
+
+	_, err := l.db.Exec(fmt.Sprintf("UPDATE newJubileeUsers SET (mark) = (1) WHERE id = ('%d')", userId))
+	if err != nil {
+		l.logger.Error(err)
+	}
+
+	return nil
+
 }

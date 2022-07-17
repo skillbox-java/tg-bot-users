@@ -38,6 +38,11 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 
 		user := jubileeUsers[luckyMan-1]
 
+		err = db.MarkUser(user.ID)
+		if err != nil {
+			logger.Error(err)
+		}
+
 		_, _ = bot.Send(tgb.NewMessage(user.GroupID, fmt.Sprintf(cfg.MsgText.MsgToChatIfNewUser, user.UserName, user.Serial)))
 
 		_, _ = bot.Request(tgb.NewCallback(update.CallbackQuery.ID, "✅"))
@@ -83,19 +88,40 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 
 				for _, user := range users {
 
-					text := fmt.Sprintf("№: `%d` \nГруппа: *%s*\nИмя: *%s*  Ник: *@%s*\nНомер: *%d*  "+
-						"Время: *%s* ", user.ID, user.GroupName, user.UserName, user.UserNick,
-						user.Serial, user.Time.UTC().Format(config.StructDateTimeFormat))
+					var congrated string
+					if user.Marked == 1 {
+						congrated = "Уже поздравлен 👑👑👑"
+					} else {
+						congrated = "Не поздравлен 🎉"
+					}
 
-					localUserId = append(localUserId, strconv.Itoa(user.ID))
-					msg := tgb.NewMessage(update.CallbackQuery.Message.Chat.ID, "Список юбилейный:\n"+text)
-					msg.ParseMode = "markdown"
-					msg.ReplyMarkup = tgb.NewInlineKeyboardMarkup(
-						tgb.NewInlineKeyboardRow(
-							tgb.NewInlineKeyboardButtonData("Поздравить", "congratulation_again"+" "+strconv.Itoa(user.ID)),
-							tgb.NewInlineKeyboardButtonData("Отклонить", "remove_button"),
-						))
-					_, _ = bot.Send(msg)
+					if user.Marked != 1 {
+
+						text := fmt.Sprintf("№: `%d`, %s \nГруппа: *%s*\nИмя: *%s*  Ник: *@%s*\nНомер: *%d*  "+
+							"Время: *%s* ", user.ID, congrated, user.GroupName, user.UserName, user.UserNick,
+							user.Serial, user.Time.UTC().Format(config.StructDateTimeFormat))
+
+						localUserId = append(localUserId, strconv.Itoa(user.ID))
+						msg := tgb.NewMessage(update.CallbackQuery.Message.Chat.ID, "Список юбилейный:\n"+text)
+						msg.ParseMode = "markdown"
+						msg.ReplyMarkup = tgb.NewInlineKeyboardMarkup(
+							tgb.NewInlineKeyboardRow(
+								tgb.NewInlineKeyboardButtonData("Поздравить", "congratulation_again"+" "+strconv.Itoa(user.ID)),
+								tgb.NewInlineKeyboardButtonData("Отклонить", "remove_button"),
+							))
+						_, _ = bot.Send(msg)
+					} else {
+
+						text := fmt.Sprintf("№: `%d`, %s \nГруппа: *%s*\nИмя: *%s*  Ник: *@%s*\nНомер: *%d*  "+
+							"Время: *%s* ", user.ID, congrated, user.GroupName, user.UserName, user.UserNick,
+							user.Serial, user.Time.UTC().Format(config.StructDateTimeFormat))
+
+						localUserId = append(localUserId, strconv.Itoa(user.ID))
+						msg := tgb.NewMessage(update.CallbackQuery.Message.Chat.ID, "Список юбилейный:\n"+text)
+						msg.ParseMode = "markdown"
+
+						_, _ = bot.Send(msg)
+					}
 
 				}
 			}
@@ -126,8 +152,15 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 
 				for _, user := range users {
 
-					text := fmt.Sprintf("№: %d, Группа: %s, Имя: %s,  Ник: @%s, Номер: %d, "+
-						"Время: %s ", user.ID, user.GroupName, user.UserName, user.UserNick,
+					var congrated string
+					if user.Marked == 1 {
+						congrated = "Уже поздравлен 👑👑👑"
+					} else {
+						congrated = "Не поздравлен 🎉"
+					}
+
+					text := fmt.Sprintf("№: %d, %s Группа: %s, Имя: %s,  Ник: @%s, Номер: %d, "+
+						"Время: %s ", user.ID, congrated, user.GroupName, user.UserName, user.UserNick,
 						user.Serial, user.Time.Format(config.StructDateTimeFormat))
 
 					list = list + text + "\n\n"
@@ -225,6 +258,12 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 		}
 
 		if newUser.UserID != 0 {
+
+			err = db.MarkUser(newUser.ID)
+			if err != nil {
+				logger.Error(err)
+			}
+			logger.Infof("newUser ID %d", newUser.ID)
 
 			text := fmt.Sprintf(cfg.MsgText.MsgToChatIfNewUser, newUser.UserName, newUser.Serial)
 			msg := tgb.NewMessage(newUser.GroupID, text)

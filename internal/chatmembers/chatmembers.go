@@ -6,8 +6,8 @@ import (
 	"skbot/internal/config"
 	"skbot/internal/data"
 	"skbot/internal/functions"
-	"skbot/internal/menu"
 	"skbot/pkg/logging"
+	"strconv"
 	"time"
 )
 
@@ -55,7 +55,7 @@ func WithChatMembersDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logge
 					_, _ = bot.Send(tgb.NewDeleteMessage(chatId, ans.MessageID))
 				}()
 				// TODO fix count 3
-				if count%cfg.Multiplicity == 0 || count%cfg.Multiplicity == 1 || count%cfg.Multiplicity == 2 || count%3 == 0 {
+				if count%cfg.Multiplicity == 0 || count%cfg.Multiplicity == 1 || count%cfg.Multiplicity == 2 || count%4 == 0 {
 
 					err = db.AddNewJubileeUser(&newUser, count, update)
 					if err != nil {
@@ -64,10 +64,12 @@ func WithChatMembersDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logge
 				}
 
 				var newCheckUser data.JubileeUser
-				newUsers, err := db.GetJubileeUsers()
+				newUsers, err := db.GetAllJubileeUsers()
 				if err != nil {
 					logger.Error(err)
 				}
+
+				var congrated string
 
 				for _, user := range newUsers {
 					if int64(user.UserID) == NewUserID {
@@ -75,17 +77,22 @@ func WithChatMembersDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logge
 						userCount++
 					}
 				}
+				if newCheckUser.Marked == 1 {
+					congrated = "Уже поздравлен 👑👑👑"
+				} else {
+					congrated = "Не поздравлен 🎉"
+				}
 
 				if userCount > 1 {
 					msg := tgb.NewMessage(cfg.ModersGroupID.ModeratorsGroup,
-						fmt.Sprintf("*Внимание!* У нас новый пользователь! Но *найдено совпавдение* с таким ID `%d`, "+
-							"рекомендую проверить весь список новых пользователей перед поздравлением.\nВызовите `меню`", newCheckUser.UserID))
+						fmt.Sprintf("*Внимание!* У нас новый пользователь! %s, Но *найдено совпавдение* с таким ID `%d`, "+
+							"рекомендую проверить весь список новых пользователей перед поздравлением.\nВызовите `меню`", congrated, newCheckUser.UserID))
 
 					msg.ParseMode = "markdown"
 					_, _ = bot.Send(msg)
 				}
 				//TODO FIX count 3
-				if count%cfg.Multiplicity == 0 || count%3 == 0 {
+				if count%cfg.Multiplicity == 0 || count%cfg.Multiplicity == 1 || count%cfg.Multiplicity == 2 || count%4 == 0 {
 
 					for _, group := range moderGroupList {
 
@@ -96,7 +103,13 @@ func WithChatMembersDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logge
 								groupName, newUser.FirstName, newUser.UserName, count,
 								time.Now().Format(config.StructDateTimeFormat))
 							msg := tgb.NewMessage(group.ModerGroupID, text)
-							msg.ReplyMarkup = menu.NewUserCongratulation
+							msg.ReplyMarkup = tgb.NewInlineKeyboardMarkup(
+								tgb.NewInlineKeyboardRow(
+									tgb.NewInlineKeyboardButtonData("Поздравить", "congratulation_again"+" "+strconv.Itoa(newCheckUser.ID)),
+									tgb.NewInlineKeyboardButtonData("Отклонить", "remove_button"),
+								))
+
+							logger.Infof("user ID %d from chatMembers", newCheckUser.ID)
 
 							_, _ = bot.Send(msg)
 

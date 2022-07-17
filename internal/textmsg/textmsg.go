@@ -215,6 +215,7 @@ func WithTextQueryDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger,
 			}
 		}
 
+		// add moder group
 		if strings.Contains(strings.ToLower(command[0]), "add-moder-group") {
 
 			MesInfo = update
@@ -250,6 +251,7 @@ func WithTextQueryDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger,
 			}()
 		}
 
+		// user groups link with moder group
 		if strings.Contains(strings.ToLower(command[0]), "add-moder-user-link") {
 
 			if update.Message.Chat.ID == cfg.ModersGroupID.ModeratorsGroup {
