@@ -3,9 +3,12 @@ package org.codewithoutus.tgbotusers.model.service;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.codewithoutus.tgbotusers.model.entity.ChatModerator;
 import org.codewithoutus.tgbotusers.model.entity.ChatUser;
 import org.codewithoutus.tgbotusers.model.repository.ChatUserRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,6 +29,7 @@ public class ChatUserService {
     public ChatUser findByChatId(long chatId) {
         return chatUserRepository.findByChatId(chatId);
     }
+
 
     public boolean isChatUser(long id) {
         return chatUserRepository.findByChatModeratorsNotEmpty()
