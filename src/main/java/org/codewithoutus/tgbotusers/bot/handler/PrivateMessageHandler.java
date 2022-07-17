@@ -28,15 +28,20 @@ public class PrivateMessageHandler extends Handler {
     private static final String ADD_MODER_CHAT = "/addModerChat";
     private static final String ADD_USER_CHAT = "/addUserChat";
     private static final String BIND_USER_CHAT_TO_MODER = "/bindUserChatToModer";
+    private static final String UNBIND_USER_CHAT_TO_MODER = "/unbindUserChatToModer";
+
     private static final String OK_BIND = "Cool, user chat № %s , is add in moder chat № %s";
     private static final String NOT_BIND = "Oh, user chat № %s , is already in moder chat № %s";
+    private static final String NOT_UNBIND = "Oh, user chat № %s , is not bind in moder chat № %s";
+    private static final String OK_UNBIND = "Cool, user chat № %s , is unbind from moder chat № %s";
     private static final String OK_MODER = "Cool, moder chat № %s , is add in DB";
     private static final String OK_USER = "Cool, user chat № %s , is add in DB";
     private static final String NOT_MODER = "Oh, moder chat  № %s ,is already in the database";
     private static final String NOT_USER = "Oh, user chat  № %s ,is already in the database";
     private static final String ERROR = "Sorry, \" %s\" ,is invalid format ID";
-    private static final String ANKNOW_COMMAND = "Sorry, bot does not know this  \"%s\" command";
+    private static final String UNKNOW_COMMAND = "Sorry, bot does not know this  \"%s\" command";
     private static final String SORRY = "Sorry";
+    //todo вынести команды бота в бот сервис/в бот команд
     List<String> listCommandAdd = Arrays.asList(HELP, ADD_MODER_CHAT, ADD_USER_CHAT, BIND_USER_CHAT_TO_MODER);
     List<String> listCommandDelete = Arrays.asList(ADD_MODER_CHAT, ADD_USER_CHAT, BIND_USER_CHAT_TO_MODER);
 
@@ -89,14 +94,12 @@ public class PrivateMessageHandler extends Handler {
                 }
             }
         }
-        telegramService.sendMessage(new SendMessage(chatId, String.format(ANKNOW_COMMAND, text)));
+        telegramService.sendMessage(new SendMessage(chatId, String.format(UNKNOW_COMMAND, text)));
         return true;
     }
 
     private boolean handleAdminRequest(Update update, Long chatId, String text) {
-        // TODO: Макс -- реализовать админку (добавление и удаление чатов)
         // TODO: Макс -- вначале строковыми командами, а потом можно попробовать кнопки
-        // TODO: Макс -- изменения настроек должны сохраняться в базе
         //        TODO сохраняем в бд группы с + а нужно с -
 
         //мой id=161855902  /11725
@@ -216,9 +219,25 @@ public class PrivateMessageHandler extends Handler {
 //        return true;
     }
 
-    private boolean deleteUserChat() {
-
+    private boolean deleteUserChat(Update update, Long chatId,String text) {
+        Matcher matcher = DELETE_USER_CHAT_REGEX.matcher(text);
+        if (!matcher.matches()) {
+            return false;
+        }
+        long userGroupId = Long.parseLong(matcher.group(1));
+        ChatUser chatUser= chatUserService.findByChatId(userGroupId).orElse(null);
+        if (chatUser == null) {
+            telegramService.sendMessage(new SendMessage(chatId, String.format(NOT_MODER, userGroupId)));
+            return true;
+        }
+        if(!chatUser.getChatModerators().isEmpty()){
+            telegramService.sendMessage(new SendMessage(chatId, "Есть связные сущности у группы "+ userGroupId));
+            return true;
+        }
+        chatUserService.deleteById(chatUser.getId());
+        telegramService.sendMessage(new SendMessage(chatId, "Удалили группу юзеров № "+ userGroupId));
         return true;
+
     }
 
     private boolean deleteModerChat() {

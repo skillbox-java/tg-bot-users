@@ -22,10 +22,14 @@ public class ChatUserService {
     public void deleteAll() {
         chatUserRepository.deleteAll();
     }
+    public void deleteById(Integer id) {
+        chatUserRepository.deleteById(id);
+    }
 
     public ChatUser save(ChatUser entity) {
         return chatUserRepository.save(entity);
     }
+
 
     public Optional<ChatUser> findByChatId(long chatId) {
         return chatUserRepository.findByChatId(chatId);

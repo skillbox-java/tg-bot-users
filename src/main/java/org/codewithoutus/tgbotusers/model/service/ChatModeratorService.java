@@ -2,6 +2,7 @@ package org.codewithoutus.tgbotusers.model.service;
 
 import lombok.RequiredArgsConstructor;
 import org.codewithoutus.tgbotusers.model.entity.ChatModerator;
+import org.codewithoutus.tgbotusers.model.entity.ChatUser;
 import org.codewithoutus.tgbotusers.model.repository.ChatModeratorRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +19,17 @@ public class ChatModeratorService {
     public void deleteAll() {
         chatModeratorRepository.deleteAll();
     }
+    public void deleteById(Integer id) {
+        chatModeratorRepository.deleteById(id);
+    }
 
     public ChatModerator save(ChatModerator entity) {
         return chatModeratorRepository.save(entity);
+    }
+
+    public void delete(ChatModerator chatModerator,ChatUser chatUser){
+
+
     }
 
     public List<ChatModerator> findAll() {
