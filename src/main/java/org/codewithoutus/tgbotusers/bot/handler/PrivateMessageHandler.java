@@ -176,6 +176,7 @@ public class PrivateMessageHandler extends Handler {
                 long idModer = Integer.parseInt(text.split(" ")[2]);
                 if (!repModer.findByChatId(idModer).isEmpty()) {
                     repModer.findByChatId(idModer).get().addChatUser(repUser.findByChatId(idUser));
+                    repUser.findByChatId(idUser).addChatModerator(repModer.findByChatId(idModer).get());
                     telegramService.sendMessage(new SendMessage(chatFrom.id(), String.format(OK_BIND, idUser, idModer)));
                     return true;
                 }
