@@ -61,14 +61,14 @@ public class ChatSettings {
             chatModerator.setChatId(moderatorData.getKey());
 
             for (Long userData : moderatorData.getValue()) {
-                ChatUser chatUser = chatUserService.findByChatId(userData);
-                if (chatUser == null) {
-                    chatUser = new ChatUser();
-                    chatUser.setChatId(userData);
-                    chatUser = chatUserService.save(chatUser);
-                }
-                chatUser.addChatModerator(chatModerator);
-                chatModerator.addChatUser(chatUser);
+                ChatUser chatUser = chatUserService.findByChatId(userData).orElseGet(() -> {
+                    ChatUser newEntity = new ChatUser();
+                    newEntity.setChatId(userData);
+                    newEntity = chatUserService.save(newEntity);
+                    return newEntity;
+                });
+                chatUser.getChatModerators().add(chatModerator);
+                chatModerator.getChatUsers().add(chatUser);
                 chatModerator = chatModeratorService.save(chatModerator);
             }
         }

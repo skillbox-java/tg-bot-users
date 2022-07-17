@@ -26,20 +26,9 @@ public class ChatModerator { // TODO: Pavel -- переименовать сущ
     @JoinTable(name = "moderators2users",
             joinColumns = @JoinColumn(name = "moderator_chat_id"),
             inverseJoinColumns = @JoinColumn(name = "user_chat_id"))
-    private List<ChatUser> chatUsers;
+    private List<ChatUser> chatUsers=new ArrayList<>();
 
-    public void addChatUser(ChatUser chatUser) {
-        if (chatUsers == null) {
-            chatUsers = new ArrayList<>();
-        }
-        chatUsers.add(chatUser);
-    }
 
-    public void removeChatUser(ChatUser chatUser) {
-        if (chatUsers != null) {
-            chatUsers.remove(chatUser);
-        }
-    }
 
     @Override
     public boolean equals(Object o) {

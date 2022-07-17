@@ -190,33 +190,10 @@ public class PrivateMessageHandler extends Handler {
             telegramService.sendMessage(new SendMessage(chatId, String.format(NOT_BIND, userGroupId, moderatorGroupId)));
             return true;
         }
-        chatModerator.addChatUser(chatUser);
+        chatModerator.getChatUsers().add(chatUser);
         chatModeratorService.save(chatModerator);
         telegramService.sendMessage(new SendMessage(chatId, String.format(OK_BIND, userGroupId, moderatorGroupId)));
         return true;
-
-//        int count = text.split(" ").length;
-//        if (count == 3) {
-//            //ChatUserRepository repUser = chatUserService.getChatUserRepository();
-//            int idUser = Integer.parseInt(text.split(" ")[1]);
-//            if (repUser.findByChatId(idUser) != null) {
-//                //ChatModeratorRepository repModer = chatModeratorService.getChatModeratorRepository();
-//
-//                long idModer = Integer.parseInt(text.split(" ")[2]);
-//                if (!repModer.findByChatId(idModer).isEmpty()) {
-//                    repModer.findByChatId(idModer).get().addChatUser(repUser.findByChatId(idUser));
-//                    repUser.findByChatId(idUser).addChatModerator(repModer.findByChatId(idModer).get());
-//                    telegramService.sendMessage(new SendMessage(chatFrom.id(), String.format(OK_BIND, idUser, idModer)));
-//                    return true;
-//                }
-//                telegramService.sendMessage(new SendMessage(chatFrom.id(), String.format(NOT_MODER, idModer)));
-//                return true;
-//            }
-//            telegramService.sendMessage(new SendMessage(chatFrom.id(), String.format(NOT_USER, idUser)));
-//            return true;
-//        }
-//        telegramService.sendMessage(new SendMessage(chatFrom.id(), String.format(SORRY, text)));
-//        return true;
     }
 
     private boolean deleteUserChat(Update update, Long chatId,String text) {

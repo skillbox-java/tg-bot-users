@@ -23,14 +23,9 @@ public class ChatUser { // TODO: Pavel -- переименовать сущно�
     private Long chatId;
 
     @ManyToMany(mappedBy = "chatUsers", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    private List<ChatModerator> chatModerators;
+    private List<ChatModerator> chatModerators=new ArrayList<>();
 
-    public void addChatModerator(ChatModerator chatModerator) {
-        if (chatModerators == null) {
-            chatModerators = new ArrayList<>();
-        }
-        chatModerators.add(chatModerator);
-    }
+
 
     public ChatUser(Long chatId, List<ChatModerator> chatModerators) {
         this.chatId = chatId;
