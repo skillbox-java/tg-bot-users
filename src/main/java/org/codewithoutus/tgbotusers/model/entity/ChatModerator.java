@@ -33,4 +33,12 @@ public class ChatModerator { // TODO: Pavel -- переименовать сущ
         }
         chatUsers.add(chatUser);
     }
+
+    public ChatModerator(Long chatId, List<ChatUser> chatUsers) {
+        this.chatId = chatId;
+        this.chatUsers = chatUsers;
+    }
+
+    public ChatModerator() {
+    }
 }
