@@ -1,10 +1,6 @@
-from typing import List
 from aiogram import Dispatcher, types
 from aiogram.types import ChatType
-
-from keyboards.inline import get_main_menu_kb
-from misc.states import Configure
-from tgbot.Utils.DBWorker import get_data_granted
+from tgbot.keyboards.inline import get_main_menu_kb
 
 
 async def main_menu(message: types.Message):

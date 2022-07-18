@@ -13,7 +13,7 @@ async def show_numbers(call: types.CallbackQuery):
     text = md.hbold('ID |ID Группы|Номера для поздравления\n\n')
 
     with suppress(MessageCantBeDeleted):
-        await call.message.bot.delete_message(message_id=call.message.message_id, chat_id=call.message.chat.id)
+        await call.message.delete()
 
     if groups:
         for group in groups:

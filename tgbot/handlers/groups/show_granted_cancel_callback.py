@@ -2,7 +2,7 @@ from contextlib import suppress
 from aiogram import Dispatcher
 from aiogram.types import CallbackQuery, ChatType
 from aiogram.utils.exceptions import MessageToEditNotFound, MessageCantBeDeleted
-from keyboards.inline import cb
+from tgbot.keyboards.inline import cb
 
 
 async def show_granted_cb(call: CallbackQuery, callback_data: dict):

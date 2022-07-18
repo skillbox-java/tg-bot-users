@@ -7,45 +7,45 @@ from aiogram.contrib.fsm_storage.redis import RedisStorage2
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.types import AllowedUpdates
 
-from handlers.admin.add_groups_callback import register_add_groups
-from handlers.admin.add_numbers_callback import register_add_numbers
-from handlers.admin.cancel import register_cancel_menu
-from handlers.admin.configure_groups_callback import register_configure_groups
-from handlers.admin.configure_numbers_callback import register_configure_numbers
-from handlers.admin.delete_from_groups import register_delete_from_groups
-from handlers.admin.delete_from_numbers import register_delete_numbers
-from handlers.admin.delete_groups_callback import register_delete_groups_cb
-from handlers.admin.delete_numbers_callback import register_delete_numbers_cb
-from handlers.admin.get_mod_group import register_get_mod_group
-from handlers.admin.get_numbers import register_get_grant_numbers
-from handlers.admin.get_numbers_group import register_numbers_group
-from handlers.admin.get_users_groups import register_get_users_group
-from handlers.admin.main_menu import register_main_menu
-from handlers.admin.back_to_main_menu import register_back_to_main
-from handlers.admin.show_groups_callback import register_show_groups
-from handlers.admin.show_numbers_callback import register_show_numbers
-from handlers.admin.user import register_user
-from handlers.admin.admin import register_admin
+from tgbot.handlers.admin.add_groups_callback import register_add_groups
+from tgbot.handlers.admin.add_numbers_callback import register_add_numbers
+from tgbot.handlers.admin.cancel import register_cancel_menu
+from tgbot.handlers.admin.configure_groups_callback import register_configure_groups
+from tgbot.handlers.admin.configure_numbers_callback import register_configure_numbers
+from tgbot.handlers.admin.delete_from_groups import register_delete_from_groups
+from tgbot.handlers.admin.delete_from_numbers import register_delete_numbers
+from tgbot.handlers.admin.delete_groups_callback import register_delete_groups_cb
+from tgbot.handlers.admin.delete_numbers_callback import register_delete_numbers_cb
+from tgbot.handlers.admin.get_mod_group import register_get_mod_group
+from tgbot.handlers.admin.get_numbers import register_get_grant_numbers
+from tgbot.handlers.admin.get_numbers_group import register_numbers_group
+from tgbot.handlers.admin.get_users_groups import register_get_users_group
+from tgbot.handlers.admin.main_menu import register_main_menu
+from tgbot.handlers.admin.back_to_main_menu import register_back_to_main
+from tgbot.handlers.admin.show_groups_callback import register_show_groups
+from tgbot.handlers.admin.show_numbers_callback import register_show_numbers
+from tgbot.handlers.admin.user import register_user
+from tgbot.handlers.admin.admin import register_admin
 
-from handlers.groups.check import register_check_queue
-from handlers.groups.get_granted import register_get_granted
-from handlers.groups.restore import register_restore
-from handlers.groups.grant_cancel_callback import register_cancel_grant
-from handlers.groups.grant_callback import register_grant
-from handlers.groups.catch_update import register_catch
-from handlers.groups.echo import register_echo
-from handlers.groups.show_granted_callback import register_show_granted_cb
+from tgbot.handlers.groups.check import register_check_queue
+from tgbot.handlers.groups.get_granted import register_get_granted
+from tgbot.handlers.groups.restore import register_restore
+from tgbot.handlers.groups.grant_cancel_callback import register_cancel_grant
+from tgbot.handlers.groups.grant_callback import register_grant
+from tgbot.handlers.groups.catch_update import register_catch
+from tgbot.handlers.groups.echo import register_echo
+from tgbot.handlers.groups.show_granted_callback import register_show_granted_cb
 
-from misc.set_commands import set_default_commands
+from tgbot.misc.set_commands import set_default_commands
 
-from filters.moder_group import IsModerGroup
-from filters.granted import IsNotGranted
-from filters.count import IsGrantCount
-from filters.user_group import IsUserGroup
-from Utils.DBWorker import create_tables
-from config import load_config
-from filters.admin import AdminFilter
-from filters.group_join import IsGroupJoin
+from tgbot.filters.moder_group import IsModerGroup
+from tgbot.filters.granted import IsNotGranted
+from tgbot.filters.count import IsGrantCount
+from tgbot.filters.user_group import IsUserGroup
+from tgbot.Utils.DBWorker import create_tables
+from tgbot.config import load_config
+from tgbot.filters.admin import AdminFilter
+from tgbot.filters.group_join import IsGroupJoin
 
 logger = logging.getLogger(__name__)
 
@@ -125,6 +125,6 @@ async def main():
 
 if __name__ == '__main__':
     try:
-        asyncio.run(main())
+        asyncio.get_event_loop().run_until_complete(main())
     except (KeyboardInterrupt, SystemExit):
         logger.error("Bot stopped!")

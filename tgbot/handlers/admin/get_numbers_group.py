@@ -2,9 +2,9 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import ChatType
 
-from Utils.check_number import check_number_in_message
+from tgbot.Utils.check_number import check_number_in_message
 
-from misc.states import Configure
+from tgbot.misc.states import Configure
 
 
 async def get_numbers_group(message: types.Message, state: FSMContext):

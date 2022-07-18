@@ -2,7 +2,7 @@ from contextlib import suppress
 from aiogram import Dispatcher, types
 from aiogram.types import ChatType
 from aiogram.utils.exceptions import MessageCantBeDeleted
-from misc.states import Configure
+from tgbot.misc.states import Configure
 
 
 async def add_groups(call: types.CallbackQuery):

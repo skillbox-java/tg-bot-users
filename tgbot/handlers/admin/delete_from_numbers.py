@@ -2,12 +2,12 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import ChatType
 
-from Utils.DBWorker import delete_data_from_grant_numbers, vacuum
-from Utils.check_message_user_groups import check_users_groups
-from Utils.get_ids_for_grant_numbers import get_ids_for_multiple_record
-from keyboards.inline import get_conf_numbers_kb
+from tgbot.Utils.DBWorker import delete_data_from_grant_numbers, vacuum
+from tgbot.Utils.check_message_user_groups import check_users_groups
+from tgbot.Utils.get_ids_for_grant_numbers import get_ids_for_multiple_record
+from tgbot.keyboards.inline import get_conf_numbers_kb
 
-from misc.states import Configure
+from tgbot.misc.states import Configure
 
 
 async def delete_numbers(message: types.Message, state: FSMContext):

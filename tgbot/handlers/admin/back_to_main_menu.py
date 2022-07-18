@@ -3,7 +3,7 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import ChatType
 from aiogram.utils.exceptions import MessageCantBeEdited
-from keyboards.inline import get_main_menu_kb
+from tgbot.keyboards.inline import get_main_menu_kb
 
 
 async def back_to_main(call: types.CallbackQuery, state: FSMContext):

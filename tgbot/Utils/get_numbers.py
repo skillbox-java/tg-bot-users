@@ -1,4 +1,4 @@
-from Utils.DBWorker import get_data_from_grant_numbers
+from tgbot.Utils.DBWorker import get_data_from_grant_numbers
 
 
 async def get_grant_numbers(group_id):

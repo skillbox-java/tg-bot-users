@@ -6,7 +6,7 @@ from aiogram.dispatcher.handler import CancelHandler
 from aiogram.types import ChatType
 from aiogram.utils.exceptions import MessageCantBeEdited, MessageToEditNotFound, MessageNotModified
 
-from misc.grant_text import get_great_text
+from tgbot.misc.grant_text import get_great_text
 from tgbot.Utils.DBWorker import get_message_in_queue, get_queue, delete_from_queue, vacuum, set_data_granted, \
     count_from_queue
 
@@ -30,7 +30,7 @@ async def grant_user(call: types.CallbackQuery):
 
     chat_member = await call.bot.get_chat_member(group_id_users, user_id)
     if not chat_member:
-        await call.bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=message_id, reply_markup=None)
+        await call.message.delete_reply_markup()
         await call.answer(text="Такого пользователя уже нет в группе", show_alert=True)
         raise CancelHandler()
 
@@ -41,7 +41,7 @@ async def grant_user(call: types.CallbackQuery):
     await call.answer()
     await call.message.answer(text=f"Пользователь {user} в группе {grant_message.chat.title} поздравлен")
 
-    with suppress(MessageCantBeEdited, MessageToEditNotFound, MessageNotModified, MessageCantBeEdited):
+    with suppress(MessageCantBeEdited, MessageToEditNotFound, MessageNotModified):
         await call.message.delete_reply_markup()
 
     granted = [(group_id_users, grant_message.chat.title, user_id, user, group_id_mod, moder_id, count, datetime_update,
@@ -50,8 +50,8 @@ async def grant_user(call: types.CallbackQuery):
     queue = await get_queue(group_id=group_id_users, message_id=message_id)
     if queue:
         for message in queue:
-            with suppress(MessageCantBeEdited, MessageToEditNotFound, MessageNotModified, MessageCantBeEdited):
-                await call.bot.edit_message_reply_markup(chat_id=group_id_mod, message_id=message[1], reply_markup=None)
+            with suppress(MessageCantBeEdited, MessageToEditNotFound, MessageNotModified):
+                await call.message.delete_reply_markup()
             granted.append((message[2], message[3], message[5], message[6], message[4], '', message[7], message[8],
                             '', message[10]))
 

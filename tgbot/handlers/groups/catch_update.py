@@ -1,13 +1,10 @@
 from typing import List
-
 from aiogram.utils.markdown import quote_html
-
 from tgbot.keyboards.inline import get_gran_kb
 from aiogram import Dispatcher, types
 from aiogram.types import ChatType
 import uuid
 from tgbot.Utils.get_user_link import get_link
-
 from tgbot.Utils.DBWorker import set_data_queue
 
 

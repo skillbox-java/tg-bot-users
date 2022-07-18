@@ -2,7 +2,7 @@ from aiogram import types
 from aiogram.dispatcher.filters import BoundFilter
 from aiogram.dispatcher.handler import CancelHandler
 
-from Utils.get_numbers import get_grant_numbers
+from tgbot.Utils.get_numbers import get_grant_numbers
 from tgbot.Utils.DBWorker import get_count_queue
 
 

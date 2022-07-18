@@ -2,11 +2,11 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import ChatType
 
-from Utils.check_message_user_groups import check_users_groups
-from Utils.delete_doubles import delete_doubles_ids
-from Utils.get_ids_for_grant_numbers import get_ids_for_multiple_record
-from keyboards.inline import get_conf_groups_kb
-from misc.states import Configure
+from tgbot.Utils.check_message_user_groups import check_users_groups
+from tgbot.Utils.delete_doubles import delete_doubles_ids
+from tgbot.Utils.get_ids_for_grant_numbers import get_ids_for_multiple_record
+from tgbot.keyboards.inline import get_conf_groups_kb
+from tgbot.misc.states import Configure
 from tgbot.Utils.DBWorker import set_data_groups, get_user_ids_from_groups, set_group_ids_grant_numbers
 
 

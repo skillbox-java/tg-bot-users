@@ -3,7 +3,7 @@ from aiogram.types import Message
 
 
 async def admin_start(message: Message):
-    await message.reply("Hello, admin!")
+    await message.reply("Добрый день! Конфигурация доступна из меню.")
 
 
 def register_admin(dp: Dispatcher):

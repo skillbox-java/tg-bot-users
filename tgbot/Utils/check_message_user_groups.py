@@ -1,4 +1,4 @@
-from Utils.check_number import check_number_in_message
+from tgbot.Utils.check_number import check_number_in_message
 
 
 async def check_users_groups(message: str):

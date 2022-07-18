@@ -3,7 +3,7 @@ from aiogram.types import Message
 
 
 async def user_start(message: Message):
-    await message.reply(f"Hello, user!")
+    await message.reply(f"Добрый день, у вас нет прав для конфигурирования!")
 
 
 def register_user(dp: Dispatcher):

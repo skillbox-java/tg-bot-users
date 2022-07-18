@@ -22,7 +22,7 @@ async def restore(message: types.Message, ids: List[tuple[str]]):
                 text = f'🎉 “{message_in_queue[3]}” 👤 {message_in_queue[6]} ({message_in_queue[10]}),\n' \
                        f'🔢 {message_in_queue[7]} 🕐 {message_in_queue[8]}'
                 new_message = await message.bot.send_message(message.chat.id, text=text,
-                                                             reply_markup=await get_gran_kb(uid=message_in_queue[9]))
+                                                             reply_markup=get_gran_kb(uid=message_in_queue[9]))
                 await update_data_queue(message_id=new_message.message_id, old_message_id=message_in_queue[1],
                                         group_id=message_in_queue[2])
         else:

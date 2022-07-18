@@ -4,7 +4,7 @@ from aiogram import Dispatcher, types
 from aiogram.types import ChatType
 from aiogram.utils.exceptions import MessageCantBeEdited
 
-from keyboards.inline import get_conf_numbers_kb
+from tgbot.keyboards.inline import get_conf_numbers_kb
 
 
 async def configure_numbers(call: types.CallbackQuery):

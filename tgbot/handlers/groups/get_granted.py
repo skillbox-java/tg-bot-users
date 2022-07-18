@@ -3,8 +3,8 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import ChatType
 
-from keyboards.inline import get_list_granted_kb
-from misc.show_granted import send_granted_message
+from tgbot.keyboards.inline import get_list_granted_kb
+from tgbot.misc.show_granted import send_granted_message
 from tgbot.Utils.DBWorker import get_data_granted, get_users_groups
 
 

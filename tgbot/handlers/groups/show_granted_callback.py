@@ -4,9 +4,9 @@ from aiogram import Dispatcher
 from aiogram.types import CallbackQuery, ChatType
 from aiogram.utils.exceptions import MessageToEditNotFound, MessageCantBeDeleted
 
-from Utils.DBWorker import get_data_granted_for_kb
-from keyboards.inline import cb
-from misc.show_granted import send_granted_message
+from tgbot.Utils.DBWorker import get_data_granted_for_kb
+from tgbot.keyboards.inline import cb
+from tgbot.misc.show_granted import send_granted_message
 
 
 async def show_granted_cb(call: CallbackQuery, callback_data: dict):
