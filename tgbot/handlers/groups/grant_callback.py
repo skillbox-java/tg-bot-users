@@ -51,7 +51,7 @@ async def grant_user(call: types.CallbackQuery):
     if queue:
         for message in queue:
             with suppress(MessageCantBeEdited, MessageToEditNotFound, MessageNotModified):
-                await call.message.delete_reply_markup()
+                await call.bot.edit_message_reply_markup(chat_id=message[4], message_id=message[1], reply_markup=None)
             granted.append((message[2], message[3], message[5], message[6], message[4], '', message[7], message[8],
                             '', message[10]))
 

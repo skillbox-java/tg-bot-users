@@ -19,7 +19,7 @@ async def new_chat(update: types.ChatMemberUpdated, ids: List[tuple[int]], count
            f'{link} ({username}),\n' \
            f'🔢{count}. 🕐Время вступления {update.date}'
 
-    message = await update.bot.send_message(ids[0][0], text=text, reply_markup=await get_gran_kb(uid=uid))
+    message = await update.bot.send_message(ids[0][0], text=text, reply_markup=get_gran_kb(uid=uid))
 
     await set_data_queue(
         values=(

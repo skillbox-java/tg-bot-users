@@ -1,5 +1,5 @@
 [Unit]
-Description=Course Bot
+Description=Сongratulate Bot
 After=network.target
 
 [Service]

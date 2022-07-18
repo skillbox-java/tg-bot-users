@@ -14,5 +14,5 @@ async def cancel_grant_user(call: types.CallbackQuery):
 
 
 def register_cancel_grant(dp: Dispatcher):
-    chat_types = [ChatType.GROUP, ChatType.SUPERGROUP, ChatType.CHANNEL]
+    chat_types = [ChatType.GROUP, ChatType.SUPERGROUP]
     dp.register_callback_query_handler(cancel_grant_user, Text(startswith='can'), chat_type=chat_types,)

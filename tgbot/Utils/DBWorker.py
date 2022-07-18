@@ -10,18 +10,17 @@ async def db_execute(string, values=None, multiple=False, get=False) -> bool:
             async with db.executemany(string, values) as cursor:
                 await db.commit()
                 return cursor.rowcount
+        elif get:
+            async with db.execute(string, values) as cursor:
+                return await cursor.fetchall()
         elif values:
             async with db.execute(string, values) as cursor:
                 await db.commit()
                 return cursor.rowcount
         else:
-            if get:
-                async with db.execute(string) as cursor:
-                    return await cursor.fetchall()
-            else:
-                async with db.execute(string) as cursor:
-                    await db.commit()
-                    return cursor.rowcount
+            async with db.execute(string) as cursor:
+                await db.commit()
+                return cursor.rowcount
 
 
 async def create_tables() -> None:
@@ -73,86 +72,18 @@ async def create_tables() -> None:
 
 
 async def get_users_groups(group_id):
-    return await db_execute(string=f'SELECT user_group_ids FROM groups WHERE mod_group_id={group_id}',
+    return await db_execute(string='SELECT user_group_ids FROM groups WHERE mod_group_id=?', values=(group_id,),
                             get=True)
 
 
 async def get_moder_groups(group_id):
-    return await db_execute(string=f'SELECT mod_group_id FROM groups WHERE user_group_ids LIKE "%{group_id}%"',
+    return await db_execute(string='SELECT mod_group_id FROM groups WHERE user_group_ids LIKE ?',
+                            values=('%'+str(group_id)+'%',),
                             get=True)
-
-
-async def set_group_ids_grant_numbers(values):
-    return await db_execute(string=
-                            f"INSERT OR IGNORE INTO grant_numbers(group_id) VALUES(?);", values=values, multiple=True)
 
 
 async def delete_data_from_groups(ids):
-    return await db_execute(string=f'DELETE FROM groups WHERE id=?', values=ids, multiple=True)
-
-
-async def set_data_queue(values):
-    return await db_execute(string=
-                            f"INSERT INTO queue(message_id, group_id_users, name_group, group_id_mod, user_id, user, count, datetime_update, UUID, username) "
-                            f"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", values=values)
-
-
-async def update_data_queue(message_id, old_message_id, group_id):
-    return await db_execute(
-        string=f'UPDATE queue SET message_id={message_id} WHERE message_id={old_message_id} AND '
-               f'group_id_users LIKE "%{group_id}%"')
-
-
-async def set_data_granted(values):
-    return await db_execute(string=
-                            f"INSERT INTO granted(group_id_users, name_group, user_id, user, group_id_mod, moder_id, count, datetime_update, datetime_granted, username) "
-                            f"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
-                            values=values, multiple=True)
-
-
-async def get_data_granted(group_id_moder):
-    return await db_execute(string=f'SELECT * FROM granted WHERE group_id_mod={group_id_moder} ORDER BY group_id_users',
-                            get=True)
-
-
-async def get_data_granted_for_kb(group_id_users):
-    return await db_execute(
-        string=f'SELECT * FROM granted WHERE group_id_users={group_id_users} ORDER BY datetime_update',
-        get=True)
-
-
-async def get_count_queue(group_id):
-    return await db_execute(string=f"SELECT COUNT(*) FROM queue WHERE group_id_users={group_id}", get=True)
-
-
-async def check_granted(user_id, group_id):
-    return await db_execute(
-        string=f"SELECT COUNT(*) FROM granted WHERE user_id={user_id} AND group_id_users={group_id}", get=True)
-
-
-async def check_queue(user_id, group_id):
-    return await db_execute(
-        string=f"SELECT COUNT(*) FROM queue WHERE user_id={user_id} AND group_id_users={group_id}", get=True)
-
-
-async def get_message_in_queue(uid):
-    return await db_execute(string=f"SELECT * FROM queue WHERE UUID='{uid}'", get=True)
-
-
-async def get_queue(group_id, message_id=0):
-    return await db_execute(
-        string=f"SELECT * FROM queue WHERE group_id_users={group_id} AND message_id!={message_id}",
-        get=True)
-
-
-async def delete_from_queue(group_id):
-    return await db_execute(string=f"DELETE FROM queue WHERE group_id_users={group_id}")
-
-
-async def count_from_queue(group_id):
-    return await db_execute(
-        string=f"SELECT count FROM queue WHERE group_id_users={group_id} ORDER BY datetime_update limit 1",
-        get=True)
+    return await db_execute(string='DELETE FROM groups WHERE id=?', values=ids, multiple=True)
 
 
 async def get_groups():
@@ -160,25 +91,102 @@ async def get_groups():
 
 
 async def get_user_ids_from_groups(mod_group_id):
-    return await db_execute(string=f'SELECT user_group_ids FROM groups WHERE mod_group_id={mod_group_id}', get=True)
+    return await db_execute(string='SELECT user_group_ids FROM groups WHERE mod_group_id=?',
+                            values=(mod_group_id,),
+                            get=True)
 
 
 async def set_data_groups(values):
-    return await db_execute(string=f'INSERT OR REPLACE INTO groups(mod_group_id, user_group_ids)'
-                                   f' VALUES(?, ?);', values=values)
+    return await db_execute(string='INSERT OR REPLACE INTO groups(mod_group_id, user_group_ids)'
+                                   ' VALUES(?, ?);', values=values)
+
+
+async def set_group_ids_grant_numbers(values):
+    return await db_execute(string=
+                            "INSERT OR IGNORE INTO grant_numbers(group_id) VALUES(?);", values=values, multiple=True)
+
+
+async def set_data_queue(values):
+    return await db_execute(string=
+                            "INSERT INTO queue(message_id, group_id_users, name_group, group_id_mod, user_id, user, "
+                            "count, datetime_update, UUID, username) "
+                            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", values=values)
+
+
+async def update_data_queue(message_id, old_message_id, group_id):
+    return await db_execute(
+        string='UPDATE queue SET message_id=? WHERE message_id=? AND '
+               'group_id_users LIKE ?', values=(message_id, old_message_id, '%'+str(group_id)+'%',))
+
+
+async def set_data_granted(values):
+    return await db_execute(string=
+                            "INSERT INTO granted(group_id_users, name_group, user_id, user, group_id_mod, moder_id, "
+                            "count, datetime_update, datetime_granted, username) "
+                            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+                            values=values, multiple=True)
+
+
+async def get_data_granted(group_id_moder):
+    return await db_execute(string='SELECT * FROM granted WHERE group_id_mod=? ORDER BY datetime_update',
+                            values=(group_id_moder,),
+                            get=True)
+
+
+async def get_data_granted_for_kb(group_id_users):
+    return await db_execute(
+        string='SELECT * FROM granted WHERE group_id_users=? ORDER BY datetime_update', values=(group_id_users,),
+        get=True)
+
+
+async def check_granted(user_id, group_id):
+    return await db_execute(
+        string="SELECT COUNT(*) FROM granted WHERE user_id=? AND group_id_users=?", values=(user_id, group_id,),
+        get=True)
+
+
+async def get_count_queue(group_id):
+    return await db_execute(string="SELECT COUNT(*) FROM queue WHERE group_id_users=?", values=(group_id,),
+                            get=True)
+
+
+async def check_queue(user_id, group_id):
+    return await db_execute(
+        string="SELECT COUNT(*) FROM queue WHERE user_id=? AND group_id_users=?", values=(user_id, group_id,),
+        get=True)
+
+
+async def get_message_in_queue(uid):
+    return await db_execute(string="SELECT * FROM queue WHERE UUID=?", values=(uid,), get=True)
+
+
+async def get_queue(group_id, message_id=0):
+    return await db_execute(
+        string="SELECT * FROM queue WHERE group_id_users=? AND message_id!=?", values=(group_id, message_id,),
+        get=True)
+
+
+async def delete_from_queue(group_id):
+    return await db_execute(string="DELETE FROM queue WHERE group_id_users=?", values=(group_id,))
+
+
+async def count_from_queue(group_id):
+    return await db_execute(
+        string="SELECT count FROM queue WHERE group_id_users=? ORDER BY datetime_update limit 1", values=(group_id,),
+        get=True)
 
 
 async def get_data_from_grant_numbers(group_id):
-    return await db_execute(string=f'SELECT numbers FROM grant_numbers WHERE group_id={group_id}', get=True)
+    return await db_execute(string='SELECT numbers FROM grant_numbers WHERE group_id=?', values=(group_id,), get=True)
 
 
 async def set_data_numbers(values):
-    return await db_execute(string=f'INSERT OR REPLACE INTO grant_numbers(group_id, numbers)'
-                                   f' VALUES(?, ?);', values=values)
+    return await db_execute(string='INSERT OR REPLACE INTO grant_numbers(group_id, numbers)'
+                                   ' VALUES(?, ?);', values=values)
 
 
 async def delete_data_from_grant_numbers(ids):
-    return await db_execute(string=f'DELETE FROM grant_numbers WHERE id=?', values=ids, multiple=True)
+    return await db_execute(string='DELETE FROM grant_numbers WHERE id=?', values=ids, multiple=True)
 
 
 async def get_numbers():

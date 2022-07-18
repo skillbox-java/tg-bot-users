@@ -24,7 +24,7 @@ async def get_grant_numbers(message: types.Message, state: FSMContext):
 
     existed = await get_data_from_grant_numbers(group_id=id_group)
     numbers = message.text
-    if existed:
+    if existed[0][0]:
         numbers += f',{existed[0][0]}'
     text_message = await delete_doubles_ids(message=numbers, sort=True)
 
