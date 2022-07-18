@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.GetUpdates;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.codewithoutus.tgbotusers.bot.Bot;
 import org.codewithoutus.tgbotusers.bot.enums.BotStatus;
 import org.codewithoutus.tgbotusers.bot.handler.CallbackQueryHandler;
@@ -16,6 +17,7 @@ import javax.annotation.PostConstruct;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BotService {
     
     private final Bot bot;
@@ -35,6 +37,7 @@ public class BotService {
         }
         startUpdatePolling();
         bot.setStatus(BotStatus.START);
+        log.info("Bot running!");
         return true;
     }
     
@@ -44,6 +47,7 @@ public class BotService {
         }
         stopUpdatePolling();
         bot.setStatus(BotStatus.STOP);
+        log.info("Bot stopped!");
         return true;
     }
     

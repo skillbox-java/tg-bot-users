@@ -39,12 +39,13 @@ public class NotificationService {
         InlineKeyboardMarkup keyboard = KeyboardUtils
                 .createKeyboard(CongratulationDecisionKeyboard.class, String.valueOf(userJoining.getId()));
         
-    
         String notificationText = template.getAlertText(userJoining);
 
         for (ChatModerator moderatorChat : moderatorChats) {
             SendMessage message = new SendMessage(moderatorChat.getChatId(), notificationText).replyMarkup(keyboard);
             SendResponse response = telegramService.sendMessage(message);
+            log.debug("ModerChat(id={}) notified about user(id={}) joining. Status={}",
+                    response.message().chat().id(), userJoining.getUserId(), response.isOk());
 
             UserJoiningNotification notification = new UserJoiningNotification();
             notification.setUserJoining(userJoining);
@@ -59,18 +60,22 @@ public class NotificationService {
         String notificationText = template.getCongratulateText(userJoining);
 
         SendMessage message = new SendMessage(userJoining.getChatId(), notificationText);
-        telegramService.sendMessage(message);
+        SendResponse response = telegramService.sendMessage(message);
+        log.debug("User(id={}, chatId={}) notified. Status={}",
+                userJoining.getUserId(), response.message().chat().id(), response.isOk());
     }
 
     @Transactional
     public void deleteKeyboardFromJoiningNotification(Long userId, Long chatId, int anniversaryNumber) {
         userJoiningNotificationService.findByUserIdAndChatIdAndAnniversaryNumber(userId, chatId, anniversaryNumber)
                 .forEach(notification -> telegramService.removeKeyboardFromMessage(chatId, notification.getSentMessageId()));
+        
     }
 
     @Transactional
     public void deleteKeyboardFromAllJoiningNotifications(Long chatId, int anniversaryNumber) {
         userJoiningNotificationService.findByChatIdAndAnniversaryNumber(chatId, anniversaryNumber)
                 .forEach(notification -> telegramService.removeKeyboardFromMessage(chatId, notification.getSentMessageId()));
+        
     }
 }

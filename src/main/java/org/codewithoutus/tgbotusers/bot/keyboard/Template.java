@@ -77,8 +77,6 @@ public class Template {
                 FormatStyle.SHORT, FormatStyle.SHORT);
         String joinTime = userJoining.getJoinTime().format(formatter);
     
-        String crown = userJoining.getStatus().equals(CongratulateStatus.CONGRATULATE) ? CROWN : SUB_CROWN;
-    
         return getText(configTemplate, groupName, userName, nickName, joiningNumber, joinTime);
     }
     

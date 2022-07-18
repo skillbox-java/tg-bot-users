@@ -44,17 +44,24 @@ public class TelegramService {
 
     public void removeKeyboardFromMessage(long chatId, int messageId) {
         sendRequest(new EditMessageReplyMarkup(chatId, messageId).replyMarkup(new InlineKeyboardMarkup()));
+        log.debug("Keyboard removed from message(id={}) moderChat(id={})", messageId, chatId);
     }
 
     public User getUser(long chatId, long userId) {
-        return sendRequest(new GetChatMember(chatId, userId)).chatMember().user();
+        User user = sendRequest(new GetChatMember(chatId, userId)).chatMember().user();
+        log.debug("Receive response: user(id={}, chatId={})", userId, chatId);
+        return user;
     }
 
     public Chat getChat(long chatId) {
-        return sendRequest(new GetChat(chatId)).chat();
+        Chat chat = sendRequest(new GetChat(chatId)).chat();
+        log.debug("Receive response: chat(id={})", chatId);
+        return chat;
     }
 
     public int getChatMembersCount(long chatId) {
-        return sendRequest(new GetChatMemberCount(chatId)).count();
+        int count = sendRequest(new GetChatMemberCount(chatId)).count();
+        log.debug("Receive response: count={} for chat(id={})", count, chatId);
+        return count;
     }
 }

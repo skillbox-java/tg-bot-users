@@ -1,11 +1,8 @@
 package org.codewithoutus.tgbotusers.bot.handler;
 
-import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.model.MessageEntity;
 import com.pengrad.telegrambot.model.Update;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.codewithoutus.tgbotusers.bot.enums.BotCommand;
 import org.codewithoutus.tgbotusers.bot.exception.CommandNotFoundException;
 import org.codewithoutus.tgbotusers.bot.keyboard.CongratulationDecisionKeyboard;
 import org.codewithoutus.tgbotusers.bot.keyboard.KeyboardUtils;
@@ -18,9 +15,6 @@ import org.codewithoutus.tgbotusers.model.service.UserJoiningService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
