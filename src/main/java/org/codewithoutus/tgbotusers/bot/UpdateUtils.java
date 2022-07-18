@@ -1,12 +1,14 @@
-package org.codewithoutus.tgbotusers.bot.handler;
+package org.codewithoutus.tgbotusers.bot;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.pengrad.telegrambot.model.*;
 import lombok.extern.slf4j.Slf4j;
+import org.codewithoutus.tgbotusers.bot.enums.BotCommand;
 import org.codewithoutus.tgbotusers.bot.exception.CallbackDataMappingException;
 import org.codewithoutus.tgbotusers.config.AppStaticContext;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
@@ -18,6 +20,10 @@ public class UpdateUtils {
                 .map(Message::chat)
                 .map(chat -> chat.type() == Chat.Type.Private)
                 .orElse(Boolean.FALSE);
+    }
+
+    public static boolean isPrivateMessageFromAdmin(Update update) {
+        return isPrivateMessage(update);
     }
 
     public static boolean isForwardMessage(Update update) {
@@ -32,6 +38,17 @@ public class UpdateUtils {
                 .orElse("");
     }
 
+    public static BotCommand getBotCommand(Update update) {
+        return Optional.ofNullable(update.message())
+                .map(Message::entities)
+                .flatMap(entities -> Arrays.stream(entities)
+                        .filter(entity -> entity.type().equals(MessageEntity.Type.bot_command))
+                        .findFirst()
+                        .map(e -> getMessageText(update).substring(e.offset(), e.length()))
+                        .map(BotCommand::getByCommandText))
+                .orElse(null);
+    }
+
     public static Chat getChat(Update update) {
         return Optional.ofNullable(update.message())
                 .map(Message::chat)
@@ -39,8 +56,7 @@ public class UpdateUtils {
     }
 
     public static String getCallbackQueryData(Update update) {
-        return Optional
-                .ofNullable(update.callbackQuery())
+        return Optional.ofNullable(update.callbackQuery())
                 .map(CallbackQuery::data)
                 .filter(data -> !data.isBlank())
                 .orElse("{}");

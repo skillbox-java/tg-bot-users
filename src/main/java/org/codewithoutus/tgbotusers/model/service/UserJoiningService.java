@@ -27,6 +27,10 @@ public class UserJoiningService {
         return userJoiningRepository.findByChatId(chatId);
     }
 
+    public List<UserJoining> findByChatIds(List<Long> chatIds) {
+        return userJoiningRepository.findDistinctByChatIdInOrderByChatIdAscNumberAsc(chatIds);
+    }
+
     public boolean existCongratulatedUser(long chatId, int anniversaryNumber) {
         return userJoiningRepository.existsByChatIdAndAnniversaryNumberAndStatus(chatId, anniversaryNumber, CongratulateStatus.CONGRATULATE);
     }

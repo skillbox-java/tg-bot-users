@@ -22,18 +22,22 @@ public class ChatUser { // TODO: Pavel -- переименовать сущно�
     @Column(nullable = false, unique = true)
     private Long chatId;
 
+//    @Column(nullable = true)    // TODO: Pavel - подумать nullable = true или false?
+//    private String name;
+
     @ManyToMany(mappedBy = "chatUsers", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    private List<ChatModerator> chatModerators=new ArrayList<>();
+    private List<ChatModerator> chatModerators;
 
-
-
-    public ChatUser(Long chatId, List<ChatModerator> chatModerators) {
-        this.chatId = chatId;
-        this.chatModerators = chatModerators;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChatUser that = (ChatUser) o;
+        return chatId.equals(that.chatId);
     }
 
-    public ChatUser() {
+    @Override
+    public int hashCode() {
+        return Objects.hash(chatId);
     }
-
-
 }

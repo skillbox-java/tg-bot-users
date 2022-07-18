@@ -6,6 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -13,13 +15,16 @@ import javax.annotation.PostConstruct;
 @ConfigurationProperties(prefix = "message-templates")
 public class NotificationTemplates {
 
+    private Map<String, String> variables;
+    private Map<String, String> plugs;
+    private DateTimeFormatter dateTimeFormatter;
+
     private String joinCongratulation;
     private String joinAlert;
     private String joinUserInfo;
 
     @PostConstruct
-    private void formatTemplates() {
-        // TODO: Алекс -- сделать шаблоны
-//        joinCongratulation = joinCongratulation.replaceAll("{\*}", "%s");
+    private void postConstruct() {
+        dateTimeFormatter = DateTimeFormatter.ofPattern(plugs.get("join-date-format"));
     }
 }

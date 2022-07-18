@@ -56,6 +56,13 @@ public class ChatSettings {
         chatModeratorService.deleteAll();
         chatUserService.deleteAll();
 
+        // TODO : Павел - необходимо:
+        //  1. при запуске приложения проверять настройки в базе,
+        //     если в базе пусто проверять конфигурацию и записывать в базу
+        //  2. при каждом запуске запуске актуализировать названия юзерских чатов (поле name)
+        //     (нужно для возможности получения списка юбилейных с параметром названия группы,
+        //     пример команды: [/luckyList@UsersTgBot Java разработчик])
+
         for (Map.Entry<Long, List<Long>> moderatorData : chatsSettingsData.entrySet()) {
             ChatModerator chatModerator = new ChatModerator();
             chatModerator.setChatId(moderatorData.getKey());

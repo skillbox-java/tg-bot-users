@@ -8,6 +8,8 @@ import org.codewithoutus.tgbotusers.model.entity.ChatUser;
 import org.codewithoutus.tgbotusers.model.repository.ChatUserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -30,11 +32,9 @@ public class ChatUserService {
         return chatUserRepository.save(entity);
     }
 
-
     public Optional<ChatUser> findByChatId(long chatId) {
         return chatUserRepository.findByChatId(chatId);
     }
-
 
     public boolean isChatUser(long id) {
         return chatUserRepository.findByChatModeratorsNotEmpty()

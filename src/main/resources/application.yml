@@ -23,6 +23,8 @@ spring:
 logging:
     level:
         root: info
+        web: info
+        sql: info
 
 bot-settings:
 #    bot-user-name: ${BOT_USER_NAME}

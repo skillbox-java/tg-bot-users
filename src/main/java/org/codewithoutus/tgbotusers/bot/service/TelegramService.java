@@ -39,22 +39,32 @@ public class TelegramService {
     }
 
     public SendResponse sendMessage(SendMessage message) {
-        return sendRequest(message);
+        SendResponse response = sendRequest(message);
+        log.debug("Sent message parameters={}. Status={}", message.getParameters().toString(), response.isOk());
+        return response;
     }
 
-    public void removeKeyboardFromMessage(long chatId, int messageId) {
-        sendRequest(new EditMessageReplyMarkup(chatId, messageId).replyMarkup(new InlineKeyboardMarkup()));
+    public BaseResponse removeKeyboardFromMessage(long chatId, int messageId) {
+        BaseResponse response = sendRequest(new EditMessageReplyMarkup(chatId, messageId).replyMarkup(new InlineKeyboardMarkup()));
+        log.debug("Keyboard removed from message(id={}) in chat(id={}). Status={}", messageId, chatId, response.isOk());
+        return response;
     }
 
     public User getUser(long chatId, long userId) {
-        return sendRequest(new GetChatMember(chatId, userId)).chatMember().user();
+        User user = sendRequest(new GetChatMember(chatId, userId)).chatMember().user();
+        log.debug("Receive getUser: user(id={}, chatId={})", userId, chatId);
+        return user;
     }
 
     public Chat getChat(long chatId) {
-        return sendRequest(new GetChat(chatId)).chat();
+        Chat chat = sendRequest(new GetChat(chatId)).chat();
+        log.debug("Receive getChat: chat(id={})", chatId);
+        return chat;
     }
 
     public int getChatMembersCount(long chatId) {
-        return sendRequest(new GetChatMemberCount(chatId)).count();
+        int count = sendRequest(new GetChatMemberCount(chatId)).count();
+        log.debug("Receive getChatMembersCount: count={} for chat(id={})", count, chatId);
+        return count;
     }
 }

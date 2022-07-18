@@ -27,12 +27,6 @@ public class ChatModeratorService {
         return chatModeratorRepository.save(entity);
     }
 
-    public void delete(ChatModerator chatModerator,ChatUser chatUser){
-
-
-    }
-
-
     public List<ChatModerator> findAll() {
         List<ChatModerator> result = new ArrayList<>();
         chatModeratorRepository.findAll().forEach(result::add);
@@ -43,12 +37,11 @@ public class ChatModeratorService {
         return chatModeratorRepository.findByChatUsers_ChatId(chatId);
     }
 
-    public Optional<ChatModerator> findByChatId(Long chatId){
-        return chatModeratorRepository.findByChatId(chatId);
-    }
-    public boolean findByIDModerChatInDatabase(Long chatId){
+    public boolean existsByChatId(Long chatId) {
         return chatModeratorRepository.existsByChatId(chatId);
     }
 
-
+    public Optional<ChatModerator> findByChatId(Long chatId) {
+        return chatModeratorRepository.findByChatId(chatId);
+    }
 }

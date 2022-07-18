@@ -10,8 +10,12 @@ import java.util.Optional;
 
 @Repository
 public interface ChatUserRepository extends CrudRepository<ChatUser, Integer> {
+    
+//    boolean existsByName(String name);
 
-    ChatUser findByChatId(long chatId);
+    Optional<ChatUser> findByChatId(long chatId);
+    
+//    Optional<ChatUser> findByName(String name);
 
     List<ChatUser> findByChatModeratorsNotEmpty();
 

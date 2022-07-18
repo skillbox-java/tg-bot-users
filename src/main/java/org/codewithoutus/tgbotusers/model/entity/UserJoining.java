@@ -2,7 +2,6 @@ package org.codewithoutus.tgbotusers.model.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import org.codewithoutus.tgbotusers.model.enums.CongratulateStatus;
 
 import javax.persistence.*;
@@ -12,7 +11,6 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@ToString
 public class UserJoining {
 
     @Id
@@ -40,4 +38,22 @@ public class UserJoining {
 
     @OneToMany(mappedBy = "userJoining")
     private List<UserJoiningNotification> notifications;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserJoining that = (UserJoining) o;
+
+        if (!userId.equals(that.userId)) return false;
+        return chatId.equals(that.chatId);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = userId.hashCode();
+        result = 31 * result + chatId.hashCode();
+        return result;
+    }
 }

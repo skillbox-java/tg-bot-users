@@ -28,8 +28,6 @@ public class ChatModerator { // TODO: Pavel -- переименовать сущ
             inverseJoinColumns = @JoinColumn(name = "user_chat_id"))
     private List<ChatUser> chatUsers=new ArrayList<>();
 
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
