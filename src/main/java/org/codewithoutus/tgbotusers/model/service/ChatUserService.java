@@ -20,23 +20,23 @@ public class ChatUserService {
     public void deleteAll() {
         chatUserRepository.deleteAll();
     }
-    
-    public boolean existsByName(String name) {
-        return chatUserRepository.existsByName(name);
-    }
+
+//    public boolean existsByName(String name) {
+//        return chatUserRepository.existsByName(name);
+//    }
 
     public ChatUser save(ChatUser entity) {
         return chatUserRepository.save(entity);
     }
 
-    public ChatUser findByChatId(long chatId) {
+    public Optional<ChatUser> findByChatId(long chatId) {
         return chatUserRepository.findByChatId(chatId);
     }
 
-    public Optional<ChatUser> findByName(String name) {
-        return chatUserRepository.findByName(name);
-    }
-    
+//    public Optional<ChatUser> findByName(String name) {
+//        return chatUserRepository.findByName(name);
+//    }
+
     public boolean isChatUser(long id) {
         return chatUserRepository.findByChatModeratorsNotEmpty()
                 .stream()

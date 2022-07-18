@@ -7,6 +7,7 @@ import org.hibernate.annotations.NaturalId;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -25,12 +26,18 @@ public class ChatModerator { // TODO: Pavel -- переименовать сущ
     @JoinTable(name = "moderators2users",
             joinColumns = @JoinColumn(name = "moderator_chat_id"),
             inverseJoinColumns = @JoinColumn(name = "user_chat_id"))
-    private List<ChatUser> chatUsers;
+    private List<ChatUser> chatUsers=new ArrayList<>();
 
-    public void addChatUser(ChatUser chatUser) {
-        if (chatUsers == null) {
-            chatUsers = new ArrayList<>();
-        }
-        chatUsers.add(chatUser);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChatModerator that = (ChatModerator) o;
+        return chatId.equals(that.chatId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(chatId);
     }
 }

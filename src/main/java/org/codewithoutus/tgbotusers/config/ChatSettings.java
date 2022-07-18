@@ -11,7 +11,6 @@ import org.codewithoutus.tgbotusers.model.service.ChatModeratorService;
 import org.codewithoutus.tgbotusers.model.service.ChatUserService;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
@@ -63,20 +62,20 @@ public class ChatSettings {
         //  2. при каждом запуске запуске актуализировать названия юзерских чатов (поле name)
         //     (нужно для возможности получения списка юбилейных с параметром названия группы,
         //     пример команды: [/luckyList@UsersTgBot Java разработчик])
-        
+
         for (Map.Entry<Long, List<Long>> moderatorData : chatsSettingsData.entrySet()) {
             ChatModerator chatModerator = new ChatModerator();
             chatModerator.setChatId(moderatorData.getKey());
 
             for (Long userData : moderatorData.getValue()) {
-                ChatUser chatUser = chatUserService.findByChatId(userData);
-                if (chatUser == null) {
-                    chatUser = new ChatUser();
-                    chatUser.setChatId(userData);
-                    chatUser = chatUserService.save(chatUser);
-                }
-                chatUser.addChatModerator(chatModerator);
-                chatModerator.addChatUser(chatUser);
+                ChatUser chatUser = chatUserService.findByChatId(userData).orElseGet(() -> {
+                    ChatUser newEntity = new ChatUser();
+                    newEntity.setChatId(userData);
+                    newEntity = chatUserService.save(newEntity);
+                    return newEntity;
+                });
+                chatUser.getChatModerators().add(chatModerator);
+                chatModerator.getChatUsers().add(chatUser);
                 chatModerator = chatModeratorService.save(chatModerator);
             }
         }

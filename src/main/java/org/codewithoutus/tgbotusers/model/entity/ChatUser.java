@@ -7,6 +7,7 @@ import org.hibernate.annotations.NaturalId;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -20,17 +21,23 @@ public class ChatUser { // TODO: Pavel -- переименовать сущно�
     @NaturalId
     @Column(nullable = false, unique = true)
     private Long chatId;
-    
-    @Column(nullable = true)    // TODO: Pavel - подумать nullable = true или false?
-    private String name;
+
+//    @Column(nullable = true)    // TODO: Pavel - подумать nullable = true или false?
+//    private String name;
 
     @ManyToMany(mappedBy = "chatUsers", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    private List<ChatModerator> chatModerators;
+    private List<ChatModerator> chatModerators = new ArrayList<>();
 
-    public void addChatModerator(ChatModerator chatModerator) {
-        if (chatModerators == null) {
-            chatModerators = new ArrayList<>();
-        }
-        chatModerators.add(chatModerator);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChatUser that = (ChatUser) o;
+        return chatId.equals(that.chatId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(chatId);
     }
 }

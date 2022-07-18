@@ -9,7 +9,7 @@ import org.codewithoutus.tgbotusers.bot.Bot;
 import org.codewithoutus.tgbotusers.bot.enums.BotStatus;
 import org.codewithoutus.tgbotusers.bot.handler.CallbackQueryHandler;
 import org.codewithoutus.tgbotusers.bot.handler.ChatJoinRequestHandler;
-import org.codewithoutus.tgbotusers.bot.handler.MessageHandler;
+import org.codewithoutus.tgbotusers.bot.handler.LuckyListCommandHandler;
 import org.codewithoutus.tgbotusers.bot.handler.PrivateMessageHandler;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +24,7 @@ public class BotService {
     private final CallbackQueryHandler callbackQueryHandler;
     private final ChatJoinRequestHandler chatJoinRequestHandler;
     private final PrivateMessageHandler privateMessageHandler;
-    private final MessageHandler messageHandler;
+    private final LuckyListCommandHandler luckyListCommandHandler;
     
     @PostConstruct
     private void botStart() {
@@ -72,8 +72,8 @@ public class BotService {
     private void handleUpdate(Update update) {
         if (chatJoinRequestHandler.tryHandle(update)
                 || callbackQueryHandler.tryHandle(update)
-                || privateMessageHandler.tryHandle(update)
-                || messageHandler.tryHandle(update)) {
+                || luckyListCommandHandler.tryHandle(update)
+                || privateMessageHandler.tryHandle(update)) {
             // update handled, return
         }
     }
