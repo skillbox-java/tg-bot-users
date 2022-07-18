@@ -10,16 +10,14 @@ from tgbot.Utils.DBWorker import get_groups
 
 async def show_groups(call: types.CallbackQuery):
     groups = await get_groups()
-    text = md.hunderline('ID |   Группа модераторов   |   Группы пользователей\n')
+    text = md.hbold('ID |   Группа модераторов   |   Группы пользователей\n\n')
 
     with suppress(MessageCantBeDeleted):
         await call.message.bot.delete_message(message_id=call.message.message_id, chat_id=call.message.chat.id)
 
     if groups:
         for group in groups:
-            string = md.hbold(f'{group[0]} | {group[1]} | {group[2]} |\n')
-            text += string
-            text += f'{"‾" * (len(string) // 2 + 11)}\n'
+            text += md.hunderline(f'{group[0]} | {group[1]} | {group[2]} |\n')
         await call.message.answer(text=text)
     else:
         await call.message.answer(text='Таблица еще пуста')

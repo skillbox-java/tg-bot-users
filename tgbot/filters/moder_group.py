@@ -17,4 +17,3 @@ class IsModerGroup(BoundFilter):
         ids = await get_users_groups(message.chat.id)
         if ids:
             return {"ids": ids}
-        return False

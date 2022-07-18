@@ -8,7 +8,7 @@ from tgbot.Utils.DBWorker import get_data_granted
 
 
 async def main_menu(message: types.Message):
-    await message.answer(text='⚙    ГЛАВНОЕ МЕНЮ    ⚙', reply_markup=await get_main_menu_kb())
+    await message.answer(text='⚙    ГЛАВНОЕ МЕНЮ    ⚙', reply_markup=get_main_menu_kb())
 
 
 def register_main_menu(dp: Dispatcher):

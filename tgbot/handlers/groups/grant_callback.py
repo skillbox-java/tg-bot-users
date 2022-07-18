@@ -6,6 +6,7 @@ from aiogram.dispatcher.handler import CancelHandler
 from aiogram.types import ChatType
 from aiogram.utils.exceptions import MessageCantBeEdited, MessageToEditNotFound, MessageNotModified
 
+from misc.grant_text import get_great_text
 from tgbot.Utils.DBWorker import get_message_in_queue, get_queue, delete_from_queue, vacuum, set_data_granted, \
     count_from_queue
 
@@ -33,19 +34,15 @@ async def grant_user(call: types.CallbackQuery):
         await call.answer(text="Такого пользователя уже нет в группе", show_alert=True)
         raise CancelHandler()
 
-    text = f'🎉 Поздравляю, {user}, как же удачно попали в нужное место и в нужное время!\n' \
-           f'Вы {count_for_grant[0][0]} участник комьюнити.\n' \
-           f'Вас ждут плюшки и печенюшки!🎉'
+    text = get_great_text(user, count_for_grant[0][0])
 
     grant_message = await call.bot.send_message(chat_id=group_id_users, text=text)
 
     await call.answer()
     await call.message.answer(text=f"Пользователь {user} в группе {grant_message.chat.title} поздравлен")
 
-    try:
-        await call.bot.edit_message_reply_markup(chat_id=group_id_mod, message_id=message_id, reply_markup=None)
-    except (MessageCantBeEdited, MessageToEditNotFound, MessageNotModified, MessageCantBeEdited) as exc:
-        pass
+    with suppress(MessageCantBeEdited, MessageToEditNotFound, MessageNotModified, MessageCantBeEdited):
+        await call.message.delete_reply_markup()
 
     granted = [(group_id_users, grant_message.chat.title, user_id, user, group_id_mod, moder_id, count, datetime_update,
                 datetime_granted, username)]
@@ -65,5 +62,5 @@ async def grant_user(call: types.CallbackQuery):
 
 
 def register_grant(dp: Dispatcher):
-    chat_types = [ChatType.GROUP, ChatType.SUPERGROUP, ChatType.CHANNEL]
+    chat_types = [ChatType.GROUP, ChatType.SUPERGROUP]
     dp.register_callback_query_handler(grant_user, Text(startswith='grant'), chat_type=chat_types)

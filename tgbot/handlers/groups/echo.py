@@ -2,6 +2,8 @@ from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.utils.markdown import hcode
 
+from Utils.get_user_link import get_link
+
 
 async def bot_echo(message: types.Message):
     text = [

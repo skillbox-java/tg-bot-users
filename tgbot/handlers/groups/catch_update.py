@@ -1,4 +1,7 @@
 from typing import List
+
+from aiogram.utils.markdown import quote_html
+
 from tgbot.keyboards.inline import get_gran_kb
 from aiogram import Dispatcher, types
 from aiogram.types import ChatType
@@ -12,7 +15,7 @@ async def new_chat(update: types.ChatMemberUpdated, ids: List[tuple[int]], count
     link = await get_link(update.new_chat_member.user)
     uid = str(uuid.uuid4())
     if update.new_chat_member.user.username:
-        username = f'@{update.new_chat_member.user.username}'
+        username = f'@{quote_html(update.new_chat_member.user.username)}'
     else:
         username = 'ника нет'
     text = f'🎉 В “{update.chat.title}” группу вступил юбилейный пользователь\n' \
@@ -28,7 +31,7 @@ async def new_chat(update: types.ChatMemberUpdated, ids: List[tuple[int]], count
 
 
 def register_catch(dp: Dispatcher):
-    chat_types = [ChatType.GROUP, ChatType.SUPERGROUP, ChatType.CHANNEL]
+    chat_types = [ChatType.GROUP, ChatType.SUPERGROUP]
     dp.register_chat_member_handler(new_chat,
                                     chat_type=chat_types,
                                     is_group_join=True,

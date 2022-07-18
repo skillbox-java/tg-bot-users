@@ -8,7 +8,7 @@ from keyboards.inline import get_main_menu_kb
 
 async def back_to_main(call: types.CallbackQuery, state: FSMContext):
     with suppress(MessageCantBeEdited):
-        await call.message.edit_text(text='⚙    ГЛАВНОЕ МЕНЮ    ⚙', reply_markup=await get_main_menu_kb())
+        await call.message.edit_text(text='⚙    ГЛАВНОЕ МЕНЮ    ⚙', reply_markup=get_main_menu_kb())
     await state.finish()
 
 

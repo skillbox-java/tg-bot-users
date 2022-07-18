@@ -22,4 +22,3 @@ class IsGrantCount(BoundFilter):
         saved_grant_numbers = await get_grant_numbers(update.chat.id)
         if 0 < count_to_delete[0][0] < 3 or (count in saved_grant_numbers) or not count % config_count:
             return {"count": count}
-        return False

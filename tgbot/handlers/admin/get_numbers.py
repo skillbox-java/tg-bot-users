@@ -33,7 +33,7 @@ async def get_grant_numbers(message: types.Message, state: FSMContext):
     await message.answer('Записал')
     await state.finish()
     await message.answer(text='⚙ Настройка таблицы с поздр. номерами ⚙',
-                         reply_markup=await get_conf_numbers_kb())
+                         reply_markup=get_conf_numbers_kb())
 
 
 def register_get_grant_numbers(dp: Dispatcher):

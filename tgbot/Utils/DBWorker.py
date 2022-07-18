@@ -115,6 +115,12 @@ async def get_data_granted(group_id_moder):
                             get=True)
 
 
+async def get_data_granted_for_kb(group_id_users):
+    return await db_execute(
+        string=f'SELECT * FROM granted WHERE group_id_users={group_id_users} ORDER BY datetime_update',
+        get=True)
+
+
 async def get_count_queue(group_id):
     return await db_execute(string=f"SELECT COUNT(*) FROM queue WHERE group_id_users={group_id}", get=True)
 
@@ -160,11 +166,6 @@ async def get_user_ids_from_groups(mod_group_id):
 async def set_data_groups(values):
     return await db_execute(string=f'INSERT OR REPLACE INTO groups(mod_group_id, user_group_ids)'
                                    f' VALUES(?, ?);', values=values)
-
-
-# async def check_grant_numbers(group_id):
-#     return await db_execute(
-#         string=f"SELECT COUNT(*) FROM grant_numbers WHERE group_id LIKE '%{group_id}%'", get=True)
 
 
 async def get_data_from_grant_numbers(group_id):

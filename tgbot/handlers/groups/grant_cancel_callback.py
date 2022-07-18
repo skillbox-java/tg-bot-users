@@ -10,8 +10,7 @@ async def cancel_grant_user(call: types.CallbackQuery):
     message = await get_message_in_queue(uid)
     await call.answer()
     if message:
-        await call.bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=message[0][1],
-                                                 reply_markup=None)
+        await call.message.delete_reply_markup()
 
 
 def register_cancel_grant(dp: Dispatcher):

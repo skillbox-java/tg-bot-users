@@ -15,6 +15,5 @@ class IsNotGranted(BoundFilter):
         if granted[0][0]:
             return False
         in_queue = await check_queue(user_id=update.new_chat_member.user.id, group_id=update.chat.id)
-        if in_queue[0][0]:
-            return False
-        return True
+        if not in_queue[0][0]:
+            return True

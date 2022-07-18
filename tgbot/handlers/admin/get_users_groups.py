@@ -36,7 +36,7 @@ async def get_users_group(message: types.Message, state: FSMContext):
     await message.answer('Записал')
     await state.finish()
     await message.answer(text='⚙ Настройка таблицы соответствия групп ⚙',
-                         reply_markup=await get_conf_groups_kb())
+                         reply_markup=get_conf_groups_kb())
 
 
 def register_get_users_group(dp: Dispatcher):

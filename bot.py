@@ -34,6 +34,7 @@ from handlers.groups.grant_cancel_callback import register_cancel_grant
 from handlers.groups.grant_callback import register_grant
 from handlers.groups.catch_update import register_catch
 from handlers.groups.echo import register_echo
+from handlers.groups.show_granted_callback import register_show_granted_cb
 
 from misc.set_commands import set_default_commands
 
@@ -89,6 +90,7 @@ def register_all_handlers(dp):
     register_get_grant_numbers(dp)
     register_delete_numbers_cb(dp)
     register_delete_numbers(dp)
+    register_show_granted_cb(dp)
 
 
 async def main():

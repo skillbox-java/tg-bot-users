@@ -28,7 +28,7 @@ async def delete_numbers(message: types.Message, state: FSMContext):
         await message.answer(f'Таких строк нет в таблице')
     await state.finish()
     await message.answer(text='⚙ Настройка таблицы с поздр. номерами ⚙',
-                         reply_markup=await get_conf_numbers_kb())
+                         reply_markup=get_conf_numbers_kb())
 
 
 def register_delete_numbers(dp: Dispatcher):

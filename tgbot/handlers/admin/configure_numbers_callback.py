@@ -10,7 +10,7 @@ from keyboards.inline import get_conf_numbers_kb
 async def configure_numbers(call: types.CallbackQuery):
     with suppress(MessageCantBeEdited):
         await call.message.edit_text(text='⚙ Настройка таблицы с поздр. номерами ⚙',
-                                     reply_markup=await get_conf_numbers_kb())
+                                     reply_markup=get_conf_numbers_kb())
 
 
 def register_configure_numbers(dp: Dispatcher):
