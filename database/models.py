@@ -28,11 +28,9 @@ class User(BaseModel):
     current_time = DateTimeField(default=datetime.now)
 
 
-class UserCounter(BaseModel):
+class TechInfo(BaseModel):
     owner = ForeignKeyField(User)
     user_counter = IntegerField()
     message_id = IntegerField(null=True)
     deleted = BooleanField(default=False)
-
-
-# db.create_tables([User, UserCounter])
+    congratulated = BooleanField(default=False)

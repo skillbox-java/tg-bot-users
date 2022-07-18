@@ -3,7 +3,7 @@ from telebot.types import Message
 from config_data.config import ADMINISTRATORS_GROUP_ID, USERS_GROUP
 from config_data.config import USER_THRESHOLD
 from database.save_user_info import insert_user_to_db, insert_counter_and_message_id, duplicate
-from keyboards.inline.congratulate import congratulate_user
+from keyboards.inline.congratulate import notify_about_anniversary_user
 from loader import bot
 from utils.greetings import get_greeting_text
 
@@ -22,7 +22,7 @@ def new_member(message: Message):
                                          )
         msg = bot.send_message(chat_id=ADMINISTRATORS_GROUP_ID[0],
                                text=text_to_send,
-                               reply_markup=congratulate_user(user_obj.user_id),
+                               reply_markup=notify_about_anniversary_user(user_obj.user_id),
                                )
         insert_counter_and_message_id(instance=user_obj,
                                       user_counter=members_count,
