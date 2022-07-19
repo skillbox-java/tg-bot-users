@@ -1,6 +1,6 @@
 from telebot.types import Message, CallbackQuery
 from loader import bot
-import database.commands as usersbase
+from database.commands import get_moderator_id, select_from_groups, insert_to_groups, delete_from_groups
 from keyboards.inline import admin_keyboard
 from config_data.config import ADMIN_IDS
 
@@ -13,17 +13,22 @@ def bot_admin_show(message: Message) -> None:
     :param Message message: /adminshow
     :return: None
     """
-    moderator_ids = usersbase.get_moderator_id()
+    moderator_ids = get_moderator_id()
 
-    if abs(message.chat.id) in moderator_ids:
-        admin_info = usersbase.select_from_groups()
-        bot.send_message(chat_id=message.chat.id, text="Текущие настройки админки в формате\n"
-                                                       "id Группа модераторов - id Группа пользователей")
-        for i_info in admin_info:
-            bot_text = f"{i_info[0][0]}: "
-            for j_info in i_info:
-                bot_text = f"{bot_text}{j_info[1]} "
-            bot.send_message(chat_id=message.chat.id, text=bot_text)
+    if (message.chat.id in moderator_ids) or (str(message.from_user.id) in ADMIN_IDS):
+        admin_info = select_from_groups()
+
+        if admin_info:
+            bot.send_message(chat_id=message.chat.id, text="Текущие настройки админки в формате\n"
+                                                           "id Группа модераторов: id Группа пользователей")
+            for i_info in admin_info:
+                bot_text = f"{i_info[0][0]}: "
+                for j_info in i_info:
+                    bot_text = f"{bot_text}{j_info[1]} "
+                bot.send_message(chat_id=message.chat.id, text=bot_text)
+        else:
+            bot.send_message(chat_id=message.chat.id,
+                             text="Настройки еще не выставлены.")
 
 
 @bot.message_handler(commands=['adminsetup'])
@@ -34,7 +39,7 @@ def bot_admin_setup(message: Message) -> None:
     :param Message message: /adminsetup
     :return: None
     """
-    moderator_ids = usersbase.get_moderator_id()
+    moderator_ids = get_moderator_id()
 
     if str(message.from_user.id) in ADMIN_IDS:
         bot.send_message(chat_id=message.chat.id,
@@ -42,7 +47,7 @@ def bot_admin_setup(message: Message) -> None:
                               "Это приведет к полному удалению текущих настроек и отменить это действие будет "
                               "невозможно!",
                          reply_markup=admin_keyboard.yes_no_proceed_keyboard())
-    elif abs(message.chat.id) in moderator_ids:
+    elif message.chat.id in moderator_ids:
         bot.send_message(chat_id=message.chat.id,
                          text=f"Ошибка доступа: эта команда доступна только пользователям с правами "
                               f"администрирования. Доступ есть у пользователей с такими user_id:\n{ADMIN_IDS}")
@@ -57,15 +62,15 @@ def process_admin_input(message: Message) -> None:
     groups = message.text.split(" ")
 
     for i_group in groups:
-        if not i_group.isdigit():
+        if not (i_group.startswith("-") and i_group[1:].isdigit()):
             msg = bot.send_message(chat_id=message.chat.id,
-                                   text="Ошибка: id_группы - это натуральное число. Попробуйте еще раз. Формат ввода:\n"
-                                        "id_ГМ id_ГП_1 id_ГП_2 id_ГП_3")
+                                   text="Ошибка: id_группы - это отрицательное число. Попробуйте еще раз. Формат"
+                                        " ввода:\n id_ГМ id_ГП_1 id_ГП_2 id_ГП_3")
             bot.register_next_step_handler(message=msg, callback=process_admin_input)
             return
 
     for i in range(len(groups) - 1):
-        usersbase.insert_to_groups(moderator_id=int(groups[0]), group_id=int(groups[i + 1]))
+        insert_to_groups(moderator_id=int(groups[0]), group_id=int(groups[i + 1]))
 
     bot.send_message(chat_id=message.chat.id,
                      text="Сделано! Хотите добавить еще группы?",
@@ -80,7 +85,7 @@ def callback_query(call: CallbackQuery) -> None:
     :param CallbackQuery call: yes_admin_proceed
     :return: None
     """
-    usersbase.delete_from_groups()
+    delete_from_groups()
     msg = bot.edit_message_text(chat_id=call.message.chat.id,
                                 message_id=call.message.message_id,
                                 text="Добро пожаловать в меню админки. Добавьте группы пользователей (ГП), из которых "
