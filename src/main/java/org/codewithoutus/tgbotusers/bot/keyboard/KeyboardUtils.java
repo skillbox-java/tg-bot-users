@@ -23,7 +23,7 @@ public class KeyboardUtils {
 
     public static <E extends Keyboard> Optional<E> defineKey(Class<E> enumClass, String command) {
         return Arrays.stream(enumClass.getEnumConstants())
-                .filter(value -> value.getBotCommand().getText().equals(command))
+                .filter(value -> command.startsWith(value.getBotCommand().getText()))
                 .findFirst();
     }
 }

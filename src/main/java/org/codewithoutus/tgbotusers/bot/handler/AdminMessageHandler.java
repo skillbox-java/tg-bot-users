@@ -89,7 +89,7 @@ public class AdminMessageHandler extends Handler {
             return false;
         }
 
-        long moderatorGroupId = Long.parseLong(matcher.group(2));
+        long moderatorGroupId = Long.parseLong(matcher.group(1));
         ChatModerator chatModerator = chatModeratorService.findByChatId(moderatorGroupId).orElse(null);
         if (chatModerator != null) {
             telegramService.sendMessage(new SendMessage(chatId, "Такой модератор уже есть"));
