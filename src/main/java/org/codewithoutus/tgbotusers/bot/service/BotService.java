@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.codewithoutus.tgbotusers.bot.Bot;
 import org.codewithoutus.tgbotusers.bot.enums.BotStatus;
-import org.codewithoutus.tgbotusers.bot.handler.CallbackQueryHandler;
-import org.codewithoutus.tgbotusers.bot.handler.ChatJoinRequestHandler;
-import org.codewithoutus.tgbotusers.bot.handler.LuckyListCommandHandler;
-import org.codewithoutus.tgbotusers.bot.handler.PrivateMessageHandler;
+import org.codewithoutus.tgbotusers.bot.handler.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -21,6 +18,7 @@ import javax.annotation.PostConstruct;
 public class BotService {
     
     private final Bot bot;
+    private final AdminMessageHandler adminMessageHandler;
     private final CallbackQueryHandler callbackQueryHandler;
     private final ChatJoinRequestHandler chatJoinRequestHandler;
     private final PrivateMessageHandler privateMessageHandler;
@@ -70,10 +68,11 @@ public class BotService {
     }
     
     private void handleUpdate(Update update) {
-        if (chatJoinRequestHandler.tryHandle(update)
+        if (adminMessageHandler.tryHandle(update)
+                || privateMessageHandler.tryHandle(update)
+                || chatJoinRequestHandler.tryHandle(update)
                 || callbackQueryHandler.tryHandle(update)
-                || luckyListCommandHandler.tryHandle(update)
-                || privateMessageHandler.tryHandle(update)) {
+                || luckyListCommandHandler.tryHandle(update)) {
             // update handled, return
         }
     }

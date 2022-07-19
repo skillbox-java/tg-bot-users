@@ -26,7 +26,7 @@ public class ChatModerator { // TODO: Pavel -- переименовать сущ
     @JoinTable(name = "moderators2users",
             joinColumns = @JoinColumn(name = "moderator_chat_id"),
             inverseJoinColumns = @JoinColumn(name = "user_chat_id"))
-    private List<ChatUser> chatUsers=new ArrayList<>();
+    private List<ChatUser> chatUsers = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

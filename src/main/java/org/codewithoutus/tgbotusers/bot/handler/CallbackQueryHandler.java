@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -35,13 +34,13 @@ public class CallbackQueryHandler extends Handler {
         if (callbackQueryData == null || callbackQueryData.isEmpty()) {
             return false;
         }
-        
+
         // есть ли команда в callbackQuery
         String command = (String) callbackQueryData.get("command");
         if (command == null || command.isBlank()) {
             return false;
         }
-        
+
         if (handleCongratulationDecision(command, callbackQueryData)) {
             return true;
 
@@ -54,12 +53,12 @@ public class CallbackQueryHandler extends Handler {
     @Transactional
     private boolean handleCongratulationDecision(String command, Map<String, Object> callbackQueryData) {
         // есть ли команда в callbackQuery
-        Optional<CongratulationDecisionKeyboard> decisionOptional =
-                KeyboardUtils.defineKey(CongratulationDecisionKeyboard.class, command);
-        if (decisionOptional.isEmpty()) {
+        CongratulationDecisionKeyboard decision = KeyboardUtils
+                .defineKey(CongratulationDecisionKeyboard.class, command).orElse(null);
+        if (decision == null) {
             return false;
         }
-        
+
         // есть ли поздравленные в чате с таким порядковым номером
         Integer userJoiningId = (Integer) callbackQueryData.get(AppStaticContext.CALLBACK_QUERY_DATA_ID_FIELD);
         UserJoining userJoining = userJoiningService.findById(userJoiningId)
@@ -74,9 +73,7 @@ public class CallbackQueryHandler extends Handler {
         if (userJoiningService.existCongratulatedUser(chatId, anniversaryNumber)) {
             return true;
         }
-        
-        
-        CongratulationDecisionKeyboard decision = decisionOptional.get();
+
         CongratulateStatus newStatus = (decision == CongratulationDecisionKeyboard.CONGRATULATE)
                 ? CongratulateStatus.CONGRATULATE
                 : CongratulateStatus.DECLINE;

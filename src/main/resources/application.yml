@@ -1,12 +1,22 @@
+server:
+    port: 8090
+
+bot-settings:
+    #    bot-user-name: skillTestBoxBot
+    #    bot-token: 5566542855:AAHQ8Ge8VD8lVv5sw21f1ztrslroFVo1upI
+    bot-user-name: ${BOT_USER_NAME}
+    bot-token: ${BOT_TOKEN}
+    long-polling-timeout: 1000
+
 spring:
     datasource:
+#        url: jdbc:postgresql://localhost:5432/tg-bot-users
+#        username:  postgres
+#        password: testtest
         driver-class-name: org.postgresql.Driver
-#        url: ${DATASOURCE_URL}
-        url: jdbc:postgresql://localhost:5432/tg-bot-users
-#        username:  ${DATASOURCE_USER}
-        username:  postgres
-#        password: ${DATASOURCE_PASS}
-        password: testtest
+        url: ${DATASOURCE_URL}
+        username:  ${DATASOURCE_USER}
+        password: ${DATASOURCE_PASS}
         hikari:
             maximum-pool-size: 2
 
@@ -25,13 +35,3 @@ logging:
         root: info
         web: info
         sql: info
-
-bot-settings:
-#    bot-user-name: ${BOT_USER_NAME}
-    bot-user-name: skillTestBoxBot
-#    bot-token: ${BOT_TOKEN}
-    bot-token: 5566542855:AAHQ8Ge8VD8lVv5sw21f1ztrslroFVo1upI
-    long-polling-timeout: 1000
-
-
-server.port: 8090

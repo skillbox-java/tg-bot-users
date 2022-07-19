@@ -26,7 +26,7 @@ public class ChatUser { // TODO: Pavel -- переименовать сущно�
 //    private String name;
 
     @ManyToMany(mappedBy = "chatUsers", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    private List<ChatModerator> chatModerators;
+    private List<ChatModerator> chatModerators = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
