@@ -8,16 +8,21 @@ from aiogram.utils.exceptions import MessageCantBeDeleted
 from tgbot.Utils.DBWorker import get_numbers
 
 
-async def show_numbers(call: types.CallbackQuery):
+async def show_numbers(call: types.CallbackQuery) -> None:
+    """
+    Функция коллбека для показа данных из таблицы с позд. номерами grant_numbers
+    :param call: types.CallbackQuery
+    :return: None
+    """
     groups = await get_numbers()
-    text = md.hbold('ID |ID Группы|Номера для поздравления\n\n')
+    text = md.hbold('| ID | ID Группы | Номера для поздравления |\n\n')
 
     with suppress(MessageCantBeDeleted):
         await call.message.delete()
 
     if groups:
         for group in groups:
-            text += md.hunderline(f'{group[0]} | {group[1]} | {group[2]} |\n')
+            text += md.hunderline(f'| {group[0]} | {group[1]} | {group[2]} |\n')
         await call.message.answer(text=text)
     else:
         await call.message.answer(text='Таблица еще пуста')

@@ -5,7 +5,12 @@ from aiogram.types import ChatType
 from tgbot.Utils.DBWorker import get_message_in_queue
 
 
-async def cancel_grant_user(call: types.CallbackQuery):
+async def cancel_grant_user(call: types.CallbackQuery) -> None:
+    """
+    Функция коллбека, убирает кнопку поздравления пользователя
+    :param call: types.CallbackQuery
+    :return: None
+    """
     uid = call.data.split('|')[1]
     message = await get_message_in_queue(uid)
     await call.answer()

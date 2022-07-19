@@ -1,6 +1,5 @@
 from contextlib import suppress
 
-from aiogram import md
 from aiogram import Dispatcher, types
 from aiogram.types import ChatType
 from aiogram.utils.exceptions import MessageCantBeDeleted
@@ -8,7 +7,12 @@ from aiogram.utils.exceptions import MessageCantBeDeleted
 from tgbot.misc.states import Configure
 
 
-async def delete_groups(call: types.CallbackQuery):
+async def delete_groups(call: types.CallbackQuery) -> None:
+    """
+    Функция коллбека для удаления записей из таблицы соотв. групп
+    :param call: types.CallbackQuery
+    :return: None
+    """
     with suppress(MessageCantBeDeleted):
         await call.message.delete()
 

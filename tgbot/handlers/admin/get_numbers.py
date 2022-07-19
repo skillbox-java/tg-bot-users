@@ -2,6 +2,7 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import ChatType
 
+from tgbot.Utils.check_ids_records import check_ids
 from tgbot.Utils.check_message_user_groups import check_users_groups
 from tgbot.Utils.delete_doubles import delete_doubles_ids
 from tgbot.keyboards.inline import get_conf_numbers_kb
@@ -9,11 +10,17 @@ from tgbot.misc.states import Configure
 from tgbot.Utils.DBWorker import get_data_from_grant_numbers, set_data_numbers
 
 
-async def get_grant_numbers(message: types.Message, state: FSMContext):
+async def get_grant_numbers(message: types.Message, state: FSMContext) -> None:
+    """
+    Функция для ввода номеров для поздрв. для записи в таблицу БД
+    :param message: types.Message
+    :param state: FSMContext
+    :return: None
+    """
     if message.text == '/reset':
         await state.finish()
         return
-    group_ids_check = await check_users_groups(message.text)
+    group_ids_check = await check_ids(message.text)
 
     if not group_ids_check:
         await message.answer('Введите номера для поздравления, несколько номеров'

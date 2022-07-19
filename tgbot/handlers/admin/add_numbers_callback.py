@@ -5,7 +5,12 @@ from aiogram.utils.exceptions import MessageCantBeDeleted
 from tgbot.misc.states import Configure
 
 
-async def add_numbers(call: types.CallbackQuery):
+async def add_numbers(call: types.CallbackQuery) -> None:
+    """
+    Функция коллбека для добавления записи в таблицу numbers
+    :param call: types.CallbackQuery
+    :return: None
+    """
     with suppress(MessageCantBeDeleted):
         await call.message.delete()
 

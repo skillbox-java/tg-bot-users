@@ -7,12 +7,18 @@ from tgbot.Utils.check_number import check_number_in_message
 from tgbot.misc.states import Configure
 
 
-async def get_numbers_group(message: types.Message, state: FSMContext):
+async def get_numbers_group(message: types.Message, state: FSMContext) -> None:
+    """
+       Функция для ввода групп пользователей для записи в таблицу БД
+       :param message: types.Message
+       :param state: FSMContext
+       :return: None
+    """
     if message.text == '/reset':
         await state.finish()
         return
     group_id = await check_number_in_message(message.text)
-    if not group_id:
+    if not group_id or len(message.text) < 5:
         await message.answer('Введите id группы, целое число (/reset для сброса)')
         return
 

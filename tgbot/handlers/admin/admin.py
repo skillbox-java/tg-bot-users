@@ -2,7 +2,12 @@ from aiogram import Dispatcher
 from aiogram.types import Message
 
 
-async def admin_start(message: Message):
+async def admin_start(message: Message) -> None:
+    """
+    Если админ отправляет команду /start, бот здоровается и предлагает воспользоваться меню
+    :param message: Message
+    :return: None
+    """
     await message.reply("Добрый день! Конфигурация доступна из меню.")
 
 

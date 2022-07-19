@@ -5,7 +5,12 @@ from aiogram.utils.exceptions import MessageCantBeDeleted
 from tgbot.misc.states import Configure
 
 
-async def add_groups(call: types.CallbackQuery):
+async def add_groups(call: types.CallbackQuery) -> None:
+    """
+    Функция коллбека для добавления записи в таблицу groups
+    :param call: types.CallbackQuery
+    :return: None
+    """
     with suppress(MessageCantBeDeleted):
         await call.bot.delete_message(message_id=call.message.message_id, chat_id=call.message.chat.id)
 

@@ -33,7 +33,6 @@ from tgbot.handlers.groups.restore import register_restore
 from tgbot.handlers.groups.grant_cancel_callback import register_cancel_grant
 from tgbot.handlers.groups.grant_callback import register_grant
 from tgbot.handlers.groups.catch_update import register_catch
-from tgbot.handlers.groups.echo import register_echo
 from tgbot.handlers.groups.show_granted_callback import register_show_granted_cb
 
 from tgbot.misc.set_commands import set_default_commands
@@ -64,7 +63,6 @@ def register_all_filters(dp):
 
 
 def register_all_handlers(dp):
-    # register_echo(dp)
     register_admin(dp)
     register_user(dp)
     register_catch(dp)

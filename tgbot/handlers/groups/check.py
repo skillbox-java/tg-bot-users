@@ -4,7 +4,13 @@ from aiogram.types import ChatType
 from tgbot.Utils.DBWorker import get_queue
 
 
-async def check_queue(message: types.Message, ids: List[tuple[str]]):
+async def check_queue(message: types.Message, ids: List[tuple]) -> None:
+    """
+    Функция для проверки очереди на поздравление, комманда /проверка, доступна только в модераторских группах
+    :param message: types.Message
+    :param ids: List[tuple]
+    :return: None
+    """
     users_groups_ids = ids[0][0].split(',')
 
     for group_id in users_groups_ids:

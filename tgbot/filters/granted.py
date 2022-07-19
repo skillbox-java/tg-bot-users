@@ -10,7 +10,12 @@ class IsNotGranted(BoundFilter):
     def __init__(self, is_not_granted: bool):
         self.is_not_granted = is_not_granted
 
-    async def check(self, update: types.ChatMemberUpdated):
+    async def check(self, update: types.ChatMemberUpdated) -> bool:
+        """
+        Проверяет наличие нового пользователя в таблицах награжденных или в очереди
+        :param update: types.ChatMemberUpdated
+        :return: bool
+        """
         granted = await check_granted(user_id=update.new_chat_member.user.id, group_id=update.chat.id)
         if granted[0][0]:
             return False

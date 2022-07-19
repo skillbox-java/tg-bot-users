@@ -5,7 +5,13 @@ from aiogram.utils.exceptions import MessageToEditNotFound, MessageCantBeDeleted
 from tgbot.keyboards.inline import cb
 
 
-async def show_granted_cb(call: CallbackQuery, callback_data: dict):
+async def show_granted_cb(call: CallbackQuery, callback_data: dict) -> None:
+    """
+    Функция коллбека для закрытия меню для /списокЮбилейный
+    :param call: CallbackQuery
+    :param callback_data: dict
+    :return: None
+    """
     with suppress(MessageCantBeDeleted, MessageToEditNotFound):
         await call.message.delete()
 

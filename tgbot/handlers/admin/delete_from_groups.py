@@ -3,20 +3,26 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types import ChatType
 
 from tgbot.Utils.DBWorker import delete_data_from_groups, vacuum
-from tgbot.Utils.check_message_user_groups import check_users_groups
+from tgbot.Utils.check_ids_records import check_ids
 from tgbot.Utils.get_ids_for_grant_numbers import get_ids_for_multiple_record
 from tgbot.keyboards.inline import get_conf_groups_kb
 
 from tgbot.misc.states import Configure
 
 
-async def delete_from_groups(message: types.Message, state: FSMContext):
+async def delete_from_groups(message: types.Message, state: FSMContext) -> None:
+    """
+    Функция для удаления записей из таблицы групп
+    :param message: types.Message
+    :param state: FSMContext
+    :return: None
+    """
     if message.text == '/reset':
         await state.finish()
         return
-    group_id = await check_users_groups(message.text)
-    if not group_id:
-        await message.answer('Введите IDs групп модераторов для удаления записей из базы, целые числа, '
+    record_id = await check_ids(message.text)
+    if not record_id:
+        await message.answer('Введите IDs строк для удаления записей из базы, целые числа, '
                              'если нужно удалить несколько, вводите через запятую (/reset для сброса)')
         return
     ids = await get_ids_for_multiple_record(message.text)

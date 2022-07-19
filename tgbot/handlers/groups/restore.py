@@ -10,11 +10,17 @@ from aiogram.types import ChatType
 from tgbot.Utils.DBWorker import get_queue, update_data_queue
 
 
-async def restore(message: types.Message, ids: List[tuple[str]]):
+async def restore(message: types.Message, ids: List[tuple]) -> None:
+    """
+    Функция для повторной отправки сообщений с кнопками для поздр. в группу модераторов
+    :param message: types.Message
+    :param ids: List[tuple]
+    :return: None
+    """
     users_groups_ids = ids[0][0].split(',')
 
     for group_id in users_groups_ids:
-        messages_in_queue = await get_queue(group_id)
+        messages_in_queue = await get_queue(int(group_id))
         if messages_in_queue:
             for message_in_queue in messages_in_queue:
                 with suppress(MessageToDeleteNotFound, MessageCantBeDeleted):

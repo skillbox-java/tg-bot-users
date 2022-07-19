@@ -8,7 +8,14 @@ from tgbot.misc.show_granted import send_granted_message
 from tgbot.Utils.DBWorker import get_data_granted, get_users_groups
 
 
-async def get_granted(message: types.Message, ids: List[tuple[str]], state: FSMContext):
+async def get_granted(message: types.Message, ids: List[tuple], state: FSMContext) -> None:
+    """
+    Функция для показа поздравленных пользователей, комманда /списокЮбилейный, доступна только в модераторских группах
+    :param message: types.Message
+    :param ids: List[tuple]
+    :param state: FSMContext
+    :return: None
+    """
     granted_list = await get_data_granted(message.chat.id)
     if granted_list:
         user_groups_ids = {id_user_gr[1]: id_user_gr[2] for id_user_gr in granted_list}

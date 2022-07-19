@@ -11,7 +11,12 @@ from tgbot.Utils.DBWorker import get_message_in_queue, get_queue, delete_from_qu
     count_from_queue
 
 
-async def grant_user(call: types.CallbackQuery):
+async def grant_user(call: types.CallbackQuery) -> None:
+    """
+    Функция коллбека для поздравления пользователя
+    :param call: types.CallbackQuery
+    :return: None
+    """
     uid = call.data.split('|')[1]
     message_btn = await get_message_in_queue(uid)
     if not message_btn:

@@ -8,7 +8,14 @@ from tgbot.Utils.get_user_link import get_link
 from tgbot.Utils.DBWorker import set_data_queue
 
 
-async def new_chat(update: types.ChatMemberUpdated, ids: List[tuple[int]], count: int):
+async def new_chat(update: types.ChatMemberUpdated, ids: List[tuple[int]], count: int) -> None:
+    """
+    Функция для отлова события присоеднинения новго пользователя к модерируемой группе
+    :param update: types.ChatMemberUpdated
+    :param ids: List[tuple[int]]
+    :param count: int
+    :return: None
+    """
     link = await get_link(update.new_chat_member.user)
     uid = str(uuid.uuid4())
     if update.new_chat_member.user.username:

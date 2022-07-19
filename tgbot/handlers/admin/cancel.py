@@ -4,8 +4,12 @@ from aiogram.types import ChatType
 from aiogram.utils.exceptions import MessageCantBeDeleted
 
 
-
-async def cancel_menu(call: types.CallbackQuery):
+async def cancel_menu(call: types.CallbackQuery) -> None:
+    """
+    Функция колльека для закрытия главного меню
+    :param call: types.CallbackQuery
+    :return: None
+    """
     with suppress(MessageCantBeDeleted):
         await call.message.delete()
 

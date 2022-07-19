@@ -7,13 +7,17 @@ from tgbot.Utils.DBWorker import get_count_queue
 
 
 class IsGrantCount(BoundFilter):
-
     key = "is_grant_count"
 
     def __init__(self, is_grant_count: bool):
         self.is_grant_count = is_grant_count
 
-    async def check(self, update: types.ChatMemberUpdated):
+    async def check(self, update: types.ChatMemberUpdated) -> dict:
+        """
+        Метод фильтра, проверяет попадание нового пользователя в счастливчики, возвращает текущий номер вступившего
+        :param update: types.ChatMemberUpdated
+        :return: dict
+        """
         config_count = update.bot.data['config'].misc.grant_count
         if not config_count:
             raise CancelHandler()

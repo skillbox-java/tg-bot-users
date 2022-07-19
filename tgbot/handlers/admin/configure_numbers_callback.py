@@ -7,7 +7,12 @@ from aiogram.utils.exceptions import MessageCantBeEdited
 from tgbot.keyboards.inline import get_conf_numbers_kb
 
 
-async def configure_numbers(call: types.CallbackQuery):
+async def configure_numbers(call: types.CallbackQuery) -> None:
+    """
+    Функция коллбека для вызова меню конфигурирования таблицы таблицы с поздр. номерами
+    :param call: types.CallbackQuery
+    :return: None
+    """
     with suppress(MessageCantBeEdited):
         await call.message.edit_text(text='⚙ Настройка таблицы с поздр. номерами ⚙',
                                      reply_markup=get_conf_numbers_kb())

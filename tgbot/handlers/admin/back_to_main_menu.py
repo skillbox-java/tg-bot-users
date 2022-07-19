@@ -6,7 +6,13 @@ from aiogram.utils.exceptions import MessageCantBeEdited
 from tgbot.keyboards.inline import get_main_menu_kb
 
 
-async def back_to_main(call: types.CallbackQuery, state: FSMContext):
+async def back_to_main(call: types.CallbackQuery, state: FSMContext) -> None:
+    """
+    Функция коллбэка для возрврата в главное меню и сброса состояний
+    :param call: types.CallbackQuery
+    :param state: FSMContext
+    :return: None
+    """
     with suppress(MessageCantBeEdited):
         await call.message.edit_text(text='⚙    ГЛАВНОЕ МЕНЮ    ⚙', reply_markup=get_main_menu_kb())
     await state.finish()
