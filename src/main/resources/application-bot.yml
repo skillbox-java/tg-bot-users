@@ -1,10 +1,9 @@
 chats-settings:
     rewrite-database-settings-on-startup: false
     chats-settings-data:
-        11111:
-            - 222
-            - 333
-            - 444
+        -1001523814996:
+            - -1001523814996
+            - -1001781082670
         22222:
             - 444
             - 555
