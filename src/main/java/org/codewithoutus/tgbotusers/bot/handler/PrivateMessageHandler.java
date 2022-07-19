@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class PrivateMessageHandler extends Handler {
 
     private final TelegramService telegramService;
-    private static final String SORRY = "Sorry";
+    private static final String SORRY = "Sorry, wrong or unknown command";
 
     @Override
     protected boolean handle(Update update) {
@@ -29,7 +29,7 @@ public class PrivateMessageHandler extends Handler {
         if (handleForwardMessage(chatId, update) || handleTestRequest(chatId, text)) {
             return true;
         }
-        telegramService.sendMessage(new SendMessage(chatId, SORRY + update.message() + update.toString() + update));
+        telegramService.sendMessage(new SendMessage(chatId, SORRY));
         return false;
     }
 
@@ -56,7 +56,7 @@ public class PrivateMessageHandler extends Handler {
                     telegramService.sendMessage(new SendMessage(chatId, "InlineKeyboard test").replyMarkup(keyboard));
                 }
             } else {
-                telegramService.sendMessage(new SendMessage(chatId, String.format(SORRY, text)));
+                telegramService.sendMessage(new SendMessage(chatId, SORRY));
             }
             return true;
         }

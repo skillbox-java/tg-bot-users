@@ -14,7 +14,9 @@ import org.codewithoutus.tgbotusers.model.service.ChatModeratorService;
 import org.codewithoutus.tgbotusers.model.service.ChatUserService;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -73,11 +75,13 @@ public class AdminMessageHandler extends Handler {
     }
 
     private boolean showHelp(Long chatId) {
-        telegramService.sendMessage(new SendMessage(chatId,
-                "Список доступных команд :\n" + "listCommandAdd" + "\n" + "listCommandDelete"));
+        String text = "Список доступных команд: " + System.lineSeparator();
+        text += Arrays.stream(AdminKeyboard.values())
+                .map(command -> command.getBotCommand().getHelp())
+                .collect(Collectors.joining(System.lineSeparator()));
+        telegramService.sendMessage(new SendMessage(chatId, text));
         return true;
     }
-
 
     private boolean addModerChat(Update update, Long chatId, String text) {
         Matcher matcher = BotCommand.ADD_MODER_CHAT.getRegex().matcher(text);
@@ -148,26 +152,26 @@ public class AdminMessageHandler extends Handler {
         return true;
     }
 
-    private boolean deleteUserChat(Update update, Long chatId,String text) {
+    private boolean deleteUserChat(Update update, Long chatId, String text) {
         Matcher matcher = BotCommand.DELETE_USER_CHAT.getRegex().matcher(text);
         if (!matcher.matches()) {
             return false;
         }
 
         long userGroupId = Long.parseLong(matcher.group(1));
-        ChatUser chatUser= chatUserService.findByChatId(userGroupId).orElse(null);
+        ChatUser chatUser = chatUserService.findByChatId(userGroupId).orElse(null);
         if (chatUser == null) {
             telegramService.sendMessage(new SendMessage(chatId, String.format(NOT_MODER, userGroupId)));
             return true;
         }
 
-        if(!chatUser.getChatModerators().isEmpty()){
-            telegramService.sendMessage(new SendMessage(chatId, "Есть связные сущности у группы "+ userGroupId));
+        if (!chatUser.getChatModerators().isEmpty()) {
+            telegramService.sendMessage(new SendMessage(chatId, "Есть связные сущности у группы " + userGroupId));
             return true;
         }
 
         chatUserService.deleteById(chatUser.getId());
-        telegramService.sendMessage(new SendMessage(chatId, "Удалили группу юзеров № "+ userGroupId));
+        telegramService.sendMessage(new SendMessage(chatId, "Удалили группу юзеров № " + userGroupId));
         return true;
     }
 
