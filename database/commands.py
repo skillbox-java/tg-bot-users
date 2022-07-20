@@ -34,17 +34,122 @@ def insert2(nickname: str,
         """, (nickname, user_name, chat_name, congr_number, chat_id, user_id, dtime, is_winner))
 
 
-def select_lucky(moderator_id):
+"блок функций для вывода всех кто в юбилейном списке"
+
+
+def select_lucky(moderator_id: int):
+
     with sqlite3.connect(( DB )) as conn:
         cursor = conn.cursor()
-        # print(moderator_id, 's')
-        cursor.execute(f"""SELECT chat_name, user_name, nickname, congr_number, dtime_connetion, is_winner
+        cursor.execute(f"""SELECT chat_name, user_name, nickname, congr_number, dtime_connetion, is_winner, chat_id
                            FROM 'users' JOIN 'groups_relation'
                            ON chat_id = group_id AND moderator_id = abs({moderator_id});""")
-        # print(moderator_id, 'select2')
     result = cursor.fetchall()
-    # prin(r)
     return result
+
+
+def select_lucky_id(idd: int):
+
+    with sqlite3.connect(( DB )) as conn:
+        cursor = conn.cursor()
+        cursor.execute(f"""SELECT *
+                           FROM 'users'
+                           WHERE chat_id = {idd};""")
+    result = cursor.fetchall()
+    return result
+
+
+"Блок функций для поздравления последних непоздравленных начало"
+
+
+def select_last_uncongratulate(moderator_id: int):
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        cursor.execute(f"""SELECT chat_id, congr_number, nickname, user_name, chat_name, dtime_connetion, id, is_winner
+                           FROM 'users' JOIN 'groups_relation'
+                           ON chat_id = group_id AND moderator_id = abs({moderator_id}) AND is_winner = 0
+                           ORDER BY chat_id, congr_number;""")
+    result = cursor.fetchall()
+    return result
+
+
+def select_group_id(moderator_id: int):
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        cursor.execute(f"""SELECT chat_id, COUNT(*)
+                           FROM 'users' JOIN 'groups_relation'
+                           ON chat_id = group_id AND moderator_id = abs({moderator_id}) AND is_winner = 0
+                           GROUP BY chat_id;""")
+    result = cursor.fetchall()
+    return result
+
+
+def temp_save_unceleb(
+            chat_id: int,
+            record_id: int,
+            bot_message_id: int
+            ) -> None:
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+        INSERT INTO 'temp_unceleb' (chat_id, record_id, bot_message_id) VALUES (?, ?, ?);
+        """, (chat_id, record_id, bot_message_id))
+
+
+def temp_cleaner():
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        cursor.execute(f'''DELETE FROM 'temp_unceleb';''')
+
+
+def get_chat_id_unceleb(bot_message_id):
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT chat_id FROM 'temp_unceleb' WHERE bot_message_id={bot_message_id}")
+        result = cursor.fetchall()
+        return result[0][0]
+
+
+def is_winner_id_select_unceleb(
+        bot_message_id: int,
+        ) -> None:
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        result = cursor.execute(f'''SELECT id FROM users Join temp_unceleb ON id=record_id
+                        WHERE bot_message_id={bot_message_id};''')
+        id = []
+        for i in result:
+            id.append(i)
+
+        return id[0][0]
+
+
+def buttons_remover_unceleb(
+        chat_id: int,
+        ) -> None:
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT bot_message_id FROM 'temp_unceleb' WHERE chat_id={chat_id}")
+        result = cursor.fetchall()
+        delete_list = []
+        for i in result:
+            delete_list.extend(i)
+        return delete_list
+
+
+def storage_cleaner_unceleb(
+        chat_id: int,
+        ) -> None:
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        cursor.execute(f'''DELETE FROM 'temp_unceleb' WHERE chat_id={chat_id};''')
+
+
+def record_cleaner_unceleb(bot_message_id: int) -> None:
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        cursor.execute(f'''DELETE FROM 'temp_unceleb' WHERE bot_message_id={bot_message_id};''')
+"Конец блока функций unceleb"
 
 
 def winner_check(id):
