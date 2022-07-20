@@ -68,23 +68,29 @@ def callback(call: CallbackQuery) -> None:
     moders_chat = call.message.chat.id
 
     if call.data == 'grac':
+        # записываем, что пользователь выиграл
         is_winner_record(winner_id=winner_id)
-        remove_list = buttons_remover(chat_id=users_chat)
 
+        # удаляем все остальные сообщения бота и чистим информацию о сообщениях в базе данных таблицы temp_storage
+        remove_list = buttons_remover(chat_id=users_chat)
         for message in remove_list:
             bot.delete_message(chat_id=moders_chat, message_id=message)
-
         storage_cleaner(chat_id=users_chat)
 
+        # поздравляем победителя в группе пользователей
         bot.send_message(chat_id=users_chat,
                          text=f'\U0001F389 Поздравляю, {name}, как же удачно попали в нужное время!\n'
                               f'Вы участник {congr_number - congr_number % HAPPY_NUMBER} '
                               f'коммьюнити.\nВас ждут плюшки и печенюшки! \U0001F389')
 
+        # уведомляем группу модераторов о поздравлении победителя
         bot.send_message(chat_id=moders_chat,
                          text=f'Участник {name} поздравлен! \U0001F389')
 
     else:
+        # удаляем сообщение бота и чистим информацию о сообщении в базе данных таблицы temp_storage
         bot.delete_message(chat_id=moders_chat, message_id=call.message.message_id)
         storage_cleaner_lite(bot_message_id=call.message.message_id)
+
+        # уведомляем группу модераторов о том, что участника не поздравили
         bot.send_message(moders_chat, f'Участника {name} не поздравили.')
