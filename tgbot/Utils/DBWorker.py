@@ -122,16 +122,6 @@ async def set_data_groups(values: tuple) -> int:
                                    ' VALUES(?, ?);', values=values)
 
 
-async def set_group_ids_grant_numbers(values: List[tuple]) -> int:
-    """
-    Функция для вставки новой записи в таблицу grant_numbers, или замены
-    :param values: tuple
-    :return: int
-    """
-    return await db_execute(string=
-                            "INSERT OR IGNORE INTO grant_numbers(group_id) VALUES(?);", values=values, multiple=True)
-
-
 async def set_data_queue(values: tuple) -> int:
     """
     Функция для вставки новой записи в таблицу queue

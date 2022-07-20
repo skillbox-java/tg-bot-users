@@ -7,7 +7,7 @@ from tgbot.Utils.delete_doubles import delete_doubles_ids
 from tgbot.Utils.get_ids_for_grant_numbers import get_ids_for_multiple_record
 from tgbot.keyboards.inline import get_conf_groups_kb
 from tgbot.misc.states import Configure
-from tgbot.Utils.DBWorker import set_data_groups, set_group_ids_grant_numbers, get_users_groups
+from tgbot.Utils.DBWorker import set_data_groups, get_users_groups
 
 
 async def get_users_group(message: types.Message, state: FSMContext) -> None:
@@ -35,9 +35,6 @@ async def get_users_group(message: types.Message, state: FSMContext) -> None:
         ids_user_groups += f',{existed[0][0]}'
     text_message = await delete_doubles_ids(ids_user_groups)
     await set_data_groups(values=(id_mod_group, text_message,))
-
-    ids_grant_numbers = await get_ids_for_multiple_record(text_message)
-    await set_group_ids_grant_numbers(values=ids_grant_numbers)
 
     await message.answer('Записал')
     await state.finish()
