@@ -1,12 +1,12 @@
-server:
-    port: 8090
+#server:
+#    port: 8090
 
 bot-settings:
     #    bot-user-name: skillTestBoxBot
     #    bot-token: 5566542855:AAHQ8Ge8VD8lVv5sw21f1ztrslroFVo1upI
     bot-user-name: ${BOT_USER_NAME}
     bot-token: ${BOT_TOKEN}
-    long-polling-timeout: 1000
+    long-polling-timeout: 75000
 
 spring:
     datasource:
@@ -24,7 +24,7 @@ spring:
         database-platform: org.hibernate.dialect.PostgreSQLDialect
         show_sql: true
         hibernate:
-            ddl-auto: validate
+            ddl-auto: update
 
     profiles:
         include:
@@ -33,5 +33,6 @@ spring:
 logging:
     level:
         root: info
-        web: info
-        sql: info
+        org.codewithoutus.tgbotusers: debug
+        web: off
+        sql: off
