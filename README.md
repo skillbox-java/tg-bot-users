@@ -60,6 +60,8 @@
 |     MSG-MODERATOR-MEMBER      |        Текст памятка модераторам. Выводится при нажатии на кнопку `Памятка модераторам`         |
 |        MSG-TRIM-SYMBOL        |              Список символов для удаления из строк при проверке слов в сообщениях               |
 
+
+Клонировать репозиторий, обновить пакеты командой `go mod tidy` , убедиться что все пакеты скачаны и установлены.   
 Запуск приложения из папки cmd - go run main.go
 
 # Запуск в Докер-контейнере:
@@ -76,6 +78,17 @@
 
 ### Примеры:
 ```
+docker create volume skilbot_data
+```
+```
+make image
+```
+```
 docker run -v /home/user/tgbot_data/:/data -v /home/user/go-projects/telegram_bot_skb/etc/tgbot:/etc/tgbot skillbot:latest 
 ```
-
+```
+docker stop name
+```
+```
+docker start name
+```
