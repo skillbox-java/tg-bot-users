@@ -68,7 +68,7 @@
 
 - Команда "make image" создает образ приложения.
 ---
-- Вам нужно создать `volume` под вашу базу данных командой "docker create volume `data`"
+- Вам нужно создать `volume` под вашу базу данных командой "docker create volume `tgbot_data`"
 ---
 - При первом запуске контейнера вам нужно указать путь к вашей базе данных (`db/path`) и путь к файлу конфигурации, аргументами:
   docker run -v `db/path`:/data -v `env-path`:/etc/tgbot skillbot:latest
