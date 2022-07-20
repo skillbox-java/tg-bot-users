@@ -277,32 +277,23 @@ def get_all_moderator_id() -> List[int]:
         return result
 
 
-"блок функций для вывода всех кто в юбилейном списке"
+"блок функций для вывода всех кто в юбилейном списке и для поздравления последних непоздравленных пользователей"
 
 
-def select_lucky(moderator_id: int):
-
-    with sqlite3.connect(( DB )) as conn:
+def select_lucky(moderator_id: int) -> list:
+    """
+    Функция, которая возвращает chat_name, user_name, nickname, congr_number, dtime_connetion, is_winner, chat_id
+    из таблицы users по id группы модератора.
+    :param int moderator_id: уникальный id группы модератора
+    :return list: список информации обо всех зафиксированных пользователях
+    """
+    with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
         cursor.execute(f"""SELECT chat_name, user_name, nickname, congr_number, dtime_connetion, is_winner, chat_id
                            FROM 'users' JOIN 'groups_relation'
                            ON chat_id = group_id AND moderator_id ={moderator_id};""")
     result = cursor.fetchall()
     return result
-
-
-def select_lucky_id(idd: int):
-
-    with sqlite3.connect(( DB )) as conn:
-        cursor = conn.cursor()
-        cursor.execute(f"""SELECT *
-                           FROM 'users'
-                           WHERE chat_id = {idd};""")
-    result = cursor.fetchall()
-    return result
-
-
-"Блок функций для поздравления последних непоздравленных пользователей"
 
 
 def get_group_id(moderator_id: int) -> List[int]:

@@ -1,6 +1,6 @@
 from telebot.types import Message, CallbackQuery
 from loader import bot
-from database.commands import temp_cleaner, select_last_uncongratulate, get_all_moderator_id, select_group_id, \
+from database.commands import temp_cleaner, select_last_uncongratulate, get_all_moderator_id, \
     temp_save_unceleb, get_chat_id_unceleb, is_winner_id_select_unceleb, is_winner_record, buttons_remover_unceleb, \
     storage_cleaner_unceleb, record_cleaner_unceleb, data_finder, get_group_id, select_last_congr_number_from_users,\
     is_uncongr
