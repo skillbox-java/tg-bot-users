@@ -64,7 +64,7 @@ func WithCallBackDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger, 
 		_, _ = bot.Request(tgb.NewCallback(update.CallbackQuery.ID, "✅"))
 
 		go func() {
-			time.Sleep(30 * time.Second)
+			time.Sleep(60 * time.Second)
 			_, _ = bot.Send(tgb.NewDeleteMessage(update.CallbackQuery.Message.Chat.ID, delMsg.MessageID))
 		}()
 

@@ -197,7 +197,7 @@ func WithTextQueryDo(update tgb.Update, bot *tgb.BotAPI, logger *logging.Logger,
 
 					_, _ = bot.Send(tgb.NewDeleteMessage(update.Message.Chat.ID, update.Message.MessageID))
 
-					msg := tgb.NewMessage(update.Message.Chat.ID, "60 секунд")
+					msg := tgb.NewMessage(update.Message.Chat.ID, "Меню закроется через 1 минуту")
 
 					msg.ReplyMarkup = menu.NumericKeyboard
 

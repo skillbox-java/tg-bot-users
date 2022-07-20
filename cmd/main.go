@@ -17,7 +17,7 @@ import (
 var cfgPath string
 
 func init() {
-	flag.StringVar(&cfgPath, "config", "/tg-bot-users/conf.yml", "config file path")
+	flag.StringVar(&cfgPath, "config", "./etc/tgbot/.env", "config file path")
 }
 
 func main() {
@@ -88,12 +88,9 @@ func main() {
 
 		} else if update.InlineQuery != nil {
 
-			log.Println("response from Inline query")
 			query := update.InlineQuery.Query
-
-			log.Println(query)
+			logger.Printf("response from Inline query: %s", query)
 
 		}
-
 	}
 }
