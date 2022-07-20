@@ -30,7 +30,7 @@ public class CallbackQueryHandler extends Handler {
     @Override
     protected boolean handle(Update update) {
         // есть ли callbackQuery в update
-        Map<String, Object> callbackQueryData = UpdateUtils.getCallbackQueryDataAsMap(update);
+        Map<String, String> callbackQueryData = UpdateUtils.getCallbackQueryDataAsMap(update);
         if (callbackQueryData == null || callbackQueryData.isEmpty()) {
             return false;
         }
@@ -51,7 +51,7 @@ public class CallbackQueryHandler extends Handler {
     }
 
     @Transactional
-    private boolean handleCongratulationDecision(String command, Map<String, Object> callbackQueryData) {
+    private boolean handleCongratulationDecision(String command, Map<String, String> callbackQueryData) {
         // есть ли команда в callbackQuery
         CongratulationDecisionKeyboard decision = KeyboardUtils
                 .defineKey(CongratulationDecisionKeyboard.class, command).orElse(null);
@@ -60,7 +60,7 @@ public class CallbackQueryHandler extends Handler {
         }
 
         // есть ли поздравленные в чате с таким порядковым номером
-        Integer userJoiningId = (Integer) callbackQueryData.get(AppStaticContext.CALLBACK_QUERY_DATA_ID_FIELD);
+        Integer userJoiningId = Integer.parseInt(callbackQueryData.get(AppStaticContext.CALLBACK_QUERY_DATA_ID_FIELD));
         UserJoining userJoining = userJoiningService.findById(userJoiningId)
                 .orElseThrow(() -> new IllegalStateException(
                         "CallbackQueryData with no exist user joining ID" + userJoiningId));

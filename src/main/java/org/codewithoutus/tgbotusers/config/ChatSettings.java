@@ -29,12 +29,17 @@ public class ChatSettings {
     private final ChatModeratorService chatModeratorService;
     private final ChatUserService chatUserService;
 
-    private Boolean rewriteDatabaseSettingsOnStartup;
+    private Set<Long> administrators;
     private Integer anniversaryNumbersDelta;
     private Set<Integer> anniversaryNumbers;
 
     @Getter(AccessLevel.NONE)
-    private Map<Long, List<Long>> chatsSettingsData; // only used for loading from application-settings file
+    private Map<Long, List<Long>> chatsSettings; // only used for loading from application-settings file
+    private Boolean rewriteChatsSettingsInDatabaseOnStartup;
+
+    public boolean isAdminId(Long id) {
+        return id != null && administrators.contains(id);
+    }
 
     public int getAnniversaryJoinNumber(long chatId, int joinNumber) {
         return anniversaryNumbers.stream()
@@ -46,7 +51,7 @@ public class ChatSettings {
 
     @PostConstruct
     private void synchronizeDataBaseSettings() {
-        if (rewriteDatabaseSettingsOnStartup || chatModeratorService.findAll().isEmpty()) {
+        if (rewriteChatsSettingsInDatabaseOnStartup || chatModeratorService.findAll().isEmpty()) {
             rewriteDataBaseSettings();
         }
     }
@@ -63,7 +68,7 @@ public class ChatSettings {
         //     (нужно для возможности получения списка юбилейных с параметром названия группы,
         //     пример команды: [/luckyList@UsersTgBot Java разработчик])
 
-        for (Map.Entry<Long, List<Long>> moderatorData : chatsSettingsData.entrySet()) {
+        for (Map.Entry<Long, List<Long>> moderatorData : chatsSettings.entrySet()) {
             ChatModerator chatModerator = new ChatModerator();
             chatModerator.setChatId(moderatorData.getKey());
 

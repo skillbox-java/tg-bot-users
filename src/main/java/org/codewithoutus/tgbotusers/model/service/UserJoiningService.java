@@ -34,4 +34,8 @@ public class UserJoiningService {
     public boolean existCongratulatedUser(long chatId, int anniversaryNumber) {
         return userJoiningRepository.existsByChatIdAndAnniversaryNumberAndStatus(chatId, anniversaryNumber, CongratulateStatus.CONGRATULATE);
     }
+
+    public boolean userWasAlreadyJoinedToChat(Long chatId, Long userId) {
+        return userJoiningRepository.existsByChatIdAndUserId(chatId, userId);
+    }
 }

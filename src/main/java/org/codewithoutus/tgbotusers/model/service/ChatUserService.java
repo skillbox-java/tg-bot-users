@@ -36,6 +36,10 @@ public class ChatUserService {
         return chatUserRepository.findByChatId(chatId);
     }
 
+    public boolean existByChatId(long chatId) {
+        return chatUserRepository.existsByChatId(chatId);
+    }
+
     public boolean isChatUser(long id) {
         return chatUserRepository.findByChatModeratorsNotEmpty()
                 .stream()

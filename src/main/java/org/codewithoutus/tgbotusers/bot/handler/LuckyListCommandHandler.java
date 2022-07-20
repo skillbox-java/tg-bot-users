@@ -8,6 +8,7 @@ import org.codewithoutus.tgbotusers.bot.UpdateUtils;
 import org.codewithoutus.tgbotusers.bot.enums.BotCommand;
 import org.codewithoutus.tgbotusers.bot.service.TelegramService;
 import org.codewithoutus.tgbotusers.bot.service.TemplateEngine;
+import org.codewithoutus.tgbotusers.config.ChatSettings;
 import org.codewithoutus.tgbotusers.config.NotificationTemplates;
 import org.codewithoutus.tgbotusers.model.entity.ChatModerator;
 import org.codewithoutus.tgbotusers.model.entity.ChatUser;
@@ -26,12 +27,14 @@ import java.util.stream.Collectors;
 @Slf4j
 public class LuckyListCommandHandler extends Handler {
 
+    private final ChatSettings chatSettings;
+    private final NotificationTemplates notificationTemplates;
+    private final TelegramService telegramService;
+    private final TemplateEngine templateEngine;
+
     private final ChatModeratorService chatModeratorService;
     private final ChatUserService chatUserService;
     private final UserJoiningService userJoiningService;
-    private final TelegramService telegramService;
-    private final NotificationTemplates notificationTemplates;
-    private final TemplateEngine templateEngine;
 
     @Override
     protected boolean handle(Update update) {
@@ -47,8 +50,9 @@ public class LuckyListCommandHandler extends Handler {
             return false;
         }
 
-        Long moderatorChatId = UpdateUtils.getChat(update).id();
-        if (!UpdateUtils.isPrivateMessageFromAdmin(update) && !chatModeratorService.existsByChatId(moderatorChatId)) {
+        Long moderatorChatId = UpdateUtils.getChatId(update);
+        if (!UpdateUtils.isPrivateMessageFromAdmin(update, chatSettings)
+                && !chatModeratorService.existsByChatId(moderatorChatId)) {
             return false;
         }
 

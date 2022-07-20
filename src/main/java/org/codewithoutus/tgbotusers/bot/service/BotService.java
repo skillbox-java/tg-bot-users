@@ -20,10 +20,11 @@ public class BotService {
     private final Bot bot;
     private final AdminMessageHandler adminMessageHandler;
     private final CallbackQueryHandler callbackQueryHandler;
+    private final ChatJoinMessageHandler chatJoinMessageHandler;
     private final ChatJoinRequestHandler chatJoinRequestHandler;
-    private final PrivateMessageHandler privateMessageHandler;
     private final LuckyListCommandHandler luckyListCommandHandler;
-    
+    private final PrivateMessageHandler privateMessageHandler;
+
     @PostConstruct
     private void botStart() {
         start();
@@ -70,6 +71,7 @@ public class BotService {
     private void handleUpdate(Update update) {
         if (adminMessageHandler.tryHandle(update)
                 || privateMessageHandler.tryHandle(update)
+                || chatJoinMessageHandler.tryHandle(update)
                 || chatJoinRequestHandler.tryHandle(update)
                 || callbackQueryHandler.tryHandle(update)
                 || luckyListCommandHandler.tryHandle(update)) {

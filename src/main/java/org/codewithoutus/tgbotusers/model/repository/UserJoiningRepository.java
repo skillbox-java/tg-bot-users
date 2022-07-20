@@ -16,4 +16,6 @@ public interface UserJoiningRepository extends CrudRepository<UserJoining, Integ
     List<UserJoining> findDistinctByChatIdInOrderByChatIdAscNumberAsc(Collection<Long> chatIds);
 
     boolean existsByChatIdAndAnniversaryNumberAndStatus(Long chatId, Integer anniversaryNumber, CongratulateStatus congratulateStatus);
+
+    boolean existsByChatIdAndUserId(Long chatId, Long userId);
 }

@@ -1,21 +1,27 @@
 chats-settings:
-    rewrite-database-settings-on-startup: false
-    chats-settings-data:
-        -1001523814996:
-            - -1001523814996
-            - -1001781082670
-        22222:
-            - 444
-            - 555
-            - 666
+    administrators:
+        - 1039061325    # pavel
+        - 161855902     # max
+        - 1004758635    # alex
     anniversary-numbers-delta: 3
     anniversary-numbers:
+        - 5
+        - 50
         - 100
         - 500
         - 777
         - 1000
         - 5000
         - 10000
+    chats-settings:
+        -1001523814996: #Хакатон и телеграм бот (Skillbox)
+            - -1001523814996 # Хакатон и телеграм бот (Skillbox)
+            - -1001781082670 # Java-диплом с нуля (Skillbox)
+        22222:
+            - 444
+            - 555
+            - 666
+    rewrite-chats-settings-in-database-on-startup: true
 
 message-templates:
     variables:

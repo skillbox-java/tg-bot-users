@@ -11,14 +11,14 @@ public enum BotCommand {
     CONGRATULATE("/congratulate", "T"),
     DECLINE("/decline", "T"),
 
-    LUCKY_LIST("/luckyList", "T( (ID))?"),
+    LUCKY_LIST("/luckyList", "T( {id}})?"),
 
-    ADD_MODER_CHAT("/addModerChat", "T (ID)"),
-    ADD_USER_CHAT("/addUserChat", "T (ID)"),
-    DELETE_MODER_CHAT("/deleteModerChat", "T (ID)"),
-    DELETE_USER_CHAT("/deleteUserChat", "T (ID)"),
-    BIND_USER_CHAT_TO_MODER("/bindUserChatToModer", "T (ID) (ID)"),
-    UNBIND_USER_CHAT_FROM_MODER("/unbindUserChatFromModer", "T (ID) (ID)"),
+    ADD_MODER_CHAT("/addModerChat", "T {id}"),
+    ADD_USER_CHAT("/addUserChat", "T {id}"),
+    DELETE_MODER_CHAT("/deleteModerChat", "T {id}"),
+    DELETE_USER_CHAT("/deleteUserChat", "T {id}"),
+    BIND_USER_CHAT_TO_MODER("/bindUserChatToModer", "T {id} {id}"),
+    UNBIND_USER_CHAT_FROM_MODER("/unbindUserChatFromModer", "T {id} {id}"),
 
     HELP("/help", "T");
 
@@ -32,7 +32,7 @@ public enum BotCommand {
         this.help = regex.replace("T", text);
         this.regex = Pattern.compile("^" + regex
                 .replace("T", text)
-                .replace("(ID)", ID_REGEX)
+                .replace("{id}", ID_REGEX)
                 + "$");
     }
 

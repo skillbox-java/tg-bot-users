@@ -1,6 +1,7 @@
 package org.codewithoutus.tgbotusers.bot.handler;
 
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.request.SendMessage;
 import lombok.RequiredArgsConstructor;
 import org.codewithoutus.tgbotusers.bot.UpdateUtils;
@@ -8,6 +9,7 @@ import org.codewithoutus.tgbotusers.bot.enums.BotCommand;
 import org.codewithoutus.tgbotusers.bot.keyboard.AdminKeyboard;
 import org.codewithoutus.tgbotusers.bot.keyboard.KeyboardUtils;
 import org.codewithoutus.tgbotusers.bot.service.TelegramService;
+import org.codewithoutus.tgbotusers.config.ChatSettings;
 import org.codewithoutus.tgbotusers.model.entity.ChatModerator;
 import org.codewithoutus.tgbotusers.model.entity.ChatUser;
 import org.codewithoutus.tgbotusers.model.service.ChatModeratorService;
@@ -23,6 +25,8 @@ import java.util.stream.Collectors;
 public class AdminMessageHandler extends Handler {
 
     private final TelegramService telegramService;
+    private final ChatSettings chatSettings;
+
     private final ChatModeratorService chatModeratorService;
     private final ChatUserService chatUserService;
 
@@ -50,7 +54,8 @@ public class AdminMessageHandler extends Handler {
 
     @Override
     protected boolean handle(Update update) {
-        if (!UpdateUtils.isPrivateMessageFromAdmin(update)) {
+        User user = UpdateUtils.getUser(update);
+        if (user == null || !chatSettings.isAdminId(user.id()) || !UpdateUtils.isPrivateMessage(update)) {
             return false;
         }
 
@@ -59,7 +64,6 @@ public class AdminMessageHandler extends Handler {
 
         // TODO: Макс -- вначале строковыми командами, а потом можно попробовать кнопки
         // TODO сохраняем в бд группы с + а нужно с -
-        //мой id=161855902  /11725
 
         AdminKeyboard command = KeyboardUtils.defineKey(AdminKeyboard.class, text).orElse(null);
         if (command == null) {
