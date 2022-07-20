@@ -15,6 +15,7 @@ services:
     tg-bot-users:
         container_name: tg-bot-users
         image: tg-bot-users
+        restart: always
         build:
             context: .
         ports:
