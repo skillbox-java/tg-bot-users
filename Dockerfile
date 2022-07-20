@@ -3,7 +3,6 @@ FROM golang:1.18.3 as builder
 LABEL stage=tgbotbuilder
 WORKDIR /src
 
-RESTART POLICY: --RESTART
 
 COPY go.mod .
 COPY go.sum .
