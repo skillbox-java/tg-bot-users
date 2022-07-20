@@ -78,7 +78,7 @@
 
 ### Примеры:
 ```
-docker create volume skilbot_data
+docker create volume tgbot_data
 ```
 ```
 make image
