@@ -1,7 +1,7 @@
 from telebot.types import Message
 from config_data.config import DEFAULT_COMMANDS
 from loader import bot
-from database.commands import get_moderator_id
+from database.commands import get_all_moderator_id
 
 
 @bot.message_handler(commands=['help'])
@@ -11,7 +11,7 @@ def bot_help(message: Message):
     :param Message message: /help
     :return: None
     """
-    moderator_ids = get_moderator_id()
+    moderator_ids = get_all_moderator_id()
 
     if message.chat.id in moderator_ids:
         text = [f'/{command} - {desk}' for command, desk in DEFAULT_COMMANDS]

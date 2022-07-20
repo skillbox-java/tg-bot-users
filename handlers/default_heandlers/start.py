@@ -1,7 +1,7 @@
 from telebot.types import Message
 from loader import bot
 from config_data.config import ADMIN_IDS
-from database.commands import get_moderator_id
+from database.commands import get_all_moderator_id
 
 
 @bot.message_handler(commands=['start'])
@@ -11,7 +11,7 @@ def bot_start(message: Message):
     :param Message message: /start
     :return: None
     """
-    moderator_ids = get_moderator_id()
+    moderator_ids = get_all_moderator_id()
 
     if (message.chat.id in moderator_ids) or (str(message.from_user.id) in ADMIN_IDS):
         bot.send_message(chat_id=message.chat.id,
