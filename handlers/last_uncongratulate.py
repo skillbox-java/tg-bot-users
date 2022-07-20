@@ -2,8 +2,8 @@ from telebot.types import Message, CallbackQuery
 from loader import bot
 from database.commands import temp_cleaner, select_last_uncongratulate, get_all_moderator_id, \
     temp_save_unceleb, get_chat_id_unceleb, is_winner_id_select_unceleb, is_winner_record, buttons_remover_unceleb, \
-    storage_cleaner_unceleb, record_cleaner_unceleb, data_finder, get_group_id, select_last_congr_number_from_users,\
-    is_uncongr
+    storage_cleaner_unceleb, record_cleaner_unceleb, data_finder_unceleb, get_group_id, \
+    select_last_congr_number_from_users, is_uncongr
 import datetime
 from keyboards.inline import unceleb_keyboard
 from config_data.config import HAPPY_NUMBER
@@ -58,7 +58,7 @@ def bot_uncongratulate(message: Message) -> None:
                                   bot_message_id=bot_message.id)
 
         else:
-            bot.send_message(chat_id=message.chat.id, text=f'В списке последних неподзравленных никого нет!')
+            bot.send_message(chat_id=message.chat.id, text=f'В списке последних непоздравленных никого нет!')
 
 
 @bot.callback_query_handler(func=lambda call: call.data == "congr" or call.data == "uncongr")
@@ -68,7 +68,7 @@ def callback(call: CallbackQuery) -> None:
     :param CallbackQuery call: congr or uncongr
     :return: None
     """
-    user_data = data_finder(bot_message_id=call.message.message_id)[0]
+    user_data = data_finder_unceleb(bot_message_id=call.message.message_id)[0]
     name = user_data[0]
     congr_number = user_data[1]
     users_chat = user_data[2]

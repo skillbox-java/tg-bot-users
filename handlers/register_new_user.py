@@ -49,7 +49,7 @@ def handler_new_member(message: Message) -> None:
                                                         f'вступления: {dtime}',
                                                    reply_markup=new_user_keyboard.congratulate_keyboard())
 
-                    temp_save(chat_id=moderator_id,
+                    temp_save(chat_id=message.chat.id,
                               record_id=select_id_from_users(user_id=message.from_user.id),
                               bot_message_id=bot_message.id)
 

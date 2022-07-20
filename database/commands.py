@@ -8,6 +8,14 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 DB = os.path.join(ROOT_DIR, 'database.db')
 
 
+def cleaner():
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        cursor.execute('''DELETE from users''')
+        cursor.execute('''DELETE from temp_storage''')
+        cursor.execute('''DELETE from temp_unceleb''')
+
+
 """"Блок функций для регистрации и обработки нового юбилейного пользователя"""
 
 
@@ -150,7 +158,7 @@ def data_finder(bot_message_id: int) -> list:
     """"
     Функция которая по bot_message_id сообщения бота возвращает user_name, congr_number, chat_id  из таблицы 'users'.
     :param int bot_message_id: уникальный id сообщения бота
-    :return list: информация о победите
+    :return list: информация о победителе
     """
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
@@ -186,9 +194,7 @@ def buttons_remover(chat_id: int) -> List[int]:
         cursor.execute(f"SELECT bot_message_id FROM 'temp_storage' WHERE chat_id={chat_id}")
         message_id_list = cursor.fetchall()
         result = []
-        print(message_id_list)
         for message_id in message_id_list:
-            print(message_id, message_id[0])
             result.append(message_id[0])
         return result
 
@@ -322,11 +328,28 @@ def select_last_congr_number_from_users(chat_id: int) -> int:
     """
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
-        cursor.execute(f"SELECT congr_number FROM 'users' WHERE user_id={chat_id}")
+        cursor.execute(f"SELECT congr_number FROM 'users' WHERE chat_id={chat_id}")
         record_id = cursor.fetchall()
         if record_id:
             return record_id[-1][0]
         return 0
+
+
+def data_finder_unceleb(bot_message_id: int) -> list:
+    """"
+    Функция которая по bot_message_id сообщения бота возвращает user_name, congr_number, chat_id  из таблицы 'users'.
+    :param int bot_message_id: уникальный id сообщения бота
+    :return list: информация о победителе
+    """
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        result = cursor.execute(f'''SELECT users.user_name, users.congr_number, users.chat_id FROM users 
+                        Join temp_unceleb ON users.id=temp_unceleb.record_id
+                        WHERE temp_unceleb.bot_message_id={bot_message_id};''')
+        data = []
+        for i in result:
+            data.append(i)
+        return data
 
 
 def is_uncongr(congr_number: int, chat_id: int) -> bool:
