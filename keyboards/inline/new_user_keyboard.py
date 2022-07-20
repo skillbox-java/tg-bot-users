@@ -8,7 +8,7 @@ def congratulate_keyboard() -> InlineKeyboardMarkup:
     """
 
     keyboard = InlineKeyboardMarkup(row_width=1)
-    congratulations = InlineKeyboardButton(text='Поздравляем', callback_data='grac')
-    shame = InlineKeyboardButton(text='Не поздравляем', callback_data='decline')
+    congratulations = InlineKeyboardButton(text='Поздравить', callback_data='grac')
+    shame = InlineKeyboardButton(text='Отклонить', callback_data='decline')
     keyboard.add(congratulations, shame)
     return keyboard
