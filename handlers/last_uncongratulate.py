@@ -44,17 +44,21 @@ def bot_uncongratulate(message: Message) -> None:
 
         # выводим информацию о последних непоздравленных пользователях, предлагаем их поздравить и
         # сохраняем данные в таблицу temp_unceleb
-        for unceleb in uncelebs_list:
-            dtime = datetime.datetime.strptime(unceleb[5], '%Y-%m-%d %H:%M:%S.%f').strftime('%d.%m.%y %H:%M')
+        if uncelebs_list:
+            for unceleb in uncelebs_list:
+                dtime = datetime.datetime.strptime(unceleb[5], '%Y-%m-%d %H:%M:%S.%f').strftime('%d.%m.%y %H:%M')
 
-            bot_message = bot.send_message(chat_id=message.chat.id,
-                                           text=f'\U0001F389  "{unceleb[4]}"  \U0001F464  {unceleb[3]} '
-                                                f'(@{unceleb[2]})\n\U0001F522  {unceleb[1]}  \U0001F550 	{dtime}',
-                                           reply_markup=unceleb_keyboard.congratulate_keyboard())
+                bot_message = bot.send_message(chat_id=message.chat.id,
+                                               text=f'\U0001F389  "{unceleb[4]}"  \U0001F464  {unceleb[3]} '
+                                                    f'(@{unceleb[2]})\n\U0001F522  {unceleb[1]}  \U0001F550 	{dtime}',
+                                               reply_markup=unceleb_keyboard.congratulate_keyboard())
 
-            temp_save_unceleb(chat_id=unceleb[0],
-                              record_id=unceleb[6],
-                              bot_message_id=bot_message.id)
+                temp_save_unceleb(chat_id=unceleb[0],
+                                  record_id=unceleb[6],
+                                  bot_message_id=bot_message.id)
+
+        else:
+            bot.send_message(chat_id=message.chat.id, text=f'В списке последних неподзравленных никого нет!')
 
 
 @bot.callback_query_handler(func=lambda call: call.data == "congr" or call.data == "uncongr")
@@ -98,4 +102,4 @@ def callback(call: CallbackQuery) -> None:
         record_cleaner_unceleb(bot_message_id=call.message.message_id)
 
         # уведомляем группу модераторов о том, что участника не поздравили
-        bot.send_message(moders_chat, f'Участника {name} не поздравили.')
+        bot.send_message(chat_id=moders_chat, text=f'Участника {name} не поздравили.')
