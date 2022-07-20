@@ -14,8 +14,8 @@ type Config struct {
 	AppConfig     AppConfig     `yaml:"app" env:"APP"`
 	ModersGroupID ModersGroupID `yaml:"moderators" enc:"MODERATORS"`
 	MsgText       MsgText       `yaml:"msg_text" env:"MSG-TEXT"`
-	DBFilePath    string        `yaml:"db_file_path" env:"DB-FILE-PATH" env-required:"true" env-required:"./internal/sqlitedb/"`
-	Multiplicity  int           `yaml:"multiplicity" env:"MULTIPLICITY" env-required:"true"`
+	DBFilePath    string        `yaml:"db_file_path" env:"DB-FILE-PATH" env-required:"true" env-default:"./internal/sqlitedb/"`
+	Multiplicity  int           `yaml:"multiplicity" env:"MULTIPLICITY" env-default:"500"`
 }
 
 type AppConfig struct {
