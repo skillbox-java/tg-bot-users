@@ -115,6 +115,7 @@ def get_moderator_id() -> List[int]:
             result.append(moderator_id[0])
         return result
 
+
 def select_id_from_users(user_id) -> None:
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
@@ -123,18 +124,17 @@ def select_id_from_users(user_id) -> None:
         return record_id[-1][0]
 
 
-
 def temp_save(
             chat_id: int,
             record_id: int,
-            bot_message_id: int
+            bot_message_id: int,
+            users_chat: int
             ) -> None:
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
         cursor.execute("""
-        INSERT INTO 'temp_storage' (chat_id, record_id, bot_message_id) VALUES (?, ?, ?);
-        """, (chat_id, record_id, bot_message_id))
-
+        INSERT INTO 'temp_storage' (chat_id, record_id, bot_message_id, button_chat_id) VALUES (?, ?, ?, ?);
+        """, (users_chat, record_id, bot_message_id, chat_id,))
 
 
 def buttons_remover(
@@ -156,6 +156,14 @@ def storage_cleaner(
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
         cursor.execute(f'''DELETE FROM 'temp_storage' WHERE chat_id={chat_id};''')
+
+
+def storage_cleaner_lite(
+        message_id: int,
+        ) -> None:
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        cursor.execute(f'''DELETE FROM 'temp_storage' WHERE bot_message_id={message_id};''')
 
 
 def is_winner_id_select(
@@ -180,6 +188,29 @@ def is_winner_record(winner_id: int,
                         WHERE id={winner_id}''')
 
 
+def other_lucky_check(
+        count_users: int,
+        chat_id: int,
+        ) -> None:
+    lucky_number = count_users - count_users % 500
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        result = cursor.execute(f'''SELECT * FROM users WHERE chat_id={chat_id} AND
+        (congr_number BETWEEN {lucky_number} AND {lucky_number + 2}) AND is_winner=1;''')
+        check_list = []
+        for i in result:
+            check_list.append(i)
 
 
+def data_finder(
+    bot_message_id: int,
+    ) -> None:
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        result = cursor.execute(f'''SELECT users.user_name, users.congr_number, users.chat_id FROM users Join temp_storage ON users.id=temp_storage.record_id
+                        WHERE temp_storage.bot_message_id={bot_message_id};''')
+        data = []
+        for i in result:
+            data.append(i)
 
+        return data
