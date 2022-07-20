@@ -184,11 +184,13 @@ def buttons_remover(chat_id: int) -> List[int]:
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
         cursor.execute(f"SELECT bot_message_id FROM 'temp_storage' WHERE chat_id={chat_id}")
-        result = cursor.fetchall()
-        delete_list = []
-        for i in result:
-            delete_list.append(i)
-        return delete_list
+        message_id_list = cursor.fetchall()
+        result = []
+        print(message_id_list)
+        for message_id in message_id_list:
+            print(message_id, message_id[0])
+            result.append(message_id[0])
+        return result
 
 
 def storage_cleaner(chat_id: int) -> None:

@@ -24,7 +24,7 @@ def handler_new_member(message: Message) -> None:
         chat_name = message.chat.title
         nickname = message.from_user.username
         user_name = message.from_user.first_name
-        dtime = datetime.datetime.now().replace(microsecond=0, tzinfo=None)
+        dtime = datetime.datetime.now()
 
         # проверка на то, что новый пользователь не является ботом, еще не был победителем,
         # а также имеет юбилейный номер вступления
@@ -62,9 +62,10 @@ def callback(call: CallbackQuery) -> None:
     :return: None
     """
     winner_id = is_winner_id_select(bot_message_id=call.message.message_id)
-    name = data_finder(bot_message_id=call.message.message_id)[0]
-    congr_number = data_finder(bot_message_id=call.message.message_id)[1]
-    users_chat = data_finder(bot_message_id=call.message.message_id)[2]
+    user_data = data_finder(bot_message_id=call.message.message_id)[0]
+    name = user_data[0]
+    congr_number = user_data[1]
+    users_chat = user_data[2]
     moders_chat = call.message.chat.id
 
     if call.data == 'grac':

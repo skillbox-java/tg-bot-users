@@ -68,9 +68,10 @@ def callback(call: CallbackQuery) -> None:
     :param CallbackQuery call: congr or uncongr
     :return: None
     """
-    name = data_finder(bot_message_id=call.message.message_id)[0]
-    congr_number = data_finder(bot_message_id=call.message.message_id)[1]
-    users_chat = data_finder(bot_message_id=call.message.message_id)[2]
+    user_data = data_finder(bot_message_id=call.message.message_id)[0]
+    name = user_data[0]
+    congr_number = user_data[1]
+    users_chat = user_data[2]
     moders_chat = call.message.chat.id
 
     if call.data == 'congr':
