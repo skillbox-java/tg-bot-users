@@ -1,6 +1,6 @@
 from telebot.types import Message, CallbackQuery
 from loader import bot
-from database.commands import get_moderator_id, select_from_groups, insert_to_groups, delete_from_groups
+from database.commands import get_all_moderator_id, select_from_groups, insert_to_groups, delete_from_groups
 from keyboards.inline import admin_keyboard
 from config_data.config import ADMIN_IDS
 
@@ -13,7 +13,7 @@ def bot_admin_show(message: Message) -> None:
     :param Message message: /adminshow
     :return: None
     """
-    moderator_ids = get_moderator_id()
+    moderator_ids = get_all_moderator_id()
 
     if (message.chat.id in moderator_ids) or (str(message.from_user.id) in ADMIN_IDS):
         admin_info = select_from_groups()
@@ -39,7 +39,7 @@ def bot_admin_setup(message: Message) -> None:
     :param Message message: /adminsetup
     :return: None
     """
-    moderator_ids = get_moderator_id()
+    moderator_ids = get_all_moderator_id()
 
     if str(message.from_user.id) in ADMIN_IDS:
         bot.send_message(chat_id=message.chat.id,
