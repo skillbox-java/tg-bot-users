@@ -1,7 +1,7 @@
 import sqlite3
 import os
 from typing import List
-import datetime
+from config_data.config import HAPPY_NUMBER
 
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -9,6 +9,37 @@ DB = os.path.join(ROOT_DIR, 'database.db')
 
 
 """"Блок функций для регистрации и обработки нового юбилейного пользователя"""
+
+
+def get_all_group_id() -> List[int]:
+    """
+    Функция, которая возвращает список всех id групп пользователей из таблицы groups_relation.
+    :return List[int]: список id групп пользователей
+    """
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT DISTINCT group_id FROM 'groups_relation'")
+        group_id_list = cursor.fetchall()
+        result = []
+        for group_id in group_id_list:
+            result.append(group_id[0])
+        return result
+
+
+def get_moderator_id(group_id: int) -> List[int]:
+    """
+    Функция, которая возвращает список id групп модераторов из таблицы groups_relation по id группы пользователя.
+    :param int group_id: уникальный id группы пользователя
+    :return List[int]: список id групп модераторов
+    """
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT DISTINCT moderator_id FROM 'groups_relation' WHERE group_id={group_id}")
+        moderator_id_list = cursor.fetchall()
+        result = []
+        for moderator_id in moderator_id_list:
+            result.append(moderator_id[0])
+        return result
 
 
 def insert_to_users(nickname: str, user_name: str, chat_id: int, user_id: int, chat_name: str,
@@ -49,18 +80,32 @@ def winner_check(user_id: int) -> list:
         return result
 
 
-def other_lucky_check(count_users: int, chat_id: int) -> None:
-    lucky_number = count_users - count_users % 500
+def other_lucky_check(count_users: int, chat_id: int) -> list:
+    """"
+    Функция которая проверяет, есть ли в таблице users для данного chat_id группы и данного юбилейного номера,
+    победители.
+    :param int count_users: юбилейный номер пользователя
+    :param int chat_id: уникальный id группы
+    :return list: информация о победителях
+    """
+    lucky_number = count_users - count_users % HAPPY_NUMBER
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
-        result = cursor.execute(f'''SELECT * FROM users WHERE chat_id={chat_id} AND
+        cursor.execute(f'''SELECT * FROM users WHERE chat_id={chat_id} AND
         (congr_number BETWEEN {lucky_number} AND {lucky_number + 2}) AND is_winner=1;''')
-        check_list = []
-        for i in result:
-            check_list.append(i)
+        winners_list = cursor.fetchall()
+        result = []
+        for winner in winners_list:
+            result.append(winner)
+        return result
 
 
-def select_id_from_users(user_id) -> None:
+def select_id_from_users(user_id: int) -> int:
+    """"
+    Функция которая по id пользователя возвращает id последней записи о нем из таблицы 'users'.
+    :param int user_id: уникальный id пользователя
+    :return int: id записи о пользователе
+    """
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
         cursor.execute(f"SELECT id FROM 'users' WHERE user_id={user_id}")
@@ -68,85 +113,102 @@ def select_id_from_users(user_id) -> None:
         return record_id[-1][0]
 
 
-def temp_save(
-            chat_id: int,
-            record_id: int,
-            bot_message_id: int,
-            users_chat: int
-            ) -> None:
+def temp_save(chat_id: int, record_id: int, bot_message_id: int) -> None:
+    """"
+    Функция которая в таблицу 'temp_storage' записывает chat_id, record_id, bot_message_id.
+    :param int chat_id: уникальный id группы
+    :param int record_id: уникальный id записи о пользователе в таблицу users
+    :param int bot_message_id: уникальный id сообщения бота
+    :return: None
+    """
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
         cursor.execute("""
-        INSERT INTO 'temp_storage' (chat_id, record_id, bot_message_id, button_chat_id) VALUES (?, ?, ?, ?);
-        """, (users_chat, record_id, bot_message_id, chat_id,))
+        INSERT INTO 'temp_storage' (chat_id, record_id, bot_message_id) VALUES (?, ?, ?);
+        """, (chat_id, record_id, bot_message_id))
 
 
-def buttons_remover(
-        chat_id: int,
-        ) -> None:
+def is_winner_id_select(bot_message_id: int) -> int:
+    """"
+    Функция которая по bot_message_id сообщенияб бота возвращает id  записи о пользователе из таблицы 'temp_storage'.
+    :param int bot_message_id: уникальный id сообщения бота
+    :return int: id записи о пользователе
+    """
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
-        cursor.execute(f"SELECT bot_message_id FROM 'temp_storage' WHERE chat_id={chat_id}")
-        result = cursor.fetchall()
-        delete_list = []
-        for i in result:
-            delete_list.extend(i)
-        return delete_list
-
-
-def storage_cleaner(
-        chat_id: int,
-        ) -> None:
-    with sqlite3.connect((DB)) as conn:
-        cursor = conn.cursor()
-        cursor.execute(f'''DELETE FROM 'temp_storage' WHERE chat_id={chat_id};''')
-
-
-def storage_cleaner_lite(
-        message_id: int,
-        ) -> None:
-    with sqlite3.connect((DB)) as conn:
-        cursor = conn.cursor()
-        cursor.execute(f'''DELETE FROM 'temp_storage' WHERE bot_message_id={message_id};''')
-
-
-def is_winner_id_select(
-        bot_message_id: int,
-        ) -> None:
-    with sqlite3.connect((DB)) as conn:
-        cursor = conn.cursor()
-        result = cursor.execute(f'''SELECT users.id FROM users Join temp_storage ON users.id=temp_storage.record_id
+        ids = cursor.execute(f'''SELECT users.id FROM users Join temp_storage ON users.id=temp_storage.record_id
                         WHERE temp_storage.bot_message_id={bot_message_id};''')
-        id = []
+        result = []
+        for id in ids:
+            result.append(id)
+        return result[0][0]
+
+
+def data_finder(bot_message_id: int) -> list:
+    """"
+    Функция которая по bot_message_id сообщения бота возвращает user_name, congr_number, chat_id  из таблицы 'users'.
+    :param int bot_message_id: уникальный id сообщения бота
+    :return list: информация о победите
+    """
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        result = cursor.execute(f'''SELECT users.user_name, users.congr_number, users.chat_id FROM users 
+                        Join temp_storage ON users.id=temp_storage.record_id
+                        WHERE temp_storage.bot_message_id={bot_message_id};''')
+        data = []
         for i in result:
-            id.append(i)
+            data.append(i)
+        return data
 
-        return id[0][0]
 
-
-def is_winner_record(winner_id: int,
-        ) -> None:
+def is_winner_record(winner_id: int) -> None:
+    """"
+    Функция которая по winner_id id записи о пользователе в таблице 'users' обновляет поле is_winner с 0 на 1.
+    :param int winner_id: уникальный id записи о пользователе в таблице 'users'
+    :return: None
+    """
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
         cursor.execute(f'''UPDATE users set is_winner = '1' 
                         WHERE id={winner_id}''')
 
 
-
-def data_finder(
-    bot_message_id: int,
-    ) -> None:
+def buttons_remover(chat_id: int) -> List[int]:
+    """"
+    Функция которая по chat_id группы пользователей из таблицы 'temp_storage' возвращает все bot_message_id.
+    :param int chat_id: уникальный id группы пользователей
+    :return List[int]: список id bot_message_id
+    """
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
-        result = cursor.execute(f'''SELECT users.user_name, users.congr_number, users.chat_id FROM users Join temp_storage ON users.id=temp_storage.record_id
-                        WHERE temp_storage.bot_message_id={bot_message_id};''')
-        data = []
+        cursor.execute(f"SELECT bot_message_id FROM 'temp_storage' WHERE chat_id={chat_id}")
+        result = cursor.fetchall()
+        delete_list = []
         for i in result:
-            data.append(i)
+            delete_list.append(i)
+        return delete_list
 
-        return data
+
+def storage_cleaner(chat_id: int) -> None:
+    """"
+    Функция которая по chat_id группы пользователей из таблицы 'temp_storage' удаляет все записи.
+    :param int chat_id: уникальный id записи о пользователе в таблице 'users'
+    :return: None
+    """
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        cursor.execute(f'''DELETE FROM 'temp_storage' WHERE chat_id={chat_id};''')
 
 
+def storage_cleaner_lite(bot_message_id: int) -> None:
+    """"
+    Функция которая по bot_message_id сообщения бота из таблицы 'temp_storage' удаляет запись.
+    :param int bot_message_id: уникальный id сообщения бота
+    :return: None
+    """
+    with sqlite3.connect((DB)) as conn:
+        cursor = conn.cursor()
+        cursor.execute(f'''DELETE FROM 'temp_storage' WHERE bot_message_id={bot_message_id};''')
 
 
 """"Блок функций для настроек и просмотра админки"""
@@ -198,22 +260,19 @@ def delete_from_groups() -> None:
         cursor.execute("DELETE FROM 'groups_relation'")
 
 
-def get_moderator_id() -> List[int]:
+def get_all_moderator_id() -> List[int]:
     """
-    Функция, которая возвращает список id групп модераторов из таблицы groups_relation.
+    Функция, которая возвращает список всех id групп модераторов из таблицы groups_relation.
     :return List[int]: список id групп модераторов
     """
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT moderator_id FROM 'groups_relation'")
+        cursor.execute("SELECT DISTINCT moderator_id FROM 'groups_relation'")
         moderator_id_list = cursor.fetchall()
         result = []
         for moderator_id in moderator_id_list:
             result.append(moderator_id[0])
         return result
-
-
-
 
 
 "блок функций для вывода всех кто в юбилейном списке"
@@ -241,15 +300,21 @@ def select_lucky_id(idd: int):
     return result
 
 
-"Блок функций для поздравления последних непоздравленных начало"
+"Блок функций для поздравления последних непоздравленных пользователей"
 
 
-def select_last_uncongratulate(moderator_id: int):
+def select_last_uncongratulate(moderator_id: int) -> list:
+    """
+    Функция, которая по id группы модераторов возвращает chat_id, congr_number, nickname, user_name, chat_name,
+    dtime_connetion, id, is_winner.
+    :param int moderator_id: id группы модераторов
+    :return list: список информации о последних неподзравленных пользователях
+    """
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
         cursor.execute(f"""SELECT chat_id, congr_number, nickname, user_name, chat_name, dtime_connetion, id, is_winner
                            FROM 'users' JOIN 'groups_relation'
-                           ON chat_id = group_id AND moderator_id = abs({moderator_id}) AND is_winner = 0
+                           ON chat_id = group_id AND moderator_id = {moderator_id} AND is_winner = 0
                            ORDER BY chat_id, congr_number;""")
     result = cursor.fetchall()
     return result
@@ -278,7 +343,11 @@ def temp_save_unceleb(
         """, (chat_id, record_id, bot_message_id))
 
 
-def temp_cleaner():
+def temp_cleaner() -> None:
+    """
+    Функция, которая очищает таблицу 'temp_unceleb'.
+    :return: None
+    """
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
         cursor.execute(f'''DELETE FROM 'temp_unceleb';''')
@@ -331,4 +400,3 @@ def record_cleaner_unceleb(bot_message_id: int) -> None:
     with sqlite3.connect((DB)) as conn:
         cursor = conn.cursor()
         cursor.execute(f'''DELETE FROM 'temp_unceleb' WHERE bot_message_id={bot_message_id};''')
-"Конец блока функций unceleb"
