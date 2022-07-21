@@ -5,9 +5,6 @@ from environs import Env
 
 @dataclass
 class DbConfig:
-    host: str
-    password: str
-    user: str
     database: str
 
 
@@ -20,6 +17,7 @@ class TgBot:
 
 @dataclass
 class Miscellaneous:
+    grant_count: int
     other_params: str = None
 
 
@@ -41,10 +39,9 @@ def load_config(path: str = None):
             use_redis=env.bool("USE_REDIS"),
         ),
         db=DbConfig(
-            host=env.str('DB_HOST'),
-            password=env.str('DB_PASS'),
-            user=env.str('DB_USER'),
             database=env.str('DB_NAME')
         ),
-        misc=Miscellaneous()
+        misc=Miscellaneous(
+            grant_count=env.int('GRANT_NUMBER')
+        )
     )

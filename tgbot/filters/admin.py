@@ -6,6 +6,9 @@ from tgbot.config import Config
 
 
 class AdminFilter(BoundFilter):
+    """
+    Класс фильтра, проверяет доступ к админке бота
+    """
     key = 'is_admin'
 
     def __init__(self, is_admin: typing.Optional[bool] = None):
