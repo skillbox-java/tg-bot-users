@@ -7,6 +7,7 @@ import org.codewithoutus.tgbotusers.bot.enums.BotCommand;
 public enum AdminKeyboard implements Keyboard {
 
     HELP(BotCommand.HELP, "Помощь"),
+    CURRENT_SETTINGS(BotCommand.CURRENT_SETTINGS, "Текущие настройки"),
 
     ADD_MODER_CHAT(BotCommand.ADD_MODER_CHAT, "Добавить чат модераторов"),
     ADD_USER_CHAT(BotCommand.ADD_USER_CHAT, "Добавить чат пользователей"),

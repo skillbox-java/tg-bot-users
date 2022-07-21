@@ -21,15 +21,18 @@ public enum BotCommand {
     BIND_USER_CHAT_TO_MODER("/bindUserChatToModer", "T {id} {id}"),
     UNBIND_USER_CHAT_FROM_MODER("/unbindUserChatFromModer", "T {id} {id}"),
 
-    HELP("/help", "T");
+    HELP("/help", "T"),
+    CURRENT_SETTINGS("/currentSettings", "T");
 
     private static final String ID_REGEX = "(\\-?\\d*{18})";
     private final Pattern regex;
     private final String text;
+    private final String params;
     private final String help;
 
     BotCommand(String text, String regex) {
         this.text = text;
+        this.params = regex.replace("T", "");
         this.help = regex.replace("T", text);
         this.regex = Pattern.compile("^" + regex
                 .replace("T", text)

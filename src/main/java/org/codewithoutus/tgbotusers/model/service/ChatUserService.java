@@ -32,6 +32,10 @@ public class ChatUserService {
         return chatUserRepository.save(entity);
     }
 
+    public List<ChatUser> findAll() {
+        return (List<ChatUser>) chatUserRepository.findAll();
+    }
+    
     public Optional<ChatUser> findByChatId(long chatId) {
         return chatUserRepository.findByChatId(chatId);
     }
