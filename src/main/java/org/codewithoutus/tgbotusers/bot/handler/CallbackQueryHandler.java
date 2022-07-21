@@ -25,7 +25,6 @@ public class CallbackQueryHandler extends Handler {
 
     private final NotificationService notificationService;
     private final UserJoiningService userJoiningService;
-    private final ChatModeratorService chatModeratorService;
 
     @Override
     protected boolean handle(Update update) {
@@ -36,14 +35,13 @@ public class CallbackQueryHandler extends Handler {
         }
 
         // есть ли команда в callbackQuery
-        String command = (String) callbackQueryData.get("command");
+        String command = callbackQueryData.get("command");
         if (command == null || command.isBlank()) {
             return false;
         }
 
         if (handleCongratulationDecision(command, callbackQueryData)) {
             return true;
-
         } else {
             log.error("Unhandled command: {}", callbackQueryData);
             throw new CommandNotFoundException("Unhandled command: " + callbackQueryData);
@@ -78,7 +76,7 @@ public class CallbackQueryHandler extends Handler {
                 ? CongratulateStatus.CONGRATULATE
                 : CongratulateStatus.DECLINE;
         userJoining.setStatus(newStatus);
-//        userJoiningService.save(userJoining); // TODO: Алекс -- check, that entity was updated without save() method
+        userJoiningService.save(userJoining);
 
         if (decision == CongratulationDecisionKeyboard.CONGRATULATE) {
             notificationService.deleteKeyboardFromAllJoiningNotifications(chatId, anniversaryNumber);

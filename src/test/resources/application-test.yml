@@ -1,0 +1,30 @@
+#server:
+#    port: 8090
+
+bot-settings:
+#    bot-user-name: GroupControlSkillboxBot
+#    bot-token: 5566628073:AAHyZTYOh62Fb7_zVGNmHMqzwJUQtBvGWuc
+    long-polling-timeout: 75000
+
+spring:
+    datasource:
+        url: jdbc:postgresql://localhost:5432/tg-bot-users
+        username:  tg-admin
+        password: 9en2w0oc
+#        driver-class-name: org.postgresql.Driver
+        hikari:
+            maximum-pool-size: 2
+
+    jpa:
+#        database-platform: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: false
+        hibernate:
+            ddl-auto: update
+
+
+logging:
+    level:
+        root: info
+        org.codewithoutus.tgbotusers: debug
+        web: off
+        sql: off

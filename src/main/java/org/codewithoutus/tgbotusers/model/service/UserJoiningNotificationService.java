@@ -17,11 +17,11 @@ public class UserJoiningNotificationService {
         return userJoiningNotificationRepository.save(entity);
     }
 
-    public List<UserJoiningNotification> findByChatIdAndAnniversaryNumber(Long chatId, Integer anniversaryNumber) {
-        return userJoiningNotificationRepository.findByUserJoining_ChatIdAndUserJoining_AnniversaryNumber(chatId, anniversaryNumber);
+    public List<UserJoiningNotification> findByChatIdAndAnniversaryNumberAndKeyboardStatus(Long chatId, Integer anniversaryNumber, boolean hasKeyboard) {
+        return userJoiningNotificationRepository.findByUserJoining_ChatIdAndUserJoining_AnniversaryNumberAndHasKeyboard(chatId, anniversaryNumber, hasKeyboard);
     }
 
-    public List<UserJoiningNotification> findByUserIdAndChatIdAndAnniversaryNumber(Long userId, Long chatId, Integer anniversaryNumber) {
-        return userJoiningNotificationRepository.findByUserJoining_UserIdAndUserJoining_ChatIdAndUserJoining_AnniversaryNumber(userId, chatId, anniversaryNumber);
+    public List<UserJoiningNotification> findByChatIdAndUserIdAndKeyboardStatus(Long chatId, Long userId, boolean hasKeyboard) {
+        return userJoiningNotificationRepository.findByUserJoining_ChatIdAndUserJoining_UserIdAndHasKeyboard(chatId, userId, hasKeyboard);
     }
 }

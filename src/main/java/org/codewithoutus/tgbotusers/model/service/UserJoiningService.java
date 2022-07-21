@@ -23,12 +23,12 @@ public class UserJoiningService {
         return userJoiningRepository.findById(id);
     }
 
-    public List<UserJoining> findByChatId(Long chatId) {
-        return userJoiningRepository.findByChatId(chatId);
-    }
-
     public List<UserJoining> findByChatIds(List<Long> chatIds) {
         return userJoiningRepository.findDistinctByChatIdInOrderByChatIdAscNumberAsc(chatIds);
+    }
+
+    public List<UserJoining> findNotCongratulatedByChatIds(List<Long> chatIds) {
+        return userJoiningRepository.findByChatIdAndNotStatus(chatIds, CongratulateStatus.CONGRATULATE);
     }
 
     public boolean existCongratulatedUser(long chatId, int anniversaryNumber) {

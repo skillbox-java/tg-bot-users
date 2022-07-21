@@ -30,27 +30,10 @@ public class AdminMessageHandler extends Handler {
     private final ChatModeratorService chatModeratorService;
     private final ChatUserService chatUserService;
 
-    //список команд
-    //todo надо потом сделать привествие бота,что бы он сразу присал что если что есть help
-//    private static final String HELP = "/help";
-//    private static final String ADD_MODER_CHAT = "/addModerChat";
-//    private static final String ADD_USER_CHAT = "/addUserChat";
-//    private static final String BIND_USER_CHAT_TO_MODER = "/bindUserChatToModer";
-//    private static final String UNBIND_USER_CHAT_TO_MODER = "/unbindUserChatToModer";
-
     private static final String OK_BIND = "Cool, user chat № %s , is add in moder chat № %s";
     private static final String NOT_BIND = "Oh, user chat № %s , is already in moder chat № %s";
-    private static final String NOT_UNBIND = "Oh, user chat № %s , is not bind in moder chat № %s";
-    private static final String OK_UNBIND = "Cool, user chat № %s , is unbind from moder chat № %s";
-    private static final String OK_MODER = "Cool, moder chat № %s , is add in DB";
-    private static final String OK_USER = "Cool, user chat № %s , is add in DB";
     private static final String NOT_MODER = "Oh, moder chat  № %s ,is already in the database";
     private static final String NOT_USER = "Oh, user chat  № %s ,is already in the database";
-    private static final String ERROR = "Sorry, \" %s\" ,is invalid format ID";
-    private static final String UNKNOW_COMMAND = "Sorry, bot does not know this  \"%s\" command";
-    //todo вынести команды бота в бот сервис/в бот команд
-//    List<String> listCommandAdd = Arrays.asList(HELP, ADD_MODER_CHAT, ADD_USER_CHAT, BIND_USER_CHAT_TO_MODER);
-//    List<String> listCommandDelete = Arrays.asList(ADD_MODER_CHAT, ADD_USER_CHAT, BIND_USER_CHAT_TO_MODER);
 
     @Override
     protected boolean handle(Update update) {
@@ -61,9 +44,6 @@ public class AdminMessageHandler extends Handler {
 
         String text = UpdateUtils.getMessageText(update);
         Long chatId = UpdateUtils.getChat(update).id();
-
-        // TODO: Макс -- вначале строковыми командами, а потом можно попробовать кнопки
-        // TODO сохраняем в бд группы с + а нужно с -
 
         AdminKeyboard command = KeyboardUtils.defineKey(AdminKeyboard.class, text).orElse(null);
         if (command == null) {
