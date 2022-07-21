@@ -33,7 +33,7 @@ public class UserJoining {
     private LocalDateTime joinTime;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)//, columnDefinition = "varchar(15) default 'WAIT'")
+    @Column(nullable = false)
     private CongratulateStatus status;
 
     @OneToMany(mappedBy = "userJoining")

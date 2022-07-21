@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface UserJoiningNotificationRepository extends CrudRepository<UserJoiningNotification, Integer> {
 
-    List<UserJoiningNotification> findByUserJoining_ChatIdAndUserJoining_AnniversaryNumber(Long chatId, Integer anniversaryNumber);
+    List<UserJoiningNotification> findByUserJoining_ChatIdAndUserJoining_AnniversaryNumberAndHasKeyboard(Long chatId, Integer anniversaryNumber, boolean hasKeyboard);
 
-    List<UserJoiningNotification> findByUserJoining_UserIdAndUserJoining_ChatIdAndUserJoining_AnniversaryNumber(Long userId, Long chatId, Integer anniversaryNumber);
+    List<UserJoiningNotification> findByUserJoining_ChatIdAndUserJoining_UserIdAndHasKeyboard(Long chatId, Long userId, boolean hasKeyboard);
 }

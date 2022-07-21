@@ -22,9 +22,6 @@ public class ChatUser { // TODO: Pavel -- переименовать сущно�
     @Column(nullable = false, unique = true)
     private Long chatId;
 
-//    @Column(nullable = true)    // TODO: Pavel - подумать nullable = true или false?
-//    private String name;
-
     @ManyToMany(mappedBy = "chatUsers", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private List<ChatModerator> chatModerators = new ArrayList<>();
 

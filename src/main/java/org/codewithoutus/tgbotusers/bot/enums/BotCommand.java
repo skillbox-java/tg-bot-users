@@ -12,7 +12,7 @@ public enum BotCommand {
     DECLINE("/decline", "T"),
 
     LUCKY_LIST("/luckyList", "T( {id}})?"),
-    CHOOSE_LUCKY("/chooseLucky", "T( {id})"),
+    CHOOSE_LUCKY("/chooseLucky", "T( {id})?"),
 
     ADD_MODER_CHAT("/addModerChat", "T {id}"),
     ADD_USER_CHAT("/addUserChat", "T {id}"),
