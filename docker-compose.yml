@@ -4,12 +4,12 @@ services:
         container_name: postgres
         image: postgres:alpine
         restart: always
-        environment:
-            POSTGRES_USER: ${DATASOURCE_USER}
-            POSTGRES_PASSWORD: ${DATASOURCE_PASS}
-            POSTGRES_DB: ${DATASOURCE_DB}
         ports:
             - "5431:5432"
+        environment:
+            POSTGRES_DB: ${DATASOURCE_DB:-tg-bot-users}
+            POSTGRES_USER: ${DATASOURCE_USER:-tg-admin}
+            POSTGRES_PASSWORD: ${DATASOURCE_PASS:-postgres}
         volumes:
             - C:\docker\postgres:/var/lib/postgres
     tg-bot-users:
@@ -23,9 +23,9 @@ services:
         environment:
             BOT_USER_NAME: ${BOT_USER_NAME}
             BOT_TOKEN: ${BOT_TOKEN}
-            DATASOURCE_URL: ${DATASOURCE_URL}${DATASOURCE_DB}
-            DATASOURCE_USER: ${DATASOURCE_USER}
-            DATASOURCE_PASS: ${DATASOURCE_PASS}
+            DATASOURCE_URL: ${DATASOURCE_URL:-jdbc:postgresql://host.docker.internal:5431/}${DATASOURCE_DB:-tg-bot-users}
+            DATASOURCE_USER: ${DATASOURCE_USER:-tg-admin}
+            DATASOURCE_PASS: ${DATASOURCE_PASS:-postgres}
         depends_on:
             postgres:
                 condition: service_started
