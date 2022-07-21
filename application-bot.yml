@@ -21,7 +21,7 @@ chats-settings:
             - 444
             - 555
             - 666
-    rewrite-chats-settings-in-database-on-startup: true
+    rewrite-chats-settings-in-database-on-startup: false
 
 message-templates:
     variables:

@@ -32,7 +32,7 @@ spring:
 
 logging:
     level:
-        root: info
+        root: off
         org.codewithoutus.tgbotusers: debug
         web: off
         sql: off
