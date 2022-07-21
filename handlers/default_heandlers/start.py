@@ -7,7 +7,8 @@ from database.commands import get_all_moderator_id
 @bot.message_handler(commands=['start'])
 def bot_start(message: Message):
     """
-    Хендлер, который приветствует пользователя и подсказывает, что делать при команде /start.
+    Хендлер, который приветствует пользователя и подсказывает, что делать при команде /start. Команда доступна только
+    в чатах модераторов, которые настроены командой /adminsetup и пользователям с правами администратора.
     :param Message message: /start
     :return: None
     """

@@ -43,10 +43,11 @@ def handler_new_member(message: Message) -> None:
                 moderator_ids = get_moderator_id(group_id=message.chat.id)
 
                 for moderator_id in moderator_ids:
+                    dtime_formatted = dtime.strftime('%d.%m.%y %H:%M')
                     bot_message = bot.send_message(chat_id=moderator_id,
                                                    text=f'В {chat_name} вступил юбилейный пользователь {nickname} '
                                                         f'{user_name}\nПорядковый номер вступления: {count}, время '
-                                                        f'вступления: {dtime}',
+                                                        f'вступления: {dtime_formatted}',
                                                    reply_markup=new_user_keyboard.congratulate_keyboard())
 
                     temp_save(chat_id=message.chat.id,

@@ -8,14 +8,6 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 DB = os.path.join(ROOT_DIR, 'database.db')
 
 
-def cleaner():
-    with sqlite3.connect((DB)) as conn:
-        cursor = conn.cursor()
-        cursor.execute('''DELETE from users''')
-        cursor.execute('''DELETE from temp_storage''')
-        cursor.execute('''DELETE from temp_unceleb''')
-
-
 """"Блок функций для регистрации и обработки нового юбилейного пользователя"""
 
 

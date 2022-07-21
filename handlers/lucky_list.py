@@ -8,6 +8,7 @@ import datetime
 def bot_lucky_list(message: Message) -> None:
     """"
     Хендлер, который обрабатывает команду /luckylist по выводу всех зарегитрированных юбилейных пользователей.
+    Команда доступна только в чатах модераторов, которые настроены командой /adminsetup.
     :param Message message: /luckylist
     :return: None
     """

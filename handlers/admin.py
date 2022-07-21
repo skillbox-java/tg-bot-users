@@ -9,7 +9,7 @@ from config_data.config import ADMIN_IDS
 def bot_admin_show(message: Message) -> None:
     """
     Функция, которая выводит текущие настройки админки с группировкой по id группы модератора. Команда доступна только
-    в чатах модераторов, которые настроены командой /adminsetup.
+    в чатах модераторов, которые настроены командой /adminsetup и пользователям с правами администратора.
     :param Message message: /adminshow
     :return: None
     """

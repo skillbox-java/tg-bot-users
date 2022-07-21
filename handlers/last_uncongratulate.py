@@ -12,7 +12,8 @@ from config_data.config import HAPPY_NUMBER
 @bot.message_handler(commands=['unceleb'])
 def bot_uncongratulate(message: Message) -> None:
     """"
-    Хендлер, который обрабатывает команду /unceleb по выводу последних непоздравленных пользователей.
+    Хендлер, который обрабатывает команду /unceleb по выводу последних непоздравленных пользователей. Команда доступна
+    только в чатах модераторов, которые настроены командой /adminsetup.
     :param Message message: /unceleb
     :return: None
     """

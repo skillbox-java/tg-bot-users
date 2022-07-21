@@ -7,7 +7,8 @@ from database.commands import get_all_moderator_id
 @bot.message_handler(commands=['help'])
 def bot_help(message: Message):
     """
-    Хендлер, который выводит все доступные боту команды при команде /help.
+    Хендлер, который выводит все доступные боту команды при команде /help. Команда доступна только в чатах модераторов,
+    которые настроены командой /adminsetup.
     :param Message message: /help
     :return: None
     """
