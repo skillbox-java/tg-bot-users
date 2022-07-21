@@ -1,18 +1,10 @@
-#server:
-#    port: 8090
-
 bot-settings:
-    #    bot-user-name: skillTestBoxBot
-    #    bot-token: 5566542855:AAHQ8Ge8VD8lVv5sw21f1ztrslroFVo1upI
     bot-user-name: ${BOT_USER_NAME}
     bot-token: ${BOT_TOKEN}
     long-polling-timeout: 75000
 
 spring:
     datasource:
-#        url: jdbc:postgresql://localhost:5432/tg-bot-users
-#        username:  postgres
-#        password: testtest
         driver-class-name: org.postgresql.Driver
         url: ${DATASOURCE_URL}
         username:  ${DATASOURCE_USER}

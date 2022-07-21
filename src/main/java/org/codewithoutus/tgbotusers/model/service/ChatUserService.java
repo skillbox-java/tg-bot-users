@@ -3,12 +3,9 @@ package org.codewithoutus.tgbotusers.model.service;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.codewithoutus.tgbotusers.model.entity.ChatModerator;
 import org.codewithoutus.tgbotusers.model.entity.ChatUser;
 import org.codewithoutus.tgbotusers.model.repository.ChatUserRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +21,7 @@ public class ChatUserService {
     public void deleteAll() {
         chatUserRepository.deleteAll();
     }
+
     public void deleteById(Integer id) {
         chatUserRepository.deleteById(id);
     }
@@ -42,14 +40,5 @@ public class ChatUserService {
 
     public boolean existByChatId(long chatId) {
         return chatUserRepository.existsByChatId(chatId);
-    }
-
-    public boolean isChatUser(long id) {
-        return chatUserRepository.findByChatModeratorsNotEmpty()
-                .stream()
-                .anyMatch(chatUser -> chatUser.getChatId().equals(id));
-    }
-    public void delete(ChatUser entity) {
-        chatUserRepository.delete(entity);
     }
 }

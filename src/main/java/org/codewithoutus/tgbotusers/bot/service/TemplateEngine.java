@@ -41,12 +41,12 @@ public class TemplateEngine {
 
         private Builder(String template, NotificationTemplates templates) {
             result = new StringBuilder(template);
-            temp = templates;
+            this.temp = templates;
         }
 
         private void replace(String target, String replacement) {
             for (int i = result.lastIndexOf(target); i > -1; i = result.lastIndexOf(target, i)) {
-                result.replace(i, i + target.length() - 1, replacement);
+                result.replace(i, i + target.length(), replacement);
             }
         }
 

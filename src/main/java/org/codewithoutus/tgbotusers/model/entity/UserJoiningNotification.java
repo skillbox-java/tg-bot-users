@@ -20,6 +20,9 @@ public class UserJoiningNotification {
     @Column(nullable = false)
     private Long sentMessageChatId;
 
+    @Column
+    private boolean hasKeyboard;
+
     @ManyToOne
     private UserJoining userJoining;
 }

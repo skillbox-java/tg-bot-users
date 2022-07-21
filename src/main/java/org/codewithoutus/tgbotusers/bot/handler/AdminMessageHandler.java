@@ -281,5 +281,4 @@ public class AdminMessageHandler extends Handler {
         telegramService.sendMessage(new SendMessage(chatId, String.format(OK_DEL_MODER, moderGroupId)));
         return true;
     }
-    
 }

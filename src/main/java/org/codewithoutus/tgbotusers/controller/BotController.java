@@ -4,7 +4,6 @@ import com.pengrad.telegrambot.request.SendMessage;
 import lombok.RequiredArgsConstructor;
 import org.codewithoutus.tgbotusers.bot.service.BotService;
 import org.codewithoutus.tgbotusers.bot.service.TelegramService;
-import org.codewithoutus.tgbotusers.config.ChatSettings;
 import org.codewithoutus.tgbotusers.controller.dto.BotResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,11 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("c")
 @RequiredArgsConstructor
 public class BotController {
 
-    private final ChatSettings chatSettings;
     private final BotService botService;
     private final TelegramService telegramService;
 
@@ -40,6 +38,4 @@ public class BotController {
         telegramService.sendMessage(new SendMessage(chatId, message));
         return new BotResponse(true, botService.getStatus());
     }
-
-
 }

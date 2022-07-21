@@ -10,8 +10,6 @@ import org.codewithoutus.tgbotusers.bot.enums.BotStatus;
 import org.codewithoutus.tgbotusers.bot.handler.*;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -21,14 +19,8 @@ public class BotService {
     private final AdminMessageHandler adminMessageHandler;
     private final CallbackQueryHandler callbackQueryHandler;
     private final ChatJoinMessageHandler chatJoinMessageHandler;
-    private final ChatJoinRequestHandler chatJoinRequestHandler;
-    private final LuckyListCommandHandler luckyListCommandHandler;
+    private final LuckyCommandHandler luckyListCommandHandler;
     private final PrivateMessageHandler privateMessageHandler;
-
-    @PostConstruct
-    private void botStart() {
-        start();
-    }
     
     public boolean start() {
         if (bot.getStatus() == BotStatus.START) {
@@ -72,10 +64,8 @@ public class BotService {
         if (adminMessageHandler.tryHandle(update)
                 || privateMessageHandler.tryHandle(update)
                 || chatJoinMessageHandler.tryHandle(update)
-                || chatJoinRequestHandler.tryHandle(update)
                 || callbackQueryHandler.tryHandle(update)
                 || luckyListCommandHandler.tryHandle(update)) {
-            // update handled, return
         }
     }
 }

@@ -1,6 +1,7 @@
 package org.codewithoutus.tgbotusers.bot.service;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
 import lombok.RequiredArgsConstructor;
@@ -45,20 +46,28 @@ public class NotificationService {
                 .buildFromTemplate(notificationTemplates.getJoinAlert(), userJoining, false);
 
         for (ChatModerator moderatorChat : moderatorChats) {
-            SendMessage message = new SendMessage(moderatorChat.getChatId(), notificationText).replyMarkup(keyboard);
-            SendResponse response = telegramService.sendMessage(message);
-            log.debug("ModerChat(id={}) notified about user(id={}) joining. Status={}",
-                    moderatorChat.getChatId(), userJoining.getUserId(), response.isOk());
-
-            UserJoiningNotification notification = new UserJoiningNotification();
-            notification.setUserJoining(userJoining);
-            notification.setSentMessageChatId(moderatorChat.getChatId());
-            notification.setSentMessageId(response.message().messageId());
-            userJoiningNotificationService.save(notification);
-            log.debug("Saved to DB notifying ModerChat(id={}) about user(id={}) joining",
-                    moderatorChat.getChatId(), userJoining.getUserId());
-        }
+            sendModeratorNotification(moderatorChat.getChatId(), userJoining, notificationText, keyboard);
+         }
         log.debug("Finish notifying about user(id={}) joining", userJoining.getUserId());
+    }
+
+    @Transactional
+    public void sendModeratorNotification(Long moderatorChatId, UserJoining userJoining, String notificationText, InlineKeyboardMarkup keyboard) {
+        SendMessage message = new SendMessage(moderatorChatId, notificationText)
+                .replyMarkup(keyboard)
+                .parseMode(ParseMode.Markdown);
+        SendResponse response = telegramService.sendMessage(message);
+        log.debug("ModerChat(id={}) notified about user(id={}) joining. Status={}",
+                moderatorChatId, userJoining.getUserId(), response.isOk());
+
+        UserJoiningNotification notification = new UserJoiningNotification();
+        notification.setUserJoining(userJoining);
+        notification.setSentMessageChatId(response.message().chat().id());
+        notification.setSentMessageId(response.message().messageId());
+        notification.setHasKeyboard(true);
+        userJoiningNotificationService.save(notification);
+        log.debug("Saved to DB notifying ModerChat(id={}) about user(id={}) joining",
+                moderatorChatId, userJoining.getUserId());
     }
 
     @Transactional
@@ -67,7 +76,7 @@ public class NotificationService {
         String notificationText = templateEngine
                 .buildFromTemplate(notificationTemplates.getJoinCongratulation(), userJoining, false);
 
-        SendMessage message = new SendMessage(userJoining.getChatId(), notificationText);
+        SendMessage message = new SendMessage(userJoining.getChatId(), notificationText).parseMode(ParseMode.Markdown);
         SendResponse response = telegramService.sendMessage(message);
         log.debug("Finish congratulate user(id={}). Status={}", userJoining.getUserId(), response.isOk());
     }
@@ -76,7 +85,7 @@ public class NotificationService {
     public void deleteKeyboardFromJoiningNotification(Long userId, Long chatId, int anniversaryNumber) {
         log.debug("Start keyboard deleting about user(id={}, number={}) joining", userId, anniversaryNumber);
         userJoiningNotificationService
-                .findByUserIdAndChatIdAndAnniversaryNumber(userId, chatId, anniversaryNumber)
+                .findByChatIdAndUserIdAndKeyboardStatus(chatId, userId, true)
                 .forEach(this::deleteKeyboard);
         log.debug("Finish keyboard deleting about user(id={}, number={}) joining", userId, anniversaryNumber);
     }
@@ -85,12 +94,14 @@ public class NotificationService {
     public void deleteKeyboardFromAllJoiningNotifications(Long chatId, int anniversaryNumber) {
         log.debug("Start keyboard deleting about chat(id={}) {} joining", chatId, anniversaryNumber);
         userJoiningNotificationService
-                .findByChatIdAndAnniversaryNumber(chatId, anniversaryNumber)
+                .findByChatIdAndAnniversaryNumberAndKeyboardStatus(chatId, anniversaryNumber, true)
                 .forEach(this::deleteKeyboard);
         log.debug("Finish keyboard deleting about chat(id={}) {} joining", chatId, anniversaryNumber);
     }
 
+    @Transactional
     private void deleteKeyboard(UserJoiningNotification notification) {
         telegramService.removeKeyboardFromMessage(notification.getSentMessageChatId(), notification.getSentMessageId());
+        notification.setHasKeyboard(false);
     }
 }

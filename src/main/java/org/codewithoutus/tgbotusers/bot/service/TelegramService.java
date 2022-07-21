@@ -40,7 +40,7 @@ public class TelegramService {
 
     public SendResponse sendMessage(SendMessage message) {
         SendResponse response = sendRequest(message);
-        log.debug("Sent message text={}. Status={}", message.getParameters().get("text"), response.isOk());
+        log.debug("Sent message text=''{}''. Status={}", message.getParameters().get("text"), response.isOk());
         return response;
     }
 
