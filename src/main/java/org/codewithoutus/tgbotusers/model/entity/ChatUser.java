@@ -12,7 +12,7 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
-public class ChatUser { // TODO: Pavel -- переименовать сущность и сопутствующие переменные (после задачи Макса)
+public class ChatUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

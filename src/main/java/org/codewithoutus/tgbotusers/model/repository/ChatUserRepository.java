@@ -12,7 +12,5 @@ public interface ChatUserRepository extends CrudRepository<ChatUser, Integer> {
 
     Optional<ChatUser> findByChatId(long chatId);
 
-    List<ChatUser> findByChatModeratorsNotEmpty();
-
     boolean existsByChatId(Long chatId);
 }

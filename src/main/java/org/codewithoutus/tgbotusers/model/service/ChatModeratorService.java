@@ -19,6 +19,10 @@ public class ChatModeratorService {
         chatModeratorRepository.deleteAll();
     }
 
+    public void deleteById(Integer id) {
+        chatModeratorRepository.deleteById(id);
+    }
+
     public ChatModerator save(ChatModerator entity) {
         return chatModeratorRepository.save(entity);
     }
