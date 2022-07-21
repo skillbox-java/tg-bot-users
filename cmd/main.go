@@ -6,7 +6,6 @@ import (
 	"log"
 	"skbot/internal/callbackmsg"
 	"skbot/internal/chatmembers"
-	"skbot/internal/comandmsg"
 	"skbot/internal/config"
 	"skbot/internal/functions"
 	"skbot/internal/textmsg"
@@ -70,11 +69,6 @@ func main() {
 			if update.Message.Text != "" {
 				// text messages operations
 				textmsg.WithTextQueryDo(update, bot, logger, cfg)
-
-			} else if update.Message.Command() != "" {
-
-				//com menu (only moderator's chats)
-				comandmsg.CommandQueryDo(update, bot, logger, cfg)
 
 			} else if update.Message.NewChatMembers != nil {
 
