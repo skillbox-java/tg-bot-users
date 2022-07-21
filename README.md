@@ -92,3 +92,7 @@ docker stop name
 ```
 docker start name
 ```
+
+###  Ссылка на образ:
+
+- [Skillbot v1.0](https://hub.docker.com/repository/docker/azatf/skillbot)
