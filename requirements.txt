@@ -1,0 +1,5 @@
+aiogram~=2.21
+aioredis~=2.0
+environs~=9.0
+aiosqlite~=0.17
+python-dotenv~=0.20
